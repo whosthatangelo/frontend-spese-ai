@@ -34,16 +34,25 @@ export default function AudioRecorder({ onAdd }) {
   async function handleStop(recorder) {
     setStatus('⏳ Invio audio...');
 
-    const audioBlob = new Blob(chunks, { type: 'audio/webm; codecs=opus' });
+    // Blocca il recorder se è ancora attivo
+    if (recorder && recorder.state !== "inactive") {
+      recorder.stop();
+    }
 
-    const arrayBuffer = await audioBlob.arrayBuffer();
-    const uint8Array = new Uint8Array(arrayBuffer);
-    const newBlob = new Blob([uint8Array], { type: 'audio/webm' });
+    // Aspetta che i chunk siano raccolti (piccola attesa)
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+
+    // 🔍 Controllo di sicurezza
+    if (audioBlob.size === 0) {
+      console.error("❌ Audio vuoto, impossibile inviare");
+      setStatus("❌ Audio vuoto, riprova");
+      return;
+    }
 
     const formData = new FormData();
-    formData.append('audio', new File([newBlob], 'audio.webm', {
-      type: 'audio/webm'
-    }));
+    formData.append('audio', audioBlob, 'audio.webm');
 
     try {
       const res = await fetch(`${BASE_URL}/upload-audio`, {
@@ -66,6 +75,7 @@ export default function AudioRecorder({ onAdd }) {
       setIsRecording(false);
     }
   }
+
 
   function handleClick() {
     if (!isRecording) {

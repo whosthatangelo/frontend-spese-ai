@@ -1,6 +1,6 @@
 // frontend/api.js
 
-const BASE_URL = '/api'; // Proxy verso il backend Express su localhost:3000
+const BASE_URL = 'https://backend-spese-l4yobdzjn-angelos-projects-cad4887a.vercel.app';
 
 // 🔄 Ottieni tutte le spese
 export async function getExpenses() {

@@ -1,56 +1,48 @@
-// src/components/AudioRecorder.jsx
-import { useState } from 'react';
-import { addExpense } from '../api';
+import React, { useRef, useState } from 'react';
+
+const BASE_URL = import.meta.env.VITE_API_URL || '';
 
 export default function AudioRecorder({ onAdd }) {
   const [isRecording, setIsRecording] = useState(false);
-  const [status, setStatus] = useState('Premi per iniziare');
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [chunks, setChunks] = useState([]);
+  const [status, setStatus] = useState('');
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
 
-  const BASE_URL = 'https://backend-spese-ai.vercel.app';
+  async function handleStart() {
+    setStatus('🎙️ Sto registrando...');
+    chunksRef.current = [];
 
-  async function startRecording() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      setChunks([]);
-      setMediaRecorder(recorder);
-      setIsRecording(true);
-      setStatus('🎙️ Registrazione in corso...');
-      recorder.start();
+      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
 
       recorder.ondataavailable = e => {
-        setChunks(prev => [...prev, e.data]);
+        if (e.data.size > 0) chunksRef.current.push(e.data);
       };
 
       recorder.onstop = () => handleStop(recorder);
+
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+      setIsRecording(true);
     } catch (err) {
-      console.error("🎤 Accesso al microfono negato:", err);
-      setStatus('❌ Accesso al microfono negato');
+      console.error("❌ Errore accesso microfono:", err);
+      setStatus('❌ Errore microfono');
     }
   }
 
   async function handleStop(recorder) {
     setStatus('⏳ Invio audio...');
+    setIsRecording(false);
+    recorder.stream.getTracks().forEach(t => t.stop());
 
-    // Blocca il recorder se è ancora attivo
-    if (recorder && recorder.state !== "inactive") {
-      recorder.stop();
-    }
-
-    // Aspetta che i chunk siano raccolti (piccola attesa)
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-
-    // 🔍 Controllo di sicurezza
-    if (audioBlob.size === 0) {
-      console.error("❌ Audio vuoto, impossibile inviare");
-      setStatus("❌ Audio vuoto, riprova");
+    if (chunksRef.current.length === 0) {
+      console.warn("❌ Nessun chunk registrato.");
+      setStatus('❌ Audio vuoto, riprova');
       return;
     }
 
+    const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
     const formData = new FormData();
     formData.append('audio', audioBlob, 'audio.webm');
 
@@ -71,26 +63,18 @@ export default function AudioRecorder({ onAdd }) {
     } catch (err) {
       console.error("❌ Errore durante l'invio audio:", err);
       setStatus('❌ Errore durante l’invio');
-    } finally {
-      setIsRecording(false);
-    }
-  }
-
-
-  function handleClick() {
-    if (!isRecording) {
-      startRecording();
-    } else if (mediaRecorder) {
-      mediaRecorder.stop();
     }
   }
 
   return (
-    <div className="mb-4 text-center">
-      <button onClick={handleClick} className="btn btn-lg btn-outline-primary">
-        {isRecording ? '🛑 Ferma' : '🎙️ Tocca per registrare'}
+    <div>
+      <button
+        onClick={isRecording ? () => mediaRecorderRef.current?.stop() : handleStart}
+        className={`btn ${isRecording ? 'btn-danger' : 'btn-primary'}`}
+      >
+        {isRecording ? 'Ferma' : '🎤 Registra spesa'}
       </button>
-      <p className="mt-2">{status}</p>
+      <p>{status}</p>
     </div>
   );
 }

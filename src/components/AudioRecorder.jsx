@@ -34,14 +34,16 @@ export default function AudioRecorder({ onAdd }) {
   async function handleStop(recorder) {
     setStatus('⏳ Invio audio...');
 
-    // Crea un Blob dal flusso registrato
-    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+    // 🔧 Blob con codec dichiarato
+    const audioBlob = new Blob(chunks, { type: 'audio/webm; codecs=opus' });
 
-    // 🔧 FIX: Crea un File esplicito per evitare errori MIME su Whisper
-    const audioFile = new File([audioBlob], 'audio.webm', { type: 'audio/webm' });
+    // ✅ File esplicito con estensione corretta e MIME compatibile
+    const audioFile = new File([audioBlob], 'audio.webm', {
+      type: 'audio/webm; codecs=opus'
+    });
 
     const formData = new FormData();
-    formData.append('audio', audioFile);
+    formData.append('audio', audioFile); // deve essere "audio"
 
     try {
       const res = await fetch(`${BASE_URL}/upload-audio`, {
@@ -64,6 +66,7 @@ export default function AudioRecorder({ onAdd }) {
       setIsRecording(false);
     }
   }
+
 
 
   function handleClick() {

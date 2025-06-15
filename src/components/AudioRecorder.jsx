@@ -8,6 +8,8 @@ export default function AudioRecorder({ onAdd }) {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [chunks, setChunks] = useState([]);
 
+  const BASE_URL = 'https://backend-spese-ai.vercel.app';
+
   async function startRecording() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -24,6 +26,7 @@ export default function AudioRecorder({ onAdd }) {
 
       recorder.onstop = () => handleStop(recorder);
     } catch (err) {
+      console.error("🎤 Accesso al microfono negato:", err);
       setStatus('❌ Accesso al microfono negato');
     }
   }
@@ -34,24 +37,27 @@ export default function AudioRecorder({ onAdd }) {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'audio.webm');
 
-    const BASE_URL = 'https://backend-spese-ai.vercel.app'; // 🔥 QUI
-
     try {
       const res = await fetch(`${BASE_URL}/upload-audio`, {
         method: 'POST',
         body: formData,
       });
 
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Errore HTTP ${res.status}: ${errorText}`);
+      }
+
       const result = await res.json();
       setStatus('✅ Spesa vocale salvata!');
-      if (onAdd) await onAdd(result);
+      if (onAdd && result) await onAdd(result);
     } catch (err) {
+      console.error("❌ Errore durante l'invio audio:", err);
       setStatus('❌ Errore durante l’invio');
     } finally {
       setIsRecording(false);
     }
   }
-
 
   function handleClick() {
     if (!isRecording) {

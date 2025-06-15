@@ -34,8 +34,10 @@ export default function AudioRecorder({ onAdd }) {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'audio.webm');
 
+    const BASE_URL = 'https://backend-spese-ai.vercel.app'; // 🔥 QUI
+
     try {
-      const res = await fetch('/api/upload-audio', {
+      const res = await fetch(`${BASE_URL}/upload-audio`, {
         method: 'POST',
         body: formData,
       });
@@ -49,6 +51,7 @@ export default function AudioRecorder({ onAdd }) {
       setIsRecording(false);
     }
   }
+
 
   function handleClick() {
     if (!isRecording) {

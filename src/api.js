@@ -1,6 +1,6 @@
 // frontend/api.js
 
-const BASE_URL = 'https://backend-spese-l4yobdzjn-angelos-projects-cad4887a.vercel.app';
+const BASE_URL = 'https://backend-spese-8hk4iybei-angelos-projects-cad4887a.vercel.app';
 
 // 🔄 Ottieni tutte le spese
 export async function getExpenses() {

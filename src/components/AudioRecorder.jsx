@@ -14,13 +14,28 @@ export default function AudioRecorder({ onAdd }) {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+      let recorder;
+      const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/wav'];
+      let selectedMimeType = '';
+
+      for (const type of mimeTypes) {
+        if (MediaRecorder.isTypeSupported(type)) {
+          selectedMimeType = type;
+          recorder = new MediaRecorder(stream, { mimeType: type });
+          break;
+        }
+      }
+
+      if (!recorder) {
+        throw new Error('❌ Nessun formato audio supportato dal browser');
+      }
 
       recorder.ondataavailable = e => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
 
-      recorder.onstop = () => handleStop(recorder);
+      recorder.onstop = () => handleStop(recorder, selectedMimeType);
 
       recorder.start();
       mediaRecorderRef.current = recorder;
@@ -31,7 +46,7 @@ export default function AudioRecorder({ onAdd }) {
     }
   }
 
-  async function handleStop(recorder) {
+  async function handleStop(recorder, mimeType) {
     setStatus('⏳ Invio audio...');
     setIsRecording(false);
     recorder.stream.getTracks().forEach(t => t.stop());
@@ -42,9 +57,10 @@ export default function AudioRecorder({ onAdd }) {
       return;
     }
 
-    const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
+    const audioBlob = new Blob(chunksRef.current, { type: mimeType });
+    const extension = mimeType.split('/')[1];
     const formData = new FormData();
-    formData.append('audio', audioBlob, 'audio.webm');
+    formData.append('audio', audioBlob, `audio.${extension}`);
 
     try {
       const res = await fetch(`${BASE_URL}/upload-audio`, {

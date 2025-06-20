@@ -8,10 +8,9 @@ export default function AudioRecorder({ onAdd }) {
   const [status, setStatus] = useState('');
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
-
-  console.log("🌐 Backend URL:", BASE_URL);
   
   async function handleStart() {
+    console.log("🌐 Backend URL:", BASE_URL);
     setStatus('🎙️ Sto registrando...');
     chunksRef.current = [];
 
@@ -19,7 +18,7 @@ export default function AudioRecorder({ onAdd }) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       let recorder;
-      const mimeTypes = ['audio/mp4', 'audio/mpeg', 'audio/webm']; // mp4 prima
+      const mimeTypes = ['audio/webm', 'audio/webm;codecs=opus'];
       let selectedMimeType = '';
 
       for (const type of mimeTypes) {

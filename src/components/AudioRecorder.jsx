@@ -60,7 +60,7 @@ export default function AudioRecorder({ onAdd }) {
     const audioBlob = new Blob(chunksRef.current, { type: mimeType });
     const extension = mimeType.split('/')[1];
     const formData = new FormData();
-    formData.append('audio', audioBlob, `audio.mp4`);
+    formData.append('audio', audioBlob, `audio.${extension}`);
 
     try {
       const res = await fetch(`${BASE_URL}/upload-audio`, {

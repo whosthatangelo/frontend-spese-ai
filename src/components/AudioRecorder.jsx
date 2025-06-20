@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '';
-console.log("🌐 Backend URL:", BASE_URL);
+
 
 export default function AudioRecorder({ onAdd }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -9,6 +9,8 @@ export default function AudioRecorder({ onAdd }) {
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
+  console.log("🌐 Backend URL:", BASE_URL);
+  
   async function handleStart() {
     setStatus('🎙️ Sto registrando...');
     chunksRef.current = [];

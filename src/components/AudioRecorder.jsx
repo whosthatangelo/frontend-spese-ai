@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '';
+console.log("🌐 Backend URL:", BASE_URL);
 
 export default function AudioRecorder({ onAdd }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -16,7 +17,7 @@ export default function AudioRecorder({ onAdd }) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       let recorder;
-      const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/wav'];
+      const mimeTypes = ['audio/mp4', 'audio/mpeg', 'audio/webm']; // mp4 prima
       let selectedMimeType = '';
 
       for (const type of mimeTypes) {

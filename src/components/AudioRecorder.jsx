@@ -69,7 +69,15 @@ export default function AudioRecorder({ onAdd }) {
         body: formData,
       });
 
-      const result = await res.json();
+      let result;
+      try {
+        result = await res.json();
+      } catch (e) {
+        console.error("⚠️ Risposta non in JSON valido", e);
+        setStatus('⚠️ Salvataggio riuscito ma risposta non standard');
+        return;
+      }
+
       console.log("📦 Risposta backend:", result);
 
       if (result.spesa) {

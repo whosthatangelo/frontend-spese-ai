@@ -17,18 +17,18 @@ export default function ExpenseList() {
     setLoading(false);
   }
 
-  async function handleDelete(id) {
-    if (confirm('Sei sicuro di voler eliminare questa spesa?')) {
-      await deleteExpense(id);
+  async function handleDelete(numero_fattura) {
+    if (confirm(`Sei sicuro di voler eliminare la fattura ${numero_fattura}?`)) {
+      await deleteExpense(numero_fattura);
       loadExpenses();
     }
   }
 
-  async function handleEdit(expense) {
-    const nuovoImporto = prompt('Inserisci nuovo importo (€):', expense.importo);
-    if (nuovoImporto && !isNaN(nuovoImporto)) {
-      const updated = { ...expense, importo: parseFloat(nuovoImporto) };
-      await updateExpense(expense.id, updated);
+  async function handleEdit(exp) {
+    const nuovoImporto = prompt(`Modifica importo per fattura ${exp.numero_fattura}:`, exp.importo);
+    if (nuovoImporto !== null && !isNaN(nuovoImporto)) {
+      const updated = { ...exp, importo: parseFloat(nuovoImporto) };
+      await updateExpense(exp.numero_fattura, updated);
       loadExpenses();
     } else if (nuovoImporto !== null) {
       alert('Valore non valido.');
@@ -43,27 +43,39 @@ export default function ExpenseList() {
       <table className="table table-bordered table-striped">
         <thead className="table-dark">
           <tr>
+            <th>Fattura</th>
             <th>Data</th>
-            <th>Prodotto</th>
-            <th>Luogo</th>
-            <th>Importo (€)</th>
-            <th>Quantità</th>
-            <th>Unità</th>
+            <th>Azienda</th>
+            <th>Importo</th>
+            <th>Valuta</th>
+            <th>Pagamento</th>
+            <th>Documento</th>
             <th>Azioni</th>
           </tr>
         </thead>
         <tbody>
           {expenses.map(exp => (
-            <tr key={exp.id}>
+            <tr key={exp.numero_fattura}>
+              <td>{exp.numero_fattura}</td>
               <td>{exp.data_fattura}</td>
-              <td>{exp.prodotto || '-'}</td>
-              <td>{exp.azienda || '-'}</td>
+              <td>{exp.azienda}</td>
               <td>{exp.importo}</td>
-              <td>{exp.quantita || '-'}</td>
-              <td>{exp.unita_misura || '-'}</td>
+              <td>{exp.valuta}</td>
+              <td>{exp.tipo_pagamento}</td>
+              <td>{exp.tipo_documento}</td>
               <td>
-                <button className="btn btn-sm btn-warning me-1" onClick={() => handleEdit(exp)}>✏️</button>
-                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(exp.id)}>🗑️</button>
+                <button
+                  className="btn btn-sm btn-warning me-1"
+                  onClick={() => handleEdit(exp)}
+                >
+                  ✏️
+                </button>
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => handleDelete(exp.numero_fattura)}
+                >
+                  🗑️
+                </button>
               </td>
             </tr>
           ))}

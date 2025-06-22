@@ -1,34 +1,41 @@
 // src/App.jsx
-import { useEffect, useState } from 'react';
-import AddExpenseForm from './components/AddExpenseForm';
-import ExpenseList from './components/ExpenseList';
-import AudioRecorder from './components/AudioRecorder';
-import { getExpenses, addExpense } from './api';
+import { Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import Spese from './pages/Spese';
+import Dashboard from './pages/Dashboard';
+import './App.css';
 
 export default function App() {
-  const [expenses, setExpenses] = useState([]);
-
-  useEffect(() => {
-    caricaSpese();
-  }, []);
-
-  async function caricaSpese() {
-    const data = await getExpenses();
-    setExpenses(data);
-  }
-
-  async function aggiungiSpesa(spesa) {
-    const nuova = await addExpense(spesa);
-    setExpenses(prev => [...prev, nuova]);
-  }
-
   return (
-    <div className="container py-4">
-      <h1 className="text-center mb-4">🧾 Gestione Spese</h1>
+    <>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3 mb-4">
+        <Link className="navbar-brand" to="/">💸 ExpenseAI</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-      <AudioRecorder onAdd={aggiungiSpesa} />
-      <AddExpenseForm onAdd={aggiungiSpesa} />
-      <ExpenseList expenses={expenses} />
-    </div>
+        <div className="collapse navbar-collapse" id="navContent">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">🏠 Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/spese">🧾 Spese</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/dashboard">📊 Dashboard</Link>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/spese" element={<Spese />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </div>
+    </>
   );
 }

@@ -83,7 +83,15 @@ export default function AudioRecorder({ onAdd }) {
 
       if (res.ok && result.spesa) {
         setStatus('✅ Spesa vocale salvata!');
-        if (onAdd) await onAdd(result.spesa);
+        if (onAdd) {
+          try {
+            await onAdd(result.spesa);
+          } catch (err) {
+            console.warn("⚠️ Errore nella funzione onAdd:", err);
+            setStatus('⚠️ Spesa salvata, ma errore nell’aggiornamento della lista');
+            return;
+          }
+        }
       } else if (result.error) {
         setStatus(`⚠️ Errore backend: ${result.error}`);
       } else {

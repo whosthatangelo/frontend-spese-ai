@@ -69,31 +69,29 @@ export default function AudioRecorder({ onAdd }) {
         body: formData,
       });
 
-      let result;
-      try {
-        result = await res.json();
-      } catch (e) {
-        console.error("⚠️ Risposta non in JSON valido", e);
-        setStatus('⚠️ Salvataggio riuscito ma risposta non standard');
-        return;
-      }
+      const result = await res.json();
 
       console.log("📦 Risposta backend:", result);
 
-      if (result?.spesa) {
-        setStatus('✅ Spesa vocale salvata!');
-        if (onAdd) await onAdd(result.spesa);
-      } else if (result?.error) {
-        setStatus(`⚠️ Errore: ${result.error}`);
-      } else {
-        setStatus('⚠️ Spesa salvata ma risposta inattesa');
+      if (!res.ok) {
+        setStatus(`❌ Errore HTTP ${res.status}`);
+        return;
       }
 
+      if (result.spesa) {
+        setStatus('✅ Spesa vocale salvata!');
+        if (onAdd) await onAdd(result.spesa);
+      } else if (result.error) {
+        setStatus(`⚠️ Errore backend: ${result.error}`);
+      } else {
+        setStatus('⚠️ Risposta inattesa dal server');
+      }
     } catch (err) {
-      console.error("❌ Errore durante l'invio audio:", err);
-      setStatus('❌ Errore durante l’invio');
+      console.error("❌ Errore di rete:", err);
+      setStatus('❌ Errore di rete, riprova');
     }
   }
+
 
   return (
     <div>

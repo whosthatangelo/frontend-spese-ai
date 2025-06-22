@@ -1,123 +1,87 @@
-/* === Font e base === */
+/* === Mobile-First Global Styling === */
 body {
-  font-family: 'Poppins', sans-serif;
-  background: #f0f2f5;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  background: #f5f7fa;
   margin: 0;
   padding: 0;
-  color: #2c3e50;
+  color: #333;
 }
 
 h1, h2, h3, h4 {
   font-weight: 600;
-  color: #1c1e21;
+  color: #2c3e50;
 }
 
-a {
-  color: #0d6efd;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* === Container === */
 .container {
-  max-width: 1140px;
-  margin: 2rem auto;
+  width: 100%;
   padding: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+}
+
+/* === Card & Section === */
+.card {
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
 /* === Buttons === */
-button {
-  transition: all 0.3s ease;
-  font-weight: 500;
+button, .btn {
+  padding: 0.65rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  touch-action: manipulation;
 }
 
 button:hover {
-  transform: scale(1.02);
   opacity: 0.9;
+  transform: scale(1.02);
 }
 
 /* === Form Inputs === */
 input, select, textarea {
   border: 1px solid #ced4da;
-  border-radius: 8px;
-  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
   font-size: 1rem;
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
   margin-bottom: 1rem;
-  background-color: #f8f9fa;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #6610f2;
+  border-color: #0d6efd;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(102, 16, 242, 0.25);
 }
 
-/* === Table === */
-table.table {
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-  border-radius: 8px;
+/* === Table on Mobile === */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
 }
 
-.table th, .table td {
-  vertical-align: middle;
-  padding: 0.75rem;
+/* === Responsive Typography === */
+@media (max-width: 768px) {
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.2rem; }
+  .btn { font-size: 1rem; }
 }
 
-.table thead th {
-  background-color: #6610f2;
-  color: white;
-  border: none;
+/* === Navbar Responsive Fix === */
+.navbar-brand {
+  font-size: 1.2rem;
 }
 
-.table tbody tr:hover {
-  background-color: #f0f2f5;
-  transition: background-color 0.2s;
+.navbar-nav .nav-link {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
 }
 
-/* === Card & Sections === */
-.card {
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  border: none;
-}
-
-.card-title {
-  font-weight: 600;
-  color: #343a40;
-}
-
-/* === Spinner === */
-.spinner-border {
-  width: 2rem;
-  height: 2rem;
-}
-
-/* === Empty Text === */
-.text-muted {
-  font-style: italic;
-  color: #6c757d !important;
-}
-
-/* === Modal override === */
+/* === Modal === */
 .modal-content {
   border-radius: 12px;
-  padding: 1.5rem;
-}
-
-/* === Animazioni === */
-.animate__animated {
-  animation-duration: 0.6s;
-  animation-fill-mode: both;
+  padding: 1.2rem;
 }

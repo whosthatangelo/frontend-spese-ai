@@ -1,9 +1,8 @@
 // src/pages/Spese.jsx
 import { useEffect, useState } from 'react';
-import { getExpenses, addExpense } from '../api';
+import { getExpenses, addExpense, deleteExpense } from '../api';
 import AudioRecorder from '../components/AudioRecorder';
 import AddExpenseForm from '../components/AddExpenseForm';
-import ExpenseList from '../components/ExpenseList';
 
 function Spese() {
   const [expenses, setExpenses] = useState([]);
@@ -22,75 +21,80 @@ function Spese() {
     setExpenses(prev => [...prev, nuova]);
   }
 
+  async function eliminaSpesa(id) {
+    if (confirm('Vuoi eliminare questa spesa?')) {
+      await deleteExpense(id);
+      caricaSpese();
+    }
+  }
+
   return (
     <div>
-      {/* Hero */}
-      <section className="py-5 text-white" style={{
+      {/* HERO */}
+      <section className="text-white text-center py-5" style={{
         background: "linear-gradient(135deg, #0d6efd, #6610f2)",
-        borderBottom: "4px solid #dee2e6",
         borderRadius: "0 0 20px 20px"
       }}>
-        <div className="container text-center">
+        <div className="container">
           <h1 className="display-5 fw-bold">📊 Tracciamento Spese</h1>
-          <p className="lead">Registra, gestisci e visualizza le tue spese in modo smart</p>
+          <p className="lead">Registra, gestisci e visualizza tutte le tue spese in modo semplice e smart</p>
         </div>
       </section>
 
-      {/* Inserimento spese */}
+      {/* CONTENUTO */}
       <div className="container my-5">
-        <div className="row gy-4 justify-content-center">
-          <div className="col-md-5">
-            <div className="card shadow-sm border-0 h-100">
-              <div className="card-body">
+        {/* SEZIONE INSERIMENTO */}
+        <div className="row g-4 mb-5">
+          <div className="col-md-6 d-flex justify-content-center">
+            <div className="card shadow-sm border-0 w-100">
+              <div className="card-body text-center">
                 <h5 className="card-title">🎙️ Registra Spesa Vocale</h5>
                 <AudioRecorder onAdd={aggiungiSpesa} />
               </div>
             </div>
           </div>
 
-          <div className="col-md-5">
-            <div className="card shadow-sm border-0 h-100">
+          <div className="col-md-6 d-flex justify-content-center">
+            <div className="card shadow-sm border-0 w-100">
               <div className="card-body">
-                <h5 className="card-title">✍️ Inserisci Spesa Manualmente</h5>
+                <h5 className="card-title text-center">✍️ Aggiungi Spesa Manuale</h5>
                 <AddExpenseForm onAdd={aggiungiSpesa} />
               </div>
             </div>
           </div>
         </div>
 
-        <hr className="my-5" />
-
-        {/* Lista spese */}
-        <div className="row justify-content-center">
-          <div className="col-12 col-md-10">
-            <div className="card shadow-sm border-0">
-              <div className="card-body">
-                <h4 className="mb-4 text-center">📜 Elenco Spese</h4>
-                <div className="row g-3">
-                  {expenses.length === 0 ? (
-                    <p className="text-muted text-center">📭 Nessuna spesa registrata.</p>
-                  ) : (
-                    expenses.map(exp => (
-                      <div className="col-sm-6 col-lg-4" key={exp.id}>
-                        <div className="card border-0 shadow-sm h-100">
-                          <div className="card-body">
-                            <h6 className="card-title">{exp.prodotto}</h6>
-                            <p className="mb-1"><strong>Data:</strong> {exp.data?.split('T')[0]}</p>
-                            <p className="mb-1"><strong>Importo:</strong> {exp.importo} {exp.valuta || "€"}</p>
-                            <p className="mb-1"><strong>Pagamento:</strong> {exp.tipo_pagamento}</p>
-                            <p className="mb-1"><strong>Tipo Documento:</strong> {exp.tipo_documento}</p>
-                            <span className="badge bg-secondary">Quantità: {exp.quantita || 1}</span>
-                          </div>
-                        </div>
+        {/* LISTA SPESE */}
+        <div className="mb-4">
+          <h4 className="text-center mb-4">📜 Elenco Completo delle Spese</h4>
+          <div className="row g-3">
+            {expenses.length === 0 ? (
+              <p className="text-muted text-center">📭 Nessuna spesa registrata.</p>
+            ) : (
+              expenses.map((exp) => (
+                <div className="col-md-6" key={exp.id}>
+                  <div className="card shadow-sm border-0 h-100">
+                    <div className="card-body">
+                      <h6 className="card-title">{exp.prodotto}</h6>
+                      <p className="mb-1 text-muted">
+                        {new Date(exp.data).toLocaleDateString()} • {exp.importo} {exp.valuta}
+                      </p>
+                      <p className="mb-2 small">Quantità: {exp.quantita || 1} • Pagamento: {exp.tipo_pagamento}</p>
+                      <div className="d-flex justify-content-end">
+                        <button className="btn btn-sm btn-warning me-2" onClick={() => alert('Modifica non ancora disponibile')}>
+                          ✏️
+                        </button>
+                        <button className="btn btn-sm btn-danger" onClick={() => eliminaSpesa(exp.id)}>
+                          🗑️
+                        </button>
                       </div>
-                    ))
-                  )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -69,16 +69,19 @@ export default function AudioRecorder({ onAdd }) {
         body: formData,
       });
 
-      const result = await res.json();
+      const contentType = res.headers.get("content-type") || "";
 
-      console.log("📦 Risposta backend:", result);
-
-      if (!res.ok) {
-        setStatus(`❌ Errore HTTP ${res.status}`);
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        console.warn("⚠️ Risposta non JSON:", text);
+        setStatus('⚠️ Risposta non valida dal server');
         return;
       }
 
-      if (result.spesa) {
+      const result = await res.json();
+      console.log("📦 Risposta backend:", result);
+
+      if (res.ok && result.spesa) {
         setStatus('✅ Spesa vocale salvata!');
         if (onAdd) await onAdd(result.spesa);
       } else if (result.error) {
@@ -86,8 +89,9 @@ export default function AudioRecorder({ onAdd }) {
       } else {
         setStatus('⚠️ Risposta inattesa dal server');
       }
+
     } catch (err) {
-      console.error("❌ Errore di rete:", err);
+      console.error("❌ Errore durante fetch o parsing:", err);
       setStatus('❌ Errore di rete, riprova');
     }
   }

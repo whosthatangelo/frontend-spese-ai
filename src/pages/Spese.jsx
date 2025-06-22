@@ -31,15 +31,24 @@ function Spese() {
   return (
     <div>
       {/* HERO */}
-      <section className="text-white text-center py-5" style={{
-        background: "linear-gradient(135deg, #0d6efd, #6610f2)",
-        borderRadius: "0 0 20px 20px"
-      }}>
+      <section
+        className="py-5 text-center text-white mb-5"
+        style={{
+          background: "linear-gradient(135deg, #4f46e5, #6d28d9)",
+          borderRadius: "20px",
+          margin: "0 auto",
+          maxWidth: "960px",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
+        }}
+      >
         <div className="container">
-          <h1 className="display-5 fw-bold">📊 Tracciamento Spese</h1>
-          <p className="lead">Registra, gestisci e visualizza tutte le tue spese in modo semplice e smart</p>
+          <h1 className="display-6 fw-bold" style={{ color: "white" }}>📊 Tracciamento Spese</h1>
+          <p className="lead" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+            Registra, gestisci e visualizza tutte le tue spese in modo semplice e smart.
+          </p>
         </div>
       </section>
+
 
       {/* CONTENUTO */}
       <div className="container my-5">

@@ -2,13 +2,12 @@ import React, { useRef, useState } from 'react';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '';
 
-
 export default function AudioRecorder({ onAdd }) {
   const [isRecording, setIsRecording] = useState(false);
   const [status, setStatus] = useState('');
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
-  
+
   async function handleStart() {
     console.log("🌐 Backend URL:", BASE_URL);
     setStatus('🎙️ Sto registrando...');
@@ -70,14 +69,15 @@ export default function AudioRecorder({ onAdd }) {
         body: formData,
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Errore HTTP ${res.status}: ${errorText}`);
-      }
-
       const result = await res.json();
-      setStatus('✅ Spesa vocale salvata!');
-      if (onAdd && result) await onAdd(result);
+      console.log("📦 Risposta backend:", result);
+
+      if (result.spesa) {
+        setStatus('✅ Spesa vocale salvata!');
+        if (onAdd) await onAdd(result.spesa);
+      } else {
+        setStatus(`⚠️ Errore: ${result.error || 'spesa non estratta'}`);
+      }
     } catch (err) {
       console.error("❌ Errore durante l'invio audio:", err);
       setStatus('❌ Errore durante l’invio');

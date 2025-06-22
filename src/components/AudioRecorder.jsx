@@ -9,7 +9,6 @@ export default function AudioRecorder({ onAdd }) {
   const chunksRef = useRef([]);
 
   async function handleStart() {
-    console.log("🌐 Backend URL:", BASE_URL);
     setStatus('🎙️ Sto registrando...');
     chunksRef.current = [];
 
@@ -29,7 +28,8 @@ export default function AudioRecorder({ onAdd }) {
       }
 
       if (!recorder) {
-        throw new Error('❌ Nessun formato audio supportato dal browser');
+        setStatus('❌ Browser non supportato');
+        return;
       }
 
       recorder.ondataavailable = e => {
@@ -42,7 +42,6 @@ export default function AudioRecorder({ onAdd }) {
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
     } catch (err) {
-      console.error("❌ Errore accesso microfono:", err);
       setStatus('❌ Errore microfono');
     }
   }
@@ -53,7 +52,6 @@ export default function AudioRecorder({ onAdd }) {
     recorder.stream.getTracks().forEach(t => t.stop());
 
     if (chunksRef.current.length === 0) {
-      console.warn("❌ Nessun chunk registrato.");
       setStatus('❌ Audio vuoto, riprova');
       return;
     }
@@ -69,41 +67,18 @@ export default function AudioRecorder({ onAdd }) {
         body: formData,
       });
 
-      const contentType = res.headers.get("content-type") || "";
-
-      if (!contentType.includes("application/json")) {
-        const text = await res.text();
-        console.warn("⚠️ Risposta non JSON:", text);
-        setStatus('⚠️ Risposta non valida dal server');
-        return;
-      }
-
       const result = await res.json();
-      console.log("📦 Risposta backend:", result);
 
-      if (res.ok && result.spesa) {
-        setStatus('✅ Spesa vocale salvata!');
-        if (onAdd) {
-          try {
-            await onAdd(result.spesa);
-          } catch (err) {
-            console.warn("⚠️ Errore nella funzione onAdd:", err);
-            setStatus('⚠️ Spesa salvata, ma errore nell’aggiornamento della lista');
-            return;
-          }
-        }
-      } else if (result.error) {
-        setStatus(`⚠️ Errore backend: ${result.error}`);
+      if (result?.spesa) {
+        setStatus('✅ Spesa salvata');
+        if (onAdd) onAdd(result.spesa);
       } else {
-        setStatus('⚠️ Risposta inattesa dal server');
+        setStatus('❌ Errore salvataggio');
       }
-
     } catch (err) {
-      console.error("❌ Errore durante fetch o parsing:", err);
-      setStatus('❌ Errore di rete, riprova');
+      setStatus('❌ Errore di rete');
     }
   }
-
 
   return (
     <div>

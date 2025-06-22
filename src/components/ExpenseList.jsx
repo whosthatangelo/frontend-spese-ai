@@ -17,10 +17,10 @@ export default function ExpenseList() {
     setLoading(false);
   }
 
-  async function handleDelete(id) {
-    if (confirm('Sei sicuro di voler eliminare questa spesa?')) {
-      await deleteExpense(id);
-      loadExpenses(); // ricarica elenco
+  async function handleDelete(numero_fattura) {
+    if (confirm(`Sei sicuro di voler eliminare la fattura ${numero_fattura}?`)) {
+      await deleteExpense(numero_fattura);
+      loadExpenses();
     }
   }
 
@@ -32,27 +32,30 @@ export default function ExpenseList() {
       <table className="table table-bordered table-striped">
         <thead className="table-dark">
           <tr>
+            <th>Fattura</th>
             <th>Data</th>
-            <th>Prodotto</th>
-            <th>Luogo</th>
-            <th>Importo (€)</th>
-            <th>Quantità</th>
-            <th>Unità</th>
+            <th>Azienda</th>
+            <th>Importo</th>
+            <th>Valuta</th>
+            <th>Pagamento</th>
+            <th>Documento</th>
             <th>Azioni</th>
           </tr>
         </thead>
         <tbody>
           {expenses.map(exp => (
-            <tr key={exp.id}>
-              <td>{exp.data}</td>
-              <td>{exp.prodotto}</td>
-              <td>{exp.luogo}</td>
+            <tr key={exp.numero_fattura}>
+              <td>{exp.numero_fattura}</td>
+              <td>{exp.data_fattura}</td>
+              <td>{exp.azienda}</td>
               <td>{exp.importo}</td>
-              <td>{exp.quantita || '-'}</td>
-              <td>{exp.unita_misura || '-'}</td>
+              <td>{exp.valuta}</td>
+              <td>{exp.tipo_pagamento}</td>
+              <td>{exp.tipo_documento}</td>
               <td>
-                {/* Modifica in futuro */}
-                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(exp.id)}>🗑️</button>
+                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(exp.numero_fattura)}>
+                  🗑️
+                </button>
               </td>
             </tr>
           ))}

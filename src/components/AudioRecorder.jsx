@@ -80,12 +80,15 @@ export default function AudioRecorder({ onAdd }) {
 
       console.log("📦 Risposta backend:", result);
 
-      if (result.spesa) {
+      if (res.ok && result?.spesa) {
         setStatus('✅ Spesa vocale salvata!');
         if (onAdd) await onAdd(result.spesa);
+      } else if (result?.error) {
+        setStatus(`⚠️ Errore: ${result.error}`);
       } else {
-        setStatus(`⚠️ Errore: ${result.error || 'spesa non estratta'}`);
+        setStatus('⚠️ Spesa salvata ma risposta inattesa');
       }
+
     } catch (err) {
       console.error("❌ Errore durante l'invio audio:", err);
       setStatus('❌ Errore durante l’invio');

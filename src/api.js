@@ -1,6 +1,6 @@
 // frontend/api.js
 
-const BASE_URL = 'https://backend-spese-ai.vercel.app';
+const BASE_URL = import.meta.env.VITE_API_URL || '';
 
 // 🔄 Ottieni tutte le spese
 export async function getExpenses() {

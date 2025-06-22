@@ -8,11 +8,11 @@ export default function AddExpenseForm({ onAdd }) {
     importo: "",
     valuta: "EUR",
     azienda: "",
-    tipo_pagamento: "",
+    tipo_pagamento: "Contanti",
     banca: "",
-    tipo_documento: "fattura",
+    tipo_documento: "Fattura",
     stato: "",
-    metodo_pagamento: "",
+    metodo_pagamento: "Contanti",
     data_creazione: "",
     utente_id: "user_1",
   });
@@ -28,100 +28,90 @@ export default function AddExpenseForm({ onAdd }) {
 
   const handleChange = e => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === "importo" ? value.replace(",", ".") : value
+    }));
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const dataToSave = {
+      const spesa = {
         ...formData,
-        importo: parseFloat(formData.importo.replace(",", ".")), // ✅ gestione virgola e punto
+        importo: parseFloat(formData.importo),
       };
-      await addExpense(dataToSave);
-      alert("✅ Spesa salvata!");
-      onAdd?.();
-
-      // reset
-      setFormData(prev => ({
-        ...prev,
-        numero_fattura: "",
-        importo: "",
-        azienda: "",
-        tipo_pagamento: "",
-        banca: "",
-        stato: "",
-        metodo_pagamento: "",
-      }));
+      await addExpense(spesa);
+      onAdd();
+      alert("🎉 Spesa salvata!");
     } catch (err) {
-      alert("❌ Errore: " + err.message);
+      alert("Errore nel salvataggio: " + err.message);
     }
   };
 
-  const valute = ["EUR", "USD", "GBP", "CHF", "JPY"];
-  const metodiPagamento = ["contanti", "carta di credito", "bancomat", "bonifico", "satispay", "paypal"];
-  const statiPossibili = ["", "sospesa", "pagata", "annullata"];
-  const tipiDocumento = ["fattura", "ricevuta", "bolla", "altro"];
-
   return (
     <form onSubmit={handleSubmit} className="p-3 border rounded shadow-sm mb-4 bg-light">
-      <h5 className="mb-3">📝 Aggiungi Spesa Manuale</h5>
+      <h5 className="mb-3">➕ Aggiungi Spesa Manuale</h5>
       <div className="row g-2">
-
         <div className="col-md-3">
-          <input type="text" name="numero_fattura" className="form-control" placeholder="Numero Fattura" value={formData.numero_fattura} onChange={handleChange} required />
+          <input type="text" className="form-control" name="numero_fattura" placeholder="Numero Fattura" value={formData.numero_fattura} onChange={handleChange} required />
         </div>
-
         <div className="col-md-3">
-          <input type="date" name="data_fattura" className="form-control" value={formData.data_fattura} onChange={handleChange} required />
+          <input type="date" className="form-control" name="data_fattura" value={formData.data_fattura} onChange={handleChange} required />
         </div>
-
         <div className="col-md-3">
-          <input type="text" name="importo" className="form-control" placeholder="Importo (€)" value={formData.importo} onChange={handleChange} required pattern="^\d+([.,]\d{1,2})?$" />
+          <input type="number" step="0.01" className="form-control" name="importo" placeholder="Importo €" value={formData.importo} onChange={handleChange} required />
         </div>
-
         <div className="col-md-3">
-          <select name="valuta" className="form-select" value={formData.valuta} onChange={handleChange}>
-            {valute.map(v => <option key={v} value={v}>{v}</option>)}
+          <select className="form-control" name="valuta" value={formData.valuta} onChange={handleChange}>
+            <option>EUR</option>
+            <option>USD</option>
+            <option>GBP</option>
+            <option>CHF</option>
           </select>
         </div>
-
         <div className="col-md-4">
-          <input type="text" name="azienda" className="form-control" placeholder="Azienda" value={formData.azienda} onChange={handleChange} required />
+          <input type="text" className="form-control" name="azienda" placeholder="Azienda" value={formData.azienda} onChange={handleChange} required />
         </div>
-
         <div className="col-md-4">
-          <select name="tipo_pagamento" className="form-select" value={formData.tipo_pagamento} onChange={handleChange} required>
-            <option value="">Tipo di pagamento</option>
-            {metodiPagamento.map(m => <option key={m} value={m}>{m}</option>)}
+          <select className="form-control" name="tipo_pagamento" value={formData.tipo_pagamento} onChange={handleChange}>
+            <option>Contanti</option>
+            <option>Carta di credito</option>
+            <option>Bonifico</option>
+            <option>Satispay</option>
+            <option>Altro</option>
           </select>
         </div>
-
         <div className="col-md-4">
-          <input type="text" name="banca" className="form-control" placeholder="Banca (opzionale)" value={formData.banca} onChange={handleChange} />
+          <input type="text" className="form-control" name="banca" placeholder="Banca (facoltativo)" value={formData.banca} onChange={handleChange} />
         </div>
-
         <div className="col-md-4">
-          <select name="tipo_documento" className="form-select" value={formData.tipo_documento} onChange={handleChange} required>
-            {tipiDocumento.map(t => <option key={t} value={t}>{t}</option>)}
+          <select className="form-control" name="tipo_documento" value={formData.tipo_documento} onChange={handleChange}>
+            <option>Fattura</option>
+            <option>Ricevuta</option>
+            <option>Scontrino</option>
+            <option>Altro</option>
           </select>
         </div>
-
         <div className="col-md-4">
-          <select name="stato" className="form-select" value={formData.stato} onChange={handleChange}>
-            {statiPossibili.map(s => <option key={s} value={s}>{s || "— Nessuno —"}</option>)}
+          <select className="form-control" name="stato" value={formData.stato} onChange={handleChange}>
+            <option value="">Seleziona stato</option>
+            <option>In attesa</option>
+            <option>Pagata</option>
+            <option>Sospesa</option>
+            <option>Annullata</option>
           </select>
         </div>
-
         <div className="col-md-4">
-          <select name="metodo_pagamento" className="form-select" value={formData.metodo_pagamento} onChange={handleChange} required>
-            <option value="">Metodo di pagamento</option>
-            {metodiPagamento.map(m => <option key={m} value={m}>{m}</option>)}
+          <select className="form-control" name="metodo_pagamento" value={formData.metodo_pagamento} onChange={handleChange}>
+            <option>Contanti</option>
+            <option>Carta di credito</option>
+            <option>Bonifico</option>
+            <option>Satispay</option>
+            <option>Altro</option>
           </select>
         </div>
-
       </div>
-
       <button className="btn btn-success mt-3">💾 Salva</button>
     </form>
   );

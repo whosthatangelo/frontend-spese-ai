@@ -80,7 +80,7 @@ export default function AudioRecorder({ onAdd }) {
 
       console.log("📦 Risposta backend:", result);
 
-      if (res.ok && result?.spesa) {
+      if (result?.spesa) {
         setStatus('✅ Spesa vocale salvata!');
         if (onAdd) await onAdd(result.spesa);
       } else if (result?.error) {

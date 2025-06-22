@@ -1,10 +1,12 @@
 // src/components/ExpenseList.jsx
 import { useEffect, useState } from 'react';
-import { getExpenses, deleteExpense, updateExpense } from '../api';
+import { getExpenses, deleteExpense } from '../api';
+import EditExpenseModal from './EditExpenseModal';
 
 export default function ExpenseList() {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedExpense, setSelectedExpense] = useState(null);
 
   useEffect(() => {
     loadExpenses();
@@ -24,15 +26,13 @@ export default function ExpenseList() {
     }
   }
 
-  async function handleEdit(exp) {
-    const nuovoImporto = prompt(`Modifica importo per fattura ${exp.numero_fattura}:`, exp.importo);
-    if (nuovoImporto !== null && !isNaN(nuovoImporto)) {
-      const updated = { ...exp, importo: parseFloat(nuovoImporto) };
-      await updateExpense(exp.numero_fattura, updated);
-      loadExpenses();
-    } else if (nuovoImporto !== null) {
-      alert('Valore non valido.');
-    }
+  function handleEdit(expense) {
+    setSelectedExpense(expense);
+  }
+
+  function handleModalClose() {
+    setSelectedExpense(null);
+    loadExpenses();
   }
 
   if (loading) return <p>⏳ Caricamento spese...</p>;
@@ -64,16 +64,10 @@ export default function ExpenseList() {
               <td>{exp.tipo_pagamento}</td>
               <td>{exp.tipo_documento}</td>
               <td>
-                <button
-                  className="btn btn-sm btn-warning me-1"
-                  onClick={() => handleEdit(exp)}
-                >
+                <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(exp)}>
                   ✏️
                 </button>
-                <button
-                  className="btn btn-sm btn-danger"
-                  onClick={() => handleDelete(exp.numero_fattura)}
-                >
+                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(exp.numero_fattura)}>
                   🗑️
                 </button>
               </td>
@@ -81,6 +75,13 @@ export default function ExpenseList() {
           ))}
         </tbody>
       </table>
+
+      {selectedExpense && (
+        <EditExpenseModal
+          expense={selectedExpense}
+          onClose={handleModalClose}
+        />
+      )}
     </div>
   );
 }

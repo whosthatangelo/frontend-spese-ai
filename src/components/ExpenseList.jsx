@@ -47,31 +47,17 @@ export default function ExpenseList() {
       ) : expenses.length === 0 ? (
         <p className="text-center text-muted">📭 Nessuna spesa registrata.</p>
       ) : (
-        <div className="table-responsive shadow-sm rounded">
-          <table className="table table-hover align-middle">
-            <thead className="table-primary">
-              <tr>
-                <th>Fattura</th>
-                <th>Data</th>
-                <th>Azienda</th>
-                <th>Importo (€)</th>
-                <th>Valuta</th>
-                <th>Pagamento</th>
-                <th>Documento</th>
-                <th className="text-center">Azioni</th>
-              </tr>
-            </thead>
-            <tbody>
-              {expenses.map(exp => (
-                <tr key={exp.numero_fattura}>
-                  <td>{exp.numero_fattura}</td>
-                  <td>{exp.data_fattura}</td>
-                  <td>{exp.azienda}</td>
-                  <td>{parseFloat(exp.importo).toFixed(2)}</td>
-                  <td>{exp.valuta}</td>
-                  <td>{exp.tipo_pagamento}</td>
-                  <td>{exp.tipo_documento}</td>
-                  <td className="text-center">
+        <div className="row g-3">
+          {expenses.map(exp => (
+            <div className="col-12" key={exp.numero_fattura}>
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title mb-1">📄 {exp.numero_fattura}</h5>
+                  <p className="card-subtitle mb-2 text-muted">{exp.data_fattura} • {exp.azienda}</p>
+                  <p className="mb-2 fw-semibold">💶 {parseFloat(exp.importo).toFixed(2)} {exp.valuta}</p>
+                  <p className="mb-1">🧾 {exp.tipo_documento} | 💳 {exp.tipo_pagamento}</p>
+                  <p className="mb-2">📌 Stato: <strong>{exp.stato || "N/D"}</strong></p>
+                  <div className="d-flex justify-content-end">
                     <button
                       className="btn btn-sm btn-outline-warning me-2"
                       onClick={() => handleEdit(exp)}
@@ -86,13 +72,14 @@ export default function ExpenseList() {
                     >
                       🗑️
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
+
 
       {selectedExpense && (
         <EditExpenseModal

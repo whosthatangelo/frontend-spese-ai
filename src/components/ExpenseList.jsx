@@ -1,4 +1,3 @@
-// src/components/ExpenseList.jsx
 import { useEffect, useState } from 'react';
 import { getExpenses, deleteExpense } from '../api';
 import EditExpenseModal from './EditExpenseModal';
@@ -58,18 +57,11 @@ export default function ExpenseList() {
             onChange={(e) => setSelectedMonth(e.target.value)}
           >
             <option value="all">Tutti</option>
-            <option value="01">Gennaio</option>
-            <option value="02">Febbraio</option>
-            <option value="03">Marzo</option>
-            <option value="04">Aprile</option>
-            <option value="05">Maggio</option>
-            <option value="06">Giugno</option>
-            <option value="07">Luglio</option>
-            <option value="08">Agosto</option>
-            <option value="09">Settembre</option>
-            <option value="10">Ottobre</option>
-            <option value="11">Novembre</option>
-            <option value="12">Dicembre</option>
+            {Array.from({ length: 12 }, (_, i) => {
+              const value = String(i + 1).padStart(2, "0");
+              const nome = new Date(0, i).toLocaleString("it-IT", { month: "long" });
+              return <option key={value} value={value}>{nome}</option>;
+            })}
           </select>
         </div>
 
@@ -102,15 +94,31 @@ export default function ExpenseList() {
               <div className="card shadow-sm border-0 rounded-4">
                 <div className="card-body">
                   <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h5 className="card-title mb-0">📄 {exp.numero_fattura}</h5>
+                    <h5 className="card-title mb-0">📄 Fattura {exp.numero_fattura}</h5>
                     <span className={`badge bg-${exp.stato === 'Pagata' ? 'success' : exp.stato === 'In attesa' ? 'warning' : exp.stato === 'Annullata' ? 'danger' : 'secondary'}`}>
                       {exp.stato || "N/D"}
                     </span>
                   </div>
-                  <p className="text-muted mb-1">🗓️ {exp.data_fattura}</p>
-                  <p className="mb-1">🏢 <strong>{exp.azienda}</strong></p>
-                  <p className="mb-1">💶 <strong>{parseFloat(exp.importo).toFixed(2)} {exp.valuta}</strong></p>
-                  <p className="mb-1">📎 {exp.tipo_documento} — 💳 {exp.tipo_pagamento}</p>
+
+                  {exp.data_fattura && (
+                    <p className="text-muted mb-1">
+                      🗓️ Data: {new Date(exp.data_fattura).toLocaleDateString("it-IT")}
+                    </p>
+                  )}
+
+                  {exp.azienda && (
+                    <p className="mb-1">🏢 Azienda: <strong>{exp.azienda}</strong></p>
+                  )}
+
+                  {exp.importo && (
+                    <p className="mb-1">💶 Importo: <strong>{parseFloat(exp.importo).toFixed(2)} {exp.valuta}</strong></p>
+                  )}
+
+                  {(exp.tipo_documento || exp.tipo_pagamento) && (
+                    <p className="mb-1">
+                      📎 {exp.tipo_documento || "Documento N/D"} — 💳 {exp.tipo_pagamento || "Pagamento N/D"}
+                    </p>
+                  )}
 
                   <div className="d-flex justify-content-end mt-2">
                     <button

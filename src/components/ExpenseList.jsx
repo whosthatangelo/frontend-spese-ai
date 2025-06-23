@@ -44,10 +44,16 @@ export default function ExpenseList() {
     return monthMatch && aziendaMatch;
   });
 
+  const totaleSpese = filteredExpenses.reduce(
+    (acc, spesa) => acc + parseFloat(spesa.importo || 0),
+    0
+  );
+
   return (
     <div className="my-4">
       <h3 className="text-center mb-3 fw-semibold">📑 Elenco Completo delle Spese</h3>
 
+      {/* Filtri */}
       <div className="mb-4 row justify-content-center g-2">
         <div className="col-auto">
           <label className="me-2 fw-semibold">📅 Mese:</label>
@@ -80,6 +86,14 @@ export default function ExpenseList() {
         </div>
       </div>
 
+      {/* Mini dashboard */}
+      <div className="text-center mb-4">
+        <h5 className="fw-bold">📊 Totale Spese Filtrate</h5>
+        <p className="mb-1">💸 Totale: <strong>{totaleSpese.toFixed(2)} EUR</strong></p>
+        <p className="text-muted">🧾 Documenti: {filteredExpenses.length}</p>
+      </div>
+
+      {/* Elenco spese */}
       {loading ? (
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status" />

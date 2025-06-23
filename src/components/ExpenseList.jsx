@@ -7,6 +7,7 @@ export default function ExpenseList() {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedExpense, setSelectedExpense] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState("all");
 
   useEffect(() => {
     loadExpenses();
@@ -35,20 +36,50 @@ export default function ExpenseList() {
     loadExpenses();
   }
 
+  const filteredExpenses = selectedMonth === "all"
+    ? expenses
+    : expenses.filter(exp => {
+        const month = exp.data_fattura?.split("-")[1]; // "YYYY-MM-DD" → "MM"
+        return month === selectedMonth;
+      });
+
   return (
     <div className="my-4">
-      <h3 className="text-center mb-4 fw-semibold">📑 Elenco Completo delle Spese</h3>
+      <h3 className="text-center mb-3 fw-semibold">📑 Elenco Completo delle Spese</h3>
+
+      <div className="mb-4 text-center">
+        <label className="me-2 fw-semibold">📅 Filtra per mese:</label>
+        <select
+          className="form-select d-inline-block w-auto"
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+        >
+          <option value="all">Tutti</option>
+          <option value="01">Gennaio</option>
+          <option value="02">Febbraio</option>
+          <option value="03">Marzo</option>
+          <option value="04">Aprile</option>
+          <option value="05">Maggio</option>
+          <option value="06">Giugno</option>
+          <option value="07">Luglio</option>
+          <option value="08">Agosto</option>
+          <option value="09">Settembre</option>
+          <option value="10">Ottobre</option>
+          <option value="11">Novembre</option>
+          <option value="12">Dicembre</option>
+        </select>
+      </div>
 
       {loading ? (
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status" />
           <p className="mt-3">Caricamento spese...</p>
         </div>
-      ) : expenses.length === 0 ? (
+      ) : filteredExpenses.length === 0 ? (
         <p className="text-center text-muted">📭 Nessuna spesa registrata.</p>
       ) : (
         <div className="row g-3">
-          {expenses.map(exp => (
+          {filteredExpenses.map(exp => (
             <div className="col-12" key={exp.numero_fattura}>
               <div className="card shadow-sm border-0 rounded-4">
                 <div className="card-body">
@@ -85,8 +116,6 @@ export default function ExpenseList() {
           ))}
         </div>
       )}
-
-
 
       {selectedExpense && (
         <EditExpenseModal

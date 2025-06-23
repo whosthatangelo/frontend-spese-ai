@@ -1,31 +1,18 @@
 // src/pages/Spese.jsx
-import { useEffect, useState } from 'react';
-import { getExpenses, addExpense, deleteExpense } from '../api';
+import { useState } from 'react';
+import { addExpense } from '../api';
 import AudioRecorder from '../components/AudioRecorder';
 import AddExpenseForm from '../components/AddExpenseForm';
+import ExpenseList from '../components/ExpenseList';
 
 function Spese() {
-  const [expenses, setExpenses] = useState([]);
+  const [listKey, setListKey] = useState(0); // per forzare il remount di ExpenseList
 
-  useEffect(() => {
-    caricaSpese();
-  }, []);
-
-  async function caricaSpese() {
-    const data = await getExpenses();
-    setExpenses(data);
-  }
-
+  /*  📌 Quando salviamo una nuova spesa, aumentiamo listKey in modo che
+      ExpenseList si rimonti e ricarichi i dati automaticamente */
   async function aggiungiSpesa(spesa) {
-    const nuova = await addExpense(spesa);
-    setExpenses(prev => [...prev, nuova]);
-  }
-
-  async function eliminaSpesa(id) {
-    if (confirm('Vuoi eliminare questa spesa?')) {
-      await deleteExpense(id);
-      caricaSpese();
-    }
+    await addExpense(spesa);
+    setListKey(prev => prev + 1);
   }
 
   return (
@@ -42,13 +29,12 @@ function Spese() {
         }}
       >
         <div className="container">
-          <h1 className="display-6 fw-bold" style={{ color: "white" }}>📊 Tracciamento Spese</h1>
-          <p className="lead" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
+          <h1 className="display-6 fw-bold">📊 Tracciamento Spese</h1>
+          <p className="lead">
             Registra, gestisci e visualizza tutte le tue spese in modo semplice e smart.
           </p>
         </div>
       </section>
-
 
       {/* CONTENUTO */}
       <div className="container my-5">
@@ -58,7 +44,7 @@ function Spese() {
             <div className="card shadow-sm border-0 w-100">
               <div className="card-body text-center">
                 <h5 className="card-title">🎙️ Registra Spesa Vocale</h5>
-                <AudioRecorder onAdd={aggiungiSpesa} />
+                <AudioRecorder onAdd={() => setListKey(prev => prev + 1)} />
               </div>
             </div>
           </div>
@@ -74,36 +60,7 @@ function Spese() {
         </div>
 
         {/* LISTA SPESE */}
-        <div className="mb-4">
-          <h4 className="text-center mb-4">📜 Elenco Completo delle Spese</h4>
-          <div className="row g-3">
-            {expenses.length === 0 ? (
-              <p className="text-muted text-center">📭 Nessuna spesa registrata.</p>
-            ) : (
-              expenses.map((exp) => (
-                <div className="col-md-6" key={exp.id}>
-                  <div className="card shadow-sm border-0 h-100">
-                    <div className="card-body">
-                      <h6 className="card-title">{exp.prodotto}</h6>
-                      <p className="mb-1 text-muted">
-                        {new Date(exp.data).toLocaleDateString()} • {exp.importo} {exp.valuta}
-                      </p>
-                      <p className="mb-2 small">Quantità: {exp.quantita || 1} • Pagamento: {exp.tipo_pagamento}</p>
-                      <div className="d-flex justify-content-end">
-                        <button className="btn btn-sm btn-warning me-2" onClick={() => alert('Modifica non ancora disponibile')}>
-                          ✏️
-                        </button>
-                        <button className="btn btn-sm btn-danger" onClick={() => eliminaSpesa(exp.id)}>
-                          🗑️
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        <ExpenseList key={listKey} />
       </div>
     </div>
   );

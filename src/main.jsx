@@ -7,7 +7,7 @@ import App from './App';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Spese from './pages/Spese';
-import ExpenseAI from './pages/ExpenseAI';
+// RIMOSSO: import ExpenseAI from './pages/ExpenseAI';
 import Login from './components/Login';
 
 function ProtectedRoute({ children }) {

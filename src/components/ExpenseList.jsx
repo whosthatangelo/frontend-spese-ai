@@ -8,6 +8,7 @@ export default function ExpenseList() {
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [selectedAzienda, setSelectedAzienda] = useState("all");
+  const [sortOption, setSortOption] = useState("data_desc");
 
   useEffect(() => {
     loadExpenses();
@@ -42,6 +43,19 @@ export default function ExpenseList() {
     const monthMatch = selectedMonth === "all" || exp.data_fattura?.split("-")[1] === selectedMonth;
     const aziendaMatch = selectedAzienda === "all" || exp.azienda === selectedAzienda;
     return monthMatch && aziendaMatch;
+  });
+
+  const sortedExpenses = [...filteredExpenses].sort((a, b) => {
+    if (sortOption === "data_asc") {
+      return new Date(a.data_fattura) - new Date(b.data_fattura);
+    } else if (sortOption === "data_desc") {
+      return new Date(b.data_fattura) - new Date(a.data_fattura);
+    } else if (sortOption === "importo_asc") {
+      return parseFloat(a.importo) - parseFloat(b.importo);
+    } else if (sortOption === "importo_desc") {
+      return parseFloat(b.importo) - parseFloat(a.importo);
+    }
+    return 0;
   });
 
   const totaleSpese = filteredExpenses.reduce(
@@ -84,6 +98,20 @@ export default function ExpenseList() {
             ))}
           </select>
         </div>
+
+        <div className="col-auto">
+          <label className="me-2 fw-semibold">🧮 Ordina per:</label>
+          <select
+            className="form-select"
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option value="data_desc">📅 Data (più recente)</option>
+            <option value="data_asc">📅 Data (più vecchia)</option>
+            <option value="importo_desc">💰 Importo (alto → basso)</option>
+            <option value="importo_asc">💰 Importo (basso → alto)</option>
+          </select>
+        </div>
       </div>
 
       {/* Mini dashboard */}
@@ -99,11 +127,11 @@ export default function ExpenseList() {
           <div className="spinner-border text-primary" role="status" />
           <p className="mt-3">Caricamento spese...</p>
         </div>
-      ) : filteredExpenses.length === 0 ? (
+      ) : sortedExpenses.length === 0 ? (
         <p className="text-center text-muted">📭 Nessuna spesa registrata.</p>
       ) : (
         <div className="row g-3">
-          {filteredExpenses.map(exp => (
+          {sortedExpenses.map(exp => (
             <div className="col-12" key={exp.numero_fattura}>
               <div className="card shadow-sm border-0 rounded-4">
                 <div className="card-body">

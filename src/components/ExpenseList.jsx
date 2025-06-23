@@ -8,6 +8,7 @@ export default function ExpenseList() {
   const [loading, setLoading] = useState(true);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("all");
+  const [selectedAzienda, setSelectedAzienda] = useState("all");
 
   useEffect(() => {
     loadExpenses();
@@ -36,38 +37,55 @@ export default function ExpenseList() {
     loadExpenses();
   }
 
-  const filteredExpenses = selectedMonth === "all"
-    ? expenses
-    : expenses.filter(exp => {
-        const month = exp.data_fattura?.split("-")[1]; // "YYYY-MM-DD" → "MM"
-        return month === selectedMonth;
-      });
+  const aziendeUniche = [...new Set(expenses.map(e => e.azienda).filter(Boolean))];
+
+  const filteredExpenses = expenses.filter(exp => {
+    const monthMatch = selectedMonth === "all" || exp.data_fattura?.split("-")[1] === selectedMonth;
+    const aziendaMatch = selectedAzienda === "all" || exp.azienda === selectedAzienda;
+    return monthMatch && aziendaMatch;
+  });
 
   return (
     <div className="my-4">
       <h3 className="text-center mb-3 fw-semibold">📑 Elenco Completo delle Spese</h3>
 
-      <div className="mb-4 text-center">
-        <label className="me-2 fw-semibold">📅 Filtra per mese:</label>
-        <select
-          className="form-select d-inline-block w-auto"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-        >
-          <option value="all">Tutti</option>
-          <option value="01">Gennaio</option>
-          <option value="02">Febbraio</option>
-          <option value="03">Marzo</option>
-          <option value="04">Aprile</option>
-          <option value="05">Maggio</option>
-          <option value="06">Giugno</option>
-          <option value="07">Luglio</option>
-          <option value="08">Agosto</option>
-          <option value="09">Settembre</option>
-          <option value="10">Ottobre</option>
-          <option value="11">Novembre</option>
-          <option value="12">Dicembre</option>
-        </select>
+      <div className="mb-4 row justify-content-center g-2">
+        <div className="col-auto">
+          <label className="me-2 fw-semibold">📅 Mese:</label>
+          <select
+            className="form-select"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          >
+            <option value="all">Tutti</option>
+            <option value="01">Gennaio</option>
+            <option value="02">Febbraio</option>
+            <option value="03">Marzo</option>
+            <option value="04">Aprile</option>
+            <option value="05">Maggio</option>
+            <option value="06">Giugno</option>
+            <option value="07">Luglio</option>
+            <option value="08">Agosto</option>
+            <option value="09">Settembre</option>
+            <option value="10">Ottobre</option>
+            <option value="11">Novembre</option>
+            <option value="12">Dicembre</option>
+          </select>
+        </div>
+
+        <div className="col-auto">
+          <label className="me-2 fw-semibold">🏢 Azienda:</label>
+          <select
+            className="form-select"
+            value={selectedAzienda}
+            onChange={(e) => setSelectedAzienda(e.target.value)}
+          >
+            <option value="all">Tutte</option>
+            {aziendeUniche.map((az, i) => (
+              <option key={i} value={az}>{az}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {loading ? (

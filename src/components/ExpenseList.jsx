@@ -50,14 +50,20 @@ export default function ExpenseList() {
         <div className="row g-3">
           {expenses.map(exp => (
             <div className="col-12" key={exp.numero_fattura}>
-              <div className="card shadow-sm">
+              <div className="card shadow-sm border-0 rounded-4">
                 <div className="card-body">
-                  <h5 className="card-title mb-1">📄 {exp.numero_fattura}</h5>
-                  <p className="card-subtitle mb-2 text-muted">{exp.data_fattura} • {exp.azienda}</p>
-                  <p className="mb-2 fw-semibold">💶 {parseFloat(exp.importo).toFixed(2)} {exp.valuta}</p>
-                  <p className="mb-1">🧾 {exp.tipo_documento} | 💳 {exp.tipo_pagamento}</p>
-                  <p className="mb-2">📌 Stato: <strong>{exp.stato || "N/D"}</strong></p>
-                  <div className="d-flex justify-content-end">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <h5 className="card-title mb-0">📄 {exp.numero_fattura}</h5>
+                    <span className={`badge bg-${exp.stato === 'Pagata' ? 'success' : exp.stato === 'In attesa' ? 'warning' : exp.stato === 'Annullata' ? 'danger' : 'secondary'}`}>
+                      {exp.stato || "N/D"}
+                    </span>
+                  </div>
+                  <p className="text-muted mb-1">🗓️ {exp.data_fattura}</p>
+                  <p className="mb-1">🏢 <strong>{exp.azienda}</strong></p>
+                  <p className="mb-1">💶 <strong>{parseFloat(exp.importo).toFixed(2)} {exp.valuta}</strong></p>
+                  <p className="mb-1">📎 {exp.tipo_documento} — 💳 {exp.tipo_pagamento}</p>
+
+                  <div className="d-flex justify-content-end mt-2">
                     <button
                       className="btn btn-sm btn-outline-warning me-2"
                       onClick={() => handleEdit(exp)}
@@ -79,6 +85,7 @@ export default function ExpenseList() {
           ))}
         </div>
       )}
+
 
 
       {selectedExpense && (

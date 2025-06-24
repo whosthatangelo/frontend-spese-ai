@@ -72,6 +72,9 @@ export default function AudioRecorder({ onAdd }) {
       if (result?.spesa) {
         setStatus('✅ Spesa salvata');
         if (onAdd) onAdd(result.spesa);
+      } else if (result?.incasso) {
+        setStatus('✅ Incasso salvato');
+        if (onAdd) onAdd(result.incasso); // opzionale, in base a come gestisci la lista
       } else {
         setStatus('❌ Errore salvataggio');
       }
@@ -79,6 +82,7 @@ export default function AudioRecorder({ onAdd }) {
       setStatus('❌ Errore di rete');
     }
   }
+
 
   return (
     <div>

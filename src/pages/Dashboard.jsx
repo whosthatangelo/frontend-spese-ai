@@ -45,9 +45,9 @@ function Dashboard() {
 
         {!loading && stats && (
           <>
-            <div className="row g-4 mb-4">
+            <div className="row g-4 mb-5">
               <div className="col-md-6 col-lg-3">
-                <div className="card text-white bg-primary shadow-sm">
+                <div className="card text-white bg-primary shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Totale Speso</h5>
                     <p className="display-6">{stats.totale} €</p>
@@ -56,7 +56,7 @@ function Dashboard() {
               </div>
 
               <div className="col-md-6 col-lg-3">
-                <div className="card text-white bg-success shadow-sm">
+                <div className="card text-white bg-success shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Numero Spese</h5>
                     <p className="display-6">{stats.numero}</p>
@@ -65,7 +65,7 @@ function Dashboard() {
               </div>
 
               <div className="col-md-6 col-lg-3">
-                <div className="card text-white bg-warning shadow-sm">
+                <div className="card text-white bg-warning shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Media Giornaliera</h5>
                     <p className="display-6">{stats.media_per_giorno} €</p>
@@ -74,7 +74,7 @@ function Dashboard() {
               </div>
 
               <div className="col-md-6 col-lg-3">
-                <div className="card text-white bg-dark shadow-sm">
+                <div className="card text-white bg-dark shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Prodotto Top</h5>
                     <p className="display-6">{stats.top_prodotto}</p>
@@ -83,7 +83,7 @@ function Dashboard() {
               </div>
             </div>
 
-            <div className="card shadow-sm border-0 rounded-4 p-4">
+            <div className="card shadow-sm border-0 rounded-4 p-4 mb-5">
               <ExpensesChart expenses={expenses} />
             </div>
           </>

@@ -4,11 +4,9 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './index.css';
 import App from './App';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Spese from './pages/Spese';
-// RIMOSSO: import ExpenseAI from './pages/ExpenseAI';
 import Login from './components/Login';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function ProtectedRoute({ children }) {
   const userId = localStorage.getItem('userId');

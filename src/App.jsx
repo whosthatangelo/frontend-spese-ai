@@ -1,11 +1,18 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Spese from './pages/Spese';
+import Incassi from './pages/Incassi';
 import Dashboard from './pages/Dashboard';
-import Incassi from './pages/Incassi'; // ⬅️ Nuovo import
 import './App.css';
 
 export default function App() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    navigate('/login');
+  };
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm rounded-bottom px-3">
@@ -16,7 +23,7 @@ export default function App() {
           </button>
 
           <div className="collapse navbar-collapse" id="navContent">
-            <ul className="navbar-nav ms-auto">
+            <ul className="navbar-nav ms-auto align-items-center">
               <li className="nav-item">
                 <Link className="nav-link" to="/">🏠 Home</Link>
               </li>
@@ -24,10 +31,15 @@ export default function App() {
                 <Link className="nav-link" to="/spese">🧾 Spese</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/incassi">💰 Incassi</Link> {/* 👈 Aggiunto */}
+                <Link className="nav-link" to="/incassi">💰 Incassi</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/dashboard">📊 Dashboard</Link>
+              </li>
+              <li className="nav-item ms-3">
+                <button className="btn btn-outline-light" onClick={handleLogout}>
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
@@ -38,7 +50,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/spese" element={<Spese />} />
-          <Route path="/incassi" element={<Incassi />} /> {/* 👈 Aggiunto */}
+          <Route path="/incassi" element={<Incassi />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>

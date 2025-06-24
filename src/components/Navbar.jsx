@@ -1,5 +1,6 @@
 // src/components/Navbar.jsx
 import { useNavigate } from 'react-router-dom';
+import './Navbar.css'; // creeremo uno stile dedicato
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -10,11 +11,13 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-light bg-light d-flex justify-content-between align-items-center px-4 py-3">
-      <span className="navbar-brand mb-0 h1">📊 Spese AI</span>
-      <button className="btn btn-outline-danger" onClick={handleLogout}>
-        Logout
-      </button>
+    <nav className="navbar-custom shadow-sm">
+      <div className="container d-flex justify-content-between align-items-center py-2">
+        <h5 className="mb-0 logo-text">💸 ExpenseAI</h5>
+        <button className="btn btn-sm btn-outline-light logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
     </nav>
   );
 }

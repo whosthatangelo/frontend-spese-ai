@@ -1,0 +1,22 @@
+.navbar-custom {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  color: white;
+  border-radius: 0 0 12px 12px;
+}
+
+.logo-text {
+  font-weight: 600;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.logout-btn {
+  border: 1px solid #fff;
+  color: #fff;
+  background: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

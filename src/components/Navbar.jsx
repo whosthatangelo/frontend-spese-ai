@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -14,10 +14,14 @@ export default function Navbar() {
       style={{ borderBottom: '1px solid #eee' }}
     >
       <div className="container-fluid d-flex justify-content-between align-items-center">
-        <span className="navbar-brand fw-bold fs-4">💸 ExpenseAI</span>
-        <button className="btn btn-outline-danger" onClick={handleLogout}>
-          Logout
-        </button>
+        <Link to="/" className="navbar-brand fw-bold fs-4">💸 ExpenseAI</Link>
+        <div className="d-flex gap-3 align-items-center">
+          <Link to="/spese" className="btn btn-outline-primary btn-sm">Spese</Link>
+          <Link to="/incassi" className="btn btn-outline-success btn-sm">Incassi</Link>
+          <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
     </nav>
   );

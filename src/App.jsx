@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Spese from './pages/Spese';
 import Dashboard from './pages/Dashboard';
+import Incassi from './pages/Incassi'; // ⬅️ Nuovo import
 import './App.css';
 
 export default function App() {
@@ -23,6 +24,9 @@ export default function App() {
                 <Link className="nav-link" to="/spese">🧾 Spese</Link>
               </li>
               <li className="nav-item">
+                <Link className="nav-link" to="/incassi">💰 Incassi</Link> {/* 👈 Aggiunto */}
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link" to="/dashboard">📊 Dashboard</Link>
               </li>
             </ul>
@@ -34,6 +38,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/spese" element={<Spese />} />
+          <Route path="/incassi" element={<Incassi />} /> {/* 👈 Aggiunto */}
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>

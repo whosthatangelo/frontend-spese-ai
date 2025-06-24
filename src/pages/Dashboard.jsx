@@ -47,7 +47,7 @@ function Dashboard() {
           <p className="text-center">⏳ Caricamento statistiche...</p>
         ) : (
           <>
-            <div className="row mb-4 g-4">
+            <div className="row g-4 mb-5">
               {[
                 {
                   title: 'Totale Speso',
@@ -71,10 +71,10 @@ function Dashboard() {
                 }
               ].map((card, idx) => (
                 <div key={idx} className="col-md-6 col-lg-3">
-                  <div className={`card text-white ${card.bg} shadow-sm`} style={{ borderRadius: '12px' }}>
-                    <div className="card-body py-3 px-2 text-center">
-                      <h6 className="mb-2" style={{ fontSize: '0.95rem' }}>{card.title}</h6>
-                      <p className="mb-0 fw-bold" style={{ fontSize: '1.4rem' }}>{card.value}</p>
+                  <div className={`card text-white ${card.bg} shadow-sm`} style={{ borderRadius: '16px' }}>
+                    <div className="card-body text-center p-3">
+                      <h6 className="mb-2" style={{ fontSize: '1rem' }}>{card.title}</h6>
+                      <p className="mb-0 fw-bold" style={{ fontSize: '1.5rem' }}>{card.value}</p>
                     </div>
                   </div>
                 </div>

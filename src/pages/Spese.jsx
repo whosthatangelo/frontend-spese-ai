@@ -53,4 +53,4 @@ function Spese() {
   );
 }
 
-export defa
+export default Spese;

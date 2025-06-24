@@ -1,11 +1,13 @@
 // src/components/Login.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!email) return;
@@ -16,7 +18,8 @@ export default function Login({ onLogin }) {
       const response = await axios.post(import.meta.env.VITE_API_URL + '/login', { email });
       const userId = response.data.userId;
       localStorage.setItem('userId', userId);
-      onLogin(userId); // <-- Qui era probabilmente il bug
+      onLogin(userId);
+      navigate('/'); // ✅ redirect manuale alla home dopo login
     } catch (err) {
       console.error('Errore login:', err);
       setError(err.response?.data?.error || 'Errore durante il login.');

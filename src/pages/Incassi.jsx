@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
 
 function Incassi() {
   const [incassi, setIncassi] = useState([]);
@@ -20,7 +19,6 @@ function Incassi() {
 
   return (
     <>
-      <Navbar />
 
       <section
         className="py-5 text-white mb-5"

@@ -1,87 +1,91 @@
-/* === Mobile-First Global Styling === */
+/* === App.css - Modern Revolut-Inspired Styling === */
 body {
-  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-  background: #f5f7fa;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  background: #f9fafc;
   margin: 0;
   padding: 0;
-  color: #333;
+  color: #1f2937;
 }
 
 h1, h2, h3, h4 {
-  font-weight: 600;
-  color: #2c3e50;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
 }
 
 .container {
   width: 100%;
   padding: 1rem;
+  max-width: 1140px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
-/* === Card & Section === */
+/* === Card Style === */
 .card {
-  border-radius: 10px;
+  border-radius: 16px;
   background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
 }
 
 /* === Buttons === */
 button, .btn {
-  padding: 0.65rem 1.2rem;
+  padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  border-radius: 6px;
-  transition: background 0.3s ease, transform 0.2s ease;
-  touch-action: manipulation;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  background-color: #6366f1;
+  color: white;
+  transition: all 0.3s ease;
 }
 
-button:hover {
-  opacity: 0.9;
+button:hover, .btn:hover {
+  background-color: #4f46e5;
   transform: scale(1.02);
+}
+
+button:disabled {
+  background-color: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
 }
 
 /* === Form Inputs === */
 input, select, textarea {
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  padding: 0.6rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
   font-size: 1rem;
   width: 100%;
   margin-bottom: 1rem;
-  box-sizing: border-box;
+  background-color: #fff;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #0d6efd;
+  border-color: #6366f1;
   outline: none;
 }
 
-/* === Table on Mobile === */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
+/* === Utility === */
+.text-center {
+  text-align: center;
 }
 
 /* === Responsive Typography === */
 @media (max-width: 768px) {
   h1 { font-size: 1.8rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.2rem; }
-  .btn { font-size: 1rem; }
-}
-
-/* === Navbar Responsive Fix === */
-.navbar-brand {
-  font-size: 1.2rem;
-}
-
-.navbar-nav .nav-link {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  h2 { font-size: 1.4rem; }
+  .btn { font-size: 0.95rem; }
 }
 
 /* === Modal === */
 .modal-content {
-  border-radius: 12px;
-  padding: 1.2rem;
+  border-radius: 16px;
+  padding: 1.5rem;
 }

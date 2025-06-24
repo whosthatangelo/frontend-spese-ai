@@ -95,3 +95,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 16px;
   padding: 1.5rem;
 }
+
+.card.card-metric .card-body {
+  padding: 1rem 0.75rem;
+}

@@ -1,23 +1,22 @@
-// src/pages/Spese.jsx
 import { useState } from 'react';
 import { addExpense } from '../api';
 import AudioRecorder from '../components/AudioRecorder';
 import AddExpenseForm from '../components/AddExpenseForm';
 import ExpenseList from '../components/ExpenseList';
+import Navbar from '../components/Navbar';
 
 function Spese() {
-  const [listKey, setListKey] = useState(0); // per forzare il remount di ExpenseList
+  const [listKey, setListKey] = useState(0);
 
-  /*  📌 Quando salviamo una nuova spesa, aumentiamo listKey in modo che
-      ExpenseList si rimonti e ricarichi i dati automaticamente */
   async function aggiungiSpesa(spesa) {
     await addExpense(spesa);
     setListKey(prev => prev + 1);
   }
 
   return (
-    <div>
-      {/* HERO */}
+    <>
+      <Navbar />
+
       <section
         className="py-5 text-center text-white mb-5"
         style={{
@@ -36,9 +35,7 @@ function Spese() {
         </div>
       </section>
 
-      {/* CONTENUTO */}
       <div className="container my-5">
-        {/* SEZIONE INSERIMENTO */}
         <div className="row g-4 mb-5">
           <div className="col-md-6 d-flex justify-content-center">
             <div className="card shadow-sm border-0 w-100">
@@ -59,10 +56,9 @@ function Spese() {
           </div>
         </div>
 
-        {/* LISTA SPESE */}
         <ExpenseList key={listKey} />
       </div>
-    </div>
+    </>
   );
 }
 

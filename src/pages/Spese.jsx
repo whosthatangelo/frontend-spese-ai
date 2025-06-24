@@ -1,20 +1,11 @@
 import { useState } from 'react';
-import { addExpense } from '../api';
-import AddExpenseForm from '../components/AddExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 
 function Spese() {
   const [listKey, setListKey] = useState(0);
 
-  async function aggiungiSpesa(spesa) {
-    await addExpense(spesa);
-    setListKey(prev => prev + 1);
-  }
-
   return (
     <>
-  
-
       <section
         className="py-5 text-white mb-5"
         style={{
@@ -34,16 +25,6 @@ function Spese() {
       </section>
 
       <div className="container mb-5">
-        <div className="row g-4 mb-5">
-          <div className="col-md-12">
-            <div className="card shadow-sm border-0 h-100">
-              <div className="card-body">
-                <AddExpenseForm onAdd={aggiungiSpesa} />
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="card shadow-sm border-0 rounded-4 p-4">
           <ExpenseList key={listKey} />
         </div>

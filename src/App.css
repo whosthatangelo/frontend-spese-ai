@@ -33,6 +33,12 @@ h1, h2, h3, h4 {
   transform: translateY(-2px);
 }
 
+/* === Card Utility for Dashboard === */
+.card-metric {
+  min-height: 160px;
+  margin-bottom: 1rem;
+}
+
 /* === Buttons === */
 button, .btn {
   padding: 0.75rem 1.5rem;

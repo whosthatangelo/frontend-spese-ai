@@ -1,10 +1,8 @@
-import Navbar from '../components/Navbar';
 import AudioRecorder from '../components/AudioRecorder';
 
 function Home() {
   return (
     <>
-      <Navbar />
 
       <section
         className="py-5 text-white mb-5"

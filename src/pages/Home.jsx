@@ -1,4 +1,5 @@
 import Navbar from '../components/Navbar';
+import AudioRecorder from '../components/AudioRecorder';
 
 function Home() {
   return (
@@ -26,6 +27,11 @@ function Home() {
       <div className="container pb-5">
         <div className="row justify-content-center">
           <div className="col-md-8">
+            <div className="p-4 bg-white shadow rounded-4 mb-4">
+              <h2 className="h4 mb-3 fw-semibold">🎙️ Registra Spesa o Incasso</h2>
+              <AudioRecorder />
+            </div>
+
             <div className="p-4 bg-white shadow rounded-4">
               <h2 className="h4 mb-3 fw-semibold">🚀 Benvenuto!</h2>
               <p className="mb-3">

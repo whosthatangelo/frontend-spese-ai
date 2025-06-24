@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { addExpense } from '../api';
-import AudioRecorder from '../components/AudioRecorder';
 import AddExpenseForm from '../components/AddExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 import Navbar from '../components/Navbar';
@@ -37,16 +36,7 @@ function Spese() {
 
       <div className="container mb-5">
         <div className="row g-4 mb-5">
-          <div className="col-md-6">
-            <div className="card shadow-sm border-0 h-100">
-              <div className="card-body text-center">
-                <h5 className="card-title">🎙️ Registra Spesa Vocale</h5>
-                <AudioRecorder onAdd={() => setListKey(prev => prev + 1)} />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-6">
+          <div className="col-md-12">
             <div className="card shadow-sm border-0 h-100">
               <div className="card-body">
                 <AddExpenseForm onAdd={aggiungiSpesa} />
@@ -63,4 +53,4 @@ function Spese() {
   );
 }
 
-export default Spese;
+export defa

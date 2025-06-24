@@ -43,46 +43,42 @@ function Dashboard() {
       </section>
 
       <div className="container mb-5">
-        {loading && <p className="text-center">⏳ Caricamento statistiche...</p>}
-
-        {!loading && stats && (
+        {loading ? (
+          <p className="text-center">⏳ Caricamento statistiche...</p>
+        ) : (
           <>
-            <div className="row gy-4 mb-4">
-              <div className="col-md-6 col-lg-3">
-                <div className="card card-metric text-white bg-primary shadow-sm">
-                  <div className="card-body text-center p-3">
-                    <h6 className="fw-bold mb-1">Totale Speso</h6>
-                    <p className="fs-4 m-0">{stats.totale} €</p>
+            <div className="row mb-4 g-4">
+              {[
+                {
+                  title: 'Totale Speso',
+                  value: `${stats.totale} €`,
+                  bg: 'bg-primary'
+                },
+                {
+                  title: 'Numero Spese',
+                  value: stats.numero,
+                  bg: 'bg-success'
+                },
+                {
+                  title: 'Media Giornaliera',
+                  value: `${stats.media_per_giorno} €`,
+                  bg: 'bg-warning'
+                },
+                {
+                  title: 'Prodotto Top',
+                  value: stats.top_prodotto,
+                  bg: 'bg-dark'
+                }
+              ].map((card, idx) => (
+                <div key={idx} className="col-md-6 col-lg-3">
+                  <div className={`card text-white ${card.bg} shadow-sm`} style={{ borderRadius: '12px' }}>
+                    <div className="card-body py-3 px-2 text-center">
+                      <h6 className="mb-2" style={{ fontSize: '0.95rem' }}>{card.title}</h6>
+                      <p className="mb-0 fw-bold" style={{ fontSize: '1.4rem' }}>{card.value}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="col-md-6 col-lg-3">
-                <div className="card card-metric text-white bg-success shadow-sm">
-                  <div className="card-body text-center p-3">
-                    <h6 className="fw-bold mb-1">Numero Spese</h6>
-                    <p className="fs-4 m-0">{stats.numero}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-6 col-lg-3">
-                <div className="card card-metric text-white bg-warning shadow-sm">
-                  <div className="card-body text-center p-3">
-                    <h6 className="fw-bold mb-1">Media Giornaliera</h6>
-                    <p className="fs-4 m-0">{stats.media_per_giorno} €</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-6 col-lg-3">
-                <div className="card card-metric text-white bg-dark shadow-sm">
-                  <div className="card-body text-center p-3">
-                    <h6 className="fw-bold mb-1">Prodotto Top</h6>
-                    <p className="fs-4 m-0">{stats.top_prodotto}</p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
 
             <div className="card shadow-sm border-0 rounded-4 p-4 mb-5">

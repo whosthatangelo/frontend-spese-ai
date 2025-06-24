@@ -24,19 +24,30 @@ function Dashboard() {
   return (
     <>
       <Navbar />
-      <div className="container py-5">
-        <div className="text-center mb-4">
-          <h1 className="display-5 fw-bold text-gradient">📊 Dashboard</h1>
+      <section
+        className="py-5 text-white mb-5"
+        style={{
+          background: "linear-gradient(135deg, #4f46e5, #6d28d9)",
+          borderRadius: "20px",
+          margin: "0 auto",
+          maxWidth: "960px",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
+        }}
+      >
+        <div className="container text-center">
+          <h1 className="display-5 fw-bold">📊 Dashboard</h1>
           <p className="lead">Statistiche aggiornate sulle tue spese</p>
         </div>
+      </section>
 
+      <div className="container mb-5">
         {loading && <p className="text-center">⏳ Caricamento statistiche...</p>}
 
         {!loading && stats && (
           <>
             <div className="row g-4 mb-4">
               <div className="col-md-6 col-lg-3">
-                <div className="card shadow bg-gradient-primary text-white rounded-4">
+                <div className="card text-white bg-primary shadow-sm">
                   <div className="card-body text-center">
                     <h5 className="card-title">Totale Speso</h5>
                     <p className="display-6">{stats.totale} €</p>
@@ -45,7 +56,7 @@ function Dashboard() {
               </div>
 
               <div className="col-md-6 col-lg-3">
-                <div className="card shadow bg-gradient-success text-white rounded-4">
+                <div className="card text-white bg-success shadow-sm">
                   <div className="card-body text-center">
                     <h5 className="card-title">Numero Spese</h5>
                     <p className="display-6">{stats.numero}</p>
@@ -54,7 +65,7 @@ function Dashboard() {
               </div>
 
               <div className="col-md-6 col-lg-3">
-                <div className="card shadow bg-gradient-warning text-dark rounded-4">
+                <div className="card text-white bg-warning shadow-sm">
                   <div className="card-body text-center">
                     <h5 className="card-title">Media Giornaliera</h5>
                     <p className="display-6">{stats.media_per_giorno} €</p>
@@ -63,7 +74,7 @@ function Dashboard() {
               </div>
 
               <div className="col-md-6 col-lg-3">
-                <div className="card shadow bg-gradient-dark text-white rounded-4">
+                <div className="card text-white bg-dark shadow-sm">
                   <div className="card-body text-center">
                     <h5 className="card-title">Prodotto Top</h5>
                     <p className="display-6">{stats.top_prodotto}</p>
@@ -72,7 +83,9 @@ function Dashboard() {
               </div>
             </div>
 
-            <ExpensesChart expenses={expenses} />
+            <div className="card shadow-sm border-0 rounded-4 p-4">
+              <ExpensesChart expenses={expenses} />
+            </div>
           </>
         )}
       </div>

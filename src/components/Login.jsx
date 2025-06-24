@@ -1,11 +1,12 @@
-// src/Login.jsx
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // 👈 aggiunto per il redirect
 
   const handleLogin = async () => {
     if (!email) return;
@@ -15,6 +16,7 @@ export default function Login({ onLogin }) {
       const userId = response.data.userId;
       localStorage.setItem('userId', userId);
       onLogin(userId);
+      navigate('/'); // 👈 redirect alla home dell'app
     } catch (err) {
       console.error('Errore login:', err);
       setError('Errore durante il login.');

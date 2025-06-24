@@ -1,6 +1,4 @@
-// src/components/Navbar.jsx
 import { useNavigate } from 'react-router-dom';
-import './Navbar.css'; // creeremo uno stile dedicato
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -11,10 +9,13 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar-custom shadow-sm">
-      <div className="container d-flex justify-content-between align-items-center py-2">
-        <h5 className="mb-0 logo-text">💸 ExpenseAI</h5>
-        <button className="btn btn-sm btn-outline-light logout-btn" onClick={handleLogout}>
+    <nav
+      className="navbar navbar-expand-lg bg-white shadow-sm px-4 py-3 mb-4"
+      style={{ borderBottom: '1px solid #eee' }}
+    >
+      <div className="container-fluid d-flex justify-content-between align-items-center">
+        <span className="navbar-brand fw-bold fs-4">💸 ExpenseAI</span>
+        <button className="btn btn-outline-danger" onClick={handleLogout}>
           Logout
         </button>
       </div>

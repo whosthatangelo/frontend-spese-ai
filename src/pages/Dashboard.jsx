@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getStats, getExpenses } from '../api';
 import ExpensesChart from '../components/ExpensesChart';
-import Navbar from '../components/Navbar';
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -23,7 +22,6 @@ function Dashboard() {
 
   return (
     <>
-      <Navbar />
       <section
         className="py-5 text-white mb-5"
         style={{

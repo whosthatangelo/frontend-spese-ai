@@ -1,3 +1,5 @@
+// src/pages/Dashboard.jsx
+
 import { useEffect, useState } from 'react';
 import { getStats, getExpenses } from '../api';
 import ExpensesChart from '../components/ExpensesChart';
@@ -46,7 +48,7 @@ function Dashboard() {
         {!loading && stats && (
           <>
             <div className="row g-4 mb-5">
-              <div className="col-md-6 col-lg-3">
+              <div className="col-md-6 col-lg-3 mb-4">
                 <div className="card text-white bg-primary shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Totale Speso</h5>
@@ -55,7 +57,7 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-lg-3">
+              <div className="col-md-6 col-lg-3 mb-4">
                 <div className="card text-white bg-success shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Numero Spese</h5>
@@ -64,7 +66,7 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-lg-3">
+              <div className="col-md-6 col-lg-3 mb-4">
                 <div className="card text-white bg-warning shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Media Giornaliera</h5>
@@ -73,7 +75,7 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-lg-3">
+              <div className="col-md-6 col-lg-3 mb-4">
                 <div className="card text-white bg-dark shadow-sm h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title">Prodotto Top</h5>

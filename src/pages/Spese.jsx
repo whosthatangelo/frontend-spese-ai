@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { addExpense } from '../api';
 import AddExpenseForm from '../components/AddExpenseForm';
 import ExpenseList from '../components/ExpenseList';
-import Navbar from '../components/Navbar';
 
 function Spese() {
   const [listKey, setListKey] = useState(0);
@@ -14,7 +13,7 @@ function Spese() {
 
   return (
     <>
-      <Navbar />
+  
 
       <section
         className="py-5 text-white mb-5"

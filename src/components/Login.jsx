@@ -1,34 +1,29 @@
+// src/components/Login.jsx
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // 👈 aggiunto per il redirect
 
   const handleLogin = async () => {
     if (!email) return;
     setLoading(true);
     setError(null);
+
     try {
       const response = await axios.post(import.meta.env.VITE_API_URL + '/login', { email });
       const userId = response.data.userId;
       localStorage.setItem('userId', userId);
-      onLogin(userId);
+      onLogin(userId); // <-- Qui era probabilmente il bug
     } catch (err) {
       console.error('Errore login:', err);
-      if (err.response?.status === 401) {
-        setError('Email non registrata.');
-      } else {
-        setError('Errore durante il login.');
-      }
+      setError(err.response?.data?.error || 'Errore durante il login.');
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="container py-5 text-center">

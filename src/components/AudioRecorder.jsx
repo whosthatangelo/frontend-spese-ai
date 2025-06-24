@@ -90,7 +90,7 @@ export default function AudioRecorder({ onAdd }) {
         onClick={isRecording ? () => mediaRecorderRef.current?.stop() : handleStart}
         className={`btn ${isRecording ? 'btn-danger' : 'btn-primary'}`}
       >
-        {isRecording ? 'Ferma' : '🎤 Registra spesa'}
+        {isRecording ? 'Ferma' : '🎤 Registra'}
       </button>
       <p>{status}</p>
     </div>

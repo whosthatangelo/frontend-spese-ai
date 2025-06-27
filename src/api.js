@@ -90,6 +90,7 @@ export async function deleteIncome(id) {
 }
 
 export async function getIncomeStats() {
-  const res = await fetch(`${API_URL}/income-stats`);
-  return res.json();
+  const res = await fetch(`${BASE_URL}/income-stats`);
+  if (!res.ok) throw new Error('Errore nel caricamento delle statistiche incassi');
+  return await res.json();
 }

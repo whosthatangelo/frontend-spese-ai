@@ -24,9 +24,10 @@ export default function ExpenseList() {
   async function handleDelete(numero_fattura) {
     if (confirm(`Sei sicuro di voler eliminare la fattura ${numero_fattura}?`)) {
       await deleteExpense(numero_fattura);
-      loadExpenses();
+      await loadExpenses(); // ⬅️ aspetti esplicitamente che abbia ricaricato
     }
   }
+
 
   function handleEdit(expense) {
     setSelectedExpense(expense);

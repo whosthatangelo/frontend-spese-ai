@@ -18,9 +18,9 @@ export default function IncomeList() {
     setLoading(false);
   }
 
-  async function handleDelete(numero_fattura) {
-    if (confirm(`Sei sicuro di voler eliminare l'incasso ${numero_fattura}?`)) {
-      await deleteIncome(numero_fattura);
+  async function handleDelete(id) {
+    if (confirm(`Sei sicuro di voler eliminare l'incasso con ID ${id}?`)) {
+      await deleteIncome(id);
       loadIncomes();
     }
   }
@@ -50,17 +50,17 @@ export default function IncomeList() {
       ) : (
         <div className="row g-3">
           {incomes.map(inc => (
-            <div className="col-12" key={inc.numero_fattura}>
+            <div className="col-12" key={inc.id}>
               <div className="card shadow-sm border-0 rounded-4">
                 <div className="card-body">
                   <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h5 className="card-title mb-0">📄 Incasso {inc.numero_fattura}</h5>
+                    <h5 className="card-title mb-0">📄 Incasso ID {inc.id}</h5>
                     <span className="badge bg-success">✅</span>
                   </div>
 
-                  {inc.data_fattura && (
+                  {inc.data_incasso && (
                     <p className="text-muted mb-1">
-                      🗓️ Data: {new Date(inc.data_fattura).toLocaleDateString("it-IT")}
+                      🗓️ Data: {new Date(inc.data_incasso).toLocaleDateString("it-IT")}
                     </p>
                   )}
 
@@ -72,10 +72,8 @@ export default function IncomeList() {
                     <p className="mb-1">💶 Importo: <strong>{parseFloat(inc.importo).toFixed(2)} {inc.valuta}</strong></p>
                   )}
 
-                  {(inc.tipo_documento || inc.tipo_pagamento) && (
-                    <p className="mb-1">
-                      📎 {inc.tipo_documento || "Documento N/D"} — 💳 {inc.tipo_pagamento || "Pagamento N/D"}
-                    </p>
+                  {inc.metodo_incasso && (
+                    <p className="mb-1">💳 Metodo: {inc.metodo_incasso}</p>
                   )}
 
                   <div className="d-flex justify-content-end mt-2">
@@ -88,7 +86,7 @@ export default function IncomeList() {
                     </button>
                     <button
                       className="btn btn-sm btn-outline-danger"
-                      onClick={() => handleDelete(inc.numero_fattura)}
+                      onClick={() => handleDelete(inc.id)}
                       title="Elimina"
                     >
                       🗑️

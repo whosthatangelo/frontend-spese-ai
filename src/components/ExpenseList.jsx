@@ -22,11 +22,19 @@ export default function ExpenseList() {
   }
 
   async function handleDelete(numero_fattura) {
-    if (confirm(`Sei sicuro di voler eliminare la fattura ${numero_fattura}?`)) {
-      await deleteExpense(numero_fattura);
-      await loadExpenses(); // ⬅️ aspetti esplicitamente che abbia ricaricato
+    const conferma = confirm(`Sei sicuro di voler eliminare la fattura ${numero_fattura}?`);
+    if (!conferma) return;
+
+    try {
+      const res = await deleteExpense(numero_fattura);
+      console.log("✅ Eliminazione completata:", res);
+      await loadExpenses();
+    } catch (err) {
+      console.error("❌ Errore durante eliminazione:", err);
+      alert("Errore durante l'eliminazione. Controlla la console.");
     }
   }
+
 
 
   function handleEdit(expense) {

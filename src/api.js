@@ -88,3 +88,8 @@ export async function deleteIncome(id) {
   if (!res.ok) throw new Error('Errore nella cancellazione dell\'incasso');
   return await res.json();
 }
+
+export async function getIncomeStats() {
+  const res = await fetch(`${API_URL}/income-stats`);
+  return res.json();
+}

@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
-import { getStats, getExpenses } from '../api';
+import { getStats, getIncomeStats, getExpenses } from '../api';
 import ExpensesChart from '../components/ExpensesChart';
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
+  const [incomeStats, setIncomeStats] = useState(null);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
-      const [statsData, expensesData] = await Promise.all([
+      const [statsData, incomeData, expensesData] = await Promise.all([
         getStats(),
+        getIncomeStats(),
         getExpenses(),
       ]);
       setStats(statsData);
+      setIncomeStats(incomeData);
       setExpenses(expensesData);
       setLoading(false);
     }
@@ -34,7 +37,7 @@ function Dashboard() {
       >
         <div className="container text-center">
           <h1 className="display-5 fw-bold">📊 Dashboard</h1>
-          <p className="lead">Statistiche aggiornate sulle tue spese</p>
+          <p className="lead">Statistiche aggiornate su spese e incassi</p>
         </div>
       </section>
 
@@ -43,7 +46,7 @@ function Dashboard() {
           <p className="text-center">⏳ Caricamento statistiche...</p>
         ) : (
           <>
-            <div className="row g-4 mb-5">
+            <div className="row g-4 mb-4">
               {[
                 {
                   title: 'Totale Speso',
@@ -56,17 +59,46 @@ function Dashboard() {
                   bg: 'bg-success'
                 },
                 {
-                  title: 'Media Giornaliera',
+                  title: 'Media Giornaliera Spese',
                   value: `${stats.media_per_giorno} €`,
                   bg: 'bg-warning'
                 },
                 {
                   title: 'Prodotto Top',
-                  value: stats.top_prodotto,
+                  value: stats.top_prodotto || 'N/D',
                   bg: 'bg-dark'
                 }
               ].map((card, idx) => (
                 <div key={idx} className="col-sm-6 col-lg-3">
+                  <div className={`card text-white ${card.bg} shadow-sm`} style={{ borderRadius: '16px' }}>
+                    <div className="card-body text-center py-3 px-2">
+                      <h6 className="mb-2" style={{ fontSize: '1rem' }}>{card.title}</h6>
+                      <p className="mb-0 fw-bold" style={{ fontSize: '1.5rem' }}>{card.value}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="row g-4 mb-5">
+              {incomeStats && [
+                {
+                  title: 'Totale Incassato',
+                  value: `${incomeStats.totale} €`,
+                  bg: 'bg-info'
+                },
+                {
+                  title: 'Numero Incassi',
+                  value: incomeStats.numero,
+                  bg: 'bg-secondary'
+                },
+                {
+                  title: 'Media Giornaliera Incassi',
+                  value: `${incomeStats.media_per_giorno} €`,
+                  bg: 'bg-danger'
+                }
+              ].map((card, idx) => (
+                <div key={`incasso-${idx}`} className="col-sm-6 col-lg-4">
                   <div className={`card text-white ${card.bg} shadow-sm`} style={{ borderRadius: '16px' }}>
                     <div className="card-body text-center py-3 px-2">
                       <h6 className="mb-2" style={{ fontSize: '1rem' }}>{card.title}</h6>

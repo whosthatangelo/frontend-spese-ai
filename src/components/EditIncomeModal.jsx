@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { updateIncome } from '../api';
 
 export default function EditIncomeModal({ income, onClose }) {
-  const [formData, setFormData] = useState({ ...income });
+  const [formData, setFormData] = useState({
+    id: income.id,
+    data_incasso: income.data_incasso || '',
+    importo: income.importo || '',
+    valuta: income.valuta || 'EUR',
+    metodo_incasso: income.metodo_incasso || '',
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -16,9 +23,10 @@ export default function EditIncomeModal({ income, onClose }) {
     setLoading(true);
     setError('');
     try {
-      await updateIncome(formData.numero_fattura, formData);
+      await updateIncome(formData.id, formData);
       onClose();
     } catch (err) {
+      console.error(err);
       setError('Errore durante la modifica.');
     } finally {
       setLoading(false);
@@ -38,32 +46,45 @@ export default function EditIncomeModal({ income, onClose }) {
               {error && <div className="alert alert-danger">{error}</div>}
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label className="form-label">Numero Incasso</label>
-                  <input type="text" className="form-control" name="numero_fattura" value={formData.numero_fattura} disabled />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label">Data</label>
-                  <input type="date" className="form-control" name="data_fattura" value={formData.data_fattura} onChange={handleChange} />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label">Azienda</label>
-                  <input type="text" className="form-control" name="azienda" value={formData.azienda || ''} onChange={handleChange} />
+                  <label className="form-label">Data Incasso</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    name="data_incasso"
+                    value={formData.data_incasso}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="col-md-6">
                   <label className="form-label">Importo</label>
-                  <input type="number" className="form-control" step="0.01" name="importo" value={formData.importo} onChange={handleChange} />
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="importo"
+                    step="0.01"
+                    value={formData.importo}
+                    onChange={handleChange}
+                  />
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-6">
                   <label className="form-label">Valuta</label>
-                  <input type="text" className="form-control" name="valuta" value={formData.valuta || ''} onChange={handleChange} />
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="valuta"
+                    value={formData.valuta}
+                    onChange={handleChange}
+                  />
                 </div>
-                <div className="col-md-4">
-                  <label className="form-label">Tipo Pagamento</label>
-                  <input type="text" className="form-control" name="tipo_pagamento" value={formData.tipo_pagamento || ''} onChange={handleChange} />
-                </div>
-                <div className="col-md-4">
-                  <label className="form-label">Tipo Documento</label>
-                  <input type="text" className="form-control" name="tipo_documento" value={formData.tipo_documento || ''} onChange={handleChange} />
+                <div className="col-md-6">
+                  <label className="form-label">Metodo Incasso</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="metodo_incasso"
+                    value={formData.metodo_incasso}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
             </div>

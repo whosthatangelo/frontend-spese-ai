@@ -99,48 +99,142 @@ export default function ExpenseList() {
           {sortedExpenses.map(exp => (
             <div className="col-12" key={exp.id}>
               <div className="card shadow-sm border-0 rounded-4">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h5 className="card-title mb-0">📄 Fattura {exp.numero_fattura}</h5>
-                    <span className={`badge bg-${exp.stato === 'Pagata' ? 'success' : exp.stato === 'In attesa' ? 'warning' : exp.stato === 'Annullata' ? 'danger' : 'secondary'}`}>
+                <div className="card-body p-4">
+                  {/* Header con numero fattura e stato */}
+                  <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                      <h5 className="card-title mb-1 fw-bold text-primary">
+                        📄 Fattura #{exp.numero_fattura || 'N/D'}
+                      </h5>
+                      {exp.data_fattura && (
+                        <small className="text-muted">
+                          🗓️ {new Date(exp.data_fattura).toLocaleDateString("it-IT")}
+                        </small>
+                      )}
+                    </div>
+                    <span className={`badge fs-6 px-3 py-2 bg-${exp.stato === 'Pagata' ? 'success' : exp.stato === 'In attesa' ? 'warning' : exp.stato === 'Annullata' ? 'danger' : 'secondary'}`}>
                       {exp.stato || "N/D"}
                     </span>
                   </div>
 
-                  {exp.data_fattura && (
-                    <p className="text-muted mb-1">
-                      🗓️ Data: {new Date(exp.data_fattura).toLocaleDateString("it-IT")}
-                    </p>
+                  {/* Dettagli principali in griglia */}
+                  <div className="row g-3 mb-3">
+                    {/* Azienda */}
+                    <div className="col-md-6">
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
+                          <div className="bg-primary bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                            <span className="text-primary">🏢</span>
+                          </div>
+                        </div>
+                        <div>
+                          <small className="text-muted d-block">Azienda</small>
+                          <strong className="fs-6">{exp.azienda || 'N/D'}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Importo */}
+                    <div className="col-md-6">
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
+                          <div className="bg-success bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                            <span className="text-success">💶</span>
+                          </div>
+                        </div>
+                        <div>
+                          <small className="text-muted d-block">Importo</small>
+                          <strong className="fs-5 text-success">
+                            {exp.importo ? `${parseFloat(exp.importo).toFixed(2)} ${exp.valuta || 'EUR'}` : 'N/D'}
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tipo documento */}
+                    <div className="col-md-6">
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
+                          <div className="bg-info bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                            <span className="text-info">📎</span>
+                          </div>
+                        </div>
+                        <div>
+                          <small className="text-muted d-block">Tipo Documento</small>
+                          <strong className="fs-6">{exp.tipo_documento || 'N/D'}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tipo pagamento */}
+                    <div className="col-md-6">
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
+                          <div className="bg-warning bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                            <span className="text-warning">💳</span>
+                          </div>
+                        </div>
+                        <div>
+                          <small className="text-muted d-block">Tipo Pagamento</small>
+                          <strong className="fs-6">{exp.tipo_pagamento || 'N/D'}</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Descrizione se presente */}
+                  {exp.descrizione && (
+                    <div className="mb-3 p-3 bg-light rounded-3">
+                      <small className="text-muted d-block mb-1">📝 Descrizione</small>
+                      <p className="mb-0 fs-6">{exp.descrizione}</p>
+                    </div>
                   )}
 
-                  {exp.azienda && (
-                    <p className="mb-1">🏢 Azienda: <strong>{exp.azienda}</strong></p>
+                  {/* Note se presenti */}
+                  {exp.note && (
+                    <div className="mb-3 p-3 bg-light rounded-3">
+                      <small className="text-muted d-block mb-1">📋 Note</small>
+                      <p className="mb-0 fs-6">{exp.note}</p>
+                    </div>
                   )}
 
-                  {exp.importo && (
-                    <p className="mb-1">💶 Importo: <strong>{parseFloat(exp.importo).toFixed(2)} {exp.valuta}</strong></p>
-                  )}
+                  {/* Informazioni aggiuntive */}
+                  <div className="row g-2 mb-3">
+                    {exp.fornitore && (
+                      <div className="col-md-4">
+                        <small className="text-muted d-block">👤 Fornitore</small>
+                        <span className="fs-6">{exp.fornitore}</span>
+                      </div>
+                    )}
+                    {exp.categoria && (
+                      <div className="col-md-4">
+                        <small className="text-muted d-block">🏷️ Categoria</small>
+                        <span className="fs-6">{exp.categoria}</span>
+                      </div>
+                    )}
+                    {exp.progetto && (
+                      <div className="col-md-4">
+                        <small className="text-muted d-block">📂 Progetto</small>
+                        <span className="fs-6">{exp.progetto}</span>
+                      </div>
+                    )}
+                  </div>
 
-                  {(exp.tipo_documento || exp.tipo_pagamento) && (
-                    <p className="mb-1">
-                      📎 {exp.tipo_documento || "Documento N/D"} — 💳 {exp.tipo_pagamento || "Pagamento N/D"}
-                    </p>
-                  )}
-
-                  <div className="d-flex justify-content-end mt-2">
+                  {/* Pulsanti azione */}
+                  <div className="d-flex justify-content-end gap-2 pt-2 border-top">
                     <button
-                      className="btn btn-sm btn-outline-warning me-2"
+                      className="btn btn-outline-primary btn-sm px-3"
                       onClick={() => handleEdit(exp)}
-                      title="Modifica"
+                      title="Modifica spesa"
                     >
-                      ✏️
+                      ✏️ Modifica
                     </button>
                     <button
-                      className="btn btn-sm btn-outline-danger"
+                      className="btn btn-outline-danger btn-sm px-3"
                       onClick={() => handleDelete(exp.id)}
-                      title="Elimina"
+                      title="Elimina spesa"
                     >
-                      🗑️
+                      🗑️ Elimina
                     </button>
                   </div>
                 </div>

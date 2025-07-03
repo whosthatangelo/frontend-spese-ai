@@ -106,12 +106,23 @@ export default function IncomeList() {
                   </div>
 
                   {/* Data creazione se presente */}
-                  {inc.data_creazione && (
+                  {(inc.data_creazione || inc.utente_id) && (
                     <div className="mb-3 p-3 bg-light rounded-3">
-                      <small className="text-muted d-block mb-1">📅 Data Creazione</small>
-                      <p className="mb-0 fs-6">{new Date(inc.data_creazione).toLocaleDateString("it-IT")}</p>
+                      {inc.data_creazione && (
+                        <>
+                          <small className="text-muted d-block mb-1">📅 Data Creazione</small>
+                          <p className="mb-2 fs-6">{new Date(inc.data_creazione).toLocaleDateString("it-IT")}</p>
+                        </>
+                      )}
+                      {inc.utente_id && (
+                        <>
+                          <small className="text-muted d-block mb-1">👤 ID Utente</small>
+                          <p className="mb-0 fs-6">{inc.utente_id}</p>
+                        </>
+                      )}
                     </div>
                   )}
+
 
                   {/* Pulsanti azione */}
                   <div className="d-flex justify-content-end gap-2 pt-2 border-top">

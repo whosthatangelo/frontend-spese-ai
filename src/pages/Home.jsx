@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import AudioRecorder from '../components/AudioRecorder';
-import { getLatestExpenses, getLatestIncome } from '../api';
+import { getLatestExpenses, getLatestIncomes } from '../api';
 
 function Home() {
   const [latestExpenses, setLatestExpenses] = useState([]);
-  const [latestIncome, setLatestIncome] = useState([]);
+  const [latestIncome, setLatestIncomes] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       const [expenses, income] = await Promise.all([
         getLatestExpenses(),
-        getLatestIncome()
+        getLatestIncomes()
       ]);
       setLatestExpenses(expenses);
-      setLatestIncome(income);
+      setLatestIncomes(income);
     }
     fetchData();
   }, []);
@@ -61,10 +61,10 @@ function Home() {
             </div>
 
             {/* Ultimi 3 Incassi */}
-            {latestIncome.length > 0 && (
+            {latestIncomes.length > 0 && (
               <div className="p-4 bg-white shadow rounded-4 mb-4">
                 <h2 className="h5 mb-3 fw-semibold">🟢 Ultimi 3 Incassi</h2>
-                {latestIncome.map(item => renderCard(item, 'income'))}
+                {latestIncomes.map(item => renderCard(item, 'income'))}
               </div>
             )}
 

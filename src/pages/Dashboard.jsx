@@ -62,14 +62,9 @@ function Dashboard() {
                   title: 'Media Giornaliera Spese',
                   value: `${stats.media_per_giorno} €`,
                   bg: 'bg-warning'
-                },
-                {
-                  title: 'Prodotto Top',
-                  value: stats.top_prodotto || 'N/D',
-                  bg: 'bg-dark'
                 }
               ].map((card, idx) => (
-                <div key={idx} className="col-sm-6 col-lg-3">
+                <div key={idx} className="col-sm-6 col-lg-4">
                   <div className={`card text-white ${card.bg} shadow-sm`} style={{ borderRadius: '16px' }}>
                     <div className="card-body text-center py-3 px-2">
                       <h6 className="mb-2" style={{ fontSize: '1rem' }}>{card.title}</h6>

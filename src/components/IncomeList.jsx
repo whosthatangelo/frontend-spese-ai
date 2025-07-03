@@ -52,44 +52,82 @@ export default function IncomeList() {
           {incomes.map(inc => (
             <div className="col-12" key={inc.id}>
               <div className="card shadow-sm border-0 rounded-4">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h5 className="card-title mb-0">📄 Incasso ID {inc.id}</h5>
-                    <span className="badge bg-success">✅</span>
+                <div className="card-body p-4">
+                  {/* Header con ID incasso e stato */}
+                  <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                      <h5 className="card-title mb-1 fw-bold text-success">
+                        📥 Incasso #{inc.id || 'N/D'}
+                      </h5>
+                      {inc.data_incasso && (
+                        <small className="text-muted">
+                          🗓️ {new Date(inc.data_incasso).toLocaleDateString("it-IT")}
+                        </small>
+                      )}
+                    </div>
+                    <span className="badge fs-6 px-3 py-2 bg-success">
+                      ✅ Incassato
+                    </span>
                   </div>
 
-                  {inc.data_incasso && (
-                    <p className="text-muted mb-1">
-                      🗓️ Data: {new Date(inc.data_incasso).toLocaleDateString("it-IT")}
-                    </p>
+                  {/* Dettagli principali in griglia */}
+                  <div className="row g-3 mb-3">
+                    {/* Importo */}
+                    <div className="col-md-6">
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
+                          <div className="bg-success bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                            <span className="text-success">💰</span>
+                          </div>
+                        </div>
+                        <div>
+                          <small className="text-muted d-block">Importo</small>
+                          <strong className="fs-5 text-success">
+                            {inc.importo ? `${parseFloat(inc.importo).toFixed(2)} ${inc.valuta || 'EUR'}` : 'N/D'}
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Metodo incasso */}
+                    <div className="col-md-6">
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
+                          <div className="bg-info bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                            <span className="text-info">💳</span>
+                          </div>
+                        </div>
+                        <div>
+                          <small className="text-muted d-block">Metodo Incasso</small>
+                          <strong className="fs-6">{inc.metodo_incasso || 'N/D'}</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Data creazione se presente */}
+                  {inc.data_creazione && (
+                    <div className="mb-3 p-3 bg-light rounded-3">
+                      <small className="text-muted d-block mb-1">📅 Data Creazione</small>
+                      <p className="mb-0 fs-6">{new Date(inc.data_creazione).toLocaleDateString("it-IT")}</p>
+                    </div>
                   )}
 
-                  {inc.azienda && (
-                    <p className="mb-1">🏢 Azienda: <strong>{inc.azienda}</strong></p>
-                  )}
-
-                  {inc.importo && (
-                    <p className="mb-1">💶 Importo: <strong>{parseFloat(inc.importo).toFixed(2)} {inc.valuta}</strong></p>
-                  )}
-
-                  {inc.metodo_incasso && (
-                    <p className="mb-1">💳 Metodo: {inc.metodo_incasso}</p>
-                  )}
-
-                  <div className="d-flex justify-content-end mt-2">
+                  {/* Pulsanti azione */}
+                  <div className="d-flex justify-content-end gap-2 pt-2 border-top">
                     <button
-                      className="btn btn-sm btn-outline-warning me-2"
+                      className="btn btn-outline-primary btn-sm px-3"
                       onClick={() => setSelectedIncome(inc)}
-                      title="Modifica"
+                      title="Modifica incasso"
                     >
-                      ✏️
+                      ✏️ Modifica
                     </button>
                     <button
-                      className="btn btn-sm btn-outline-danger"
+                      className="btn btn-outline-danger btn-sm px-3"
                       onClick={() => handleDelete(inc.id)}
-                      title="Elimina"
+                      title="Elimina incasso"
                     >
-                      🗑️
+                      🗑️ Elimina
                     </button>
                   </div>
                 </div>

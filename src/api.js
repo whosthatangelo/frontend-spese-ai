@@ -100,7 +100,8 @@ export async function getLatestExpenses() {
   return res.json();
 }
 
-export async function getLatestIncome() {
-  const res = await fetch(`${API_URL}/latest-income`);
+export async function getLatestIncomes() {
+  const res = await fetch(`${BASE_URL}/latest-income`);
   return res.json();
 }
+

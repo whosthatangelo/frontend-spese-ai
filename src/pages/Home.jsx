@@ -4,7 +4,8 @@ import { getLatestExpenses, getLatestIncomes } from '../api';
 
 function Home() {
   const [latestExpenses, setLatestExpenses] = useState([]);
-  const [latestIncome, setLatestIncomes] = useState([]);
+  const [latestIncomes, setLatestIncomes] = useState([]);
+
 
   useEffect(() => {
     async function fetchData() {

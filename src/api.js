@@ -96,12 +96,15 @@ export async function getIncomeStats() {
 }
 
 export async function getLatestExpenses() {
-  const res = await fetch(`${API_URL}/latest-expenses`);
-  return res.json();
+  const res = await fetch(`${BASE_URL}/latest-expenses`);
+  if (!res.ok) throw new Error('Errore nel caricamento delle ultime spese');
+  return await res.json();
 }
+
 
 export async function getLatestIncomes() {
   const res = await fetch(`${BASE_URL}/latest-income`);
-  return res.json();
+  if (!res.ok) throw new Error('Errore nel caricamento degli ultimi incassi');
+  return await res.json();
 }
 

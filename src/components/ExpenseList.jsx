@@ -198,18 +198,25 @@ export default function ExpenseList() {
                         <span className="fs-6">{exp.metodo_pagamento}</span>
                       </div>
                     )}
-                    {exp.data_creazione && (
-                      <div className="col-md-4">
-                        <small className="text-muted d-block">📅 Data Creazione</small>
-                        <span className="fs-6">{new Date(exp.data_creazione).toLocaleDateString("it-IT")}</span>
+                    {(exp.data_creazione || exp.utente_id) && (
+                      <div className="col-12">
+                        <div className="p-3 bg-light rounded-3">
+                          {exp.data_creazione && (
+                            <>
+                              <small className="text-muted d-block mb-1">📅 Data Creazione</small>
+                              <p className="mb-2 fs-6">{new Date(exp.data_creazione).toLocaleDateString("it-IT")}</p>
+                            </>
+                          )}
+                          {exp.utente_id && (
+                            <>
+                              <small className="text-muted d-block mb-1">👤 ID Utente</small>
+                              <p className="mb-0 fs-6">{exp.utente_id}</p>
+                            </>
+                          )}
+                        </div>
                       </div>
                     )}
-                    {exp.utente_id && (
-                      <div className="col-md-4">
-                        <small className="text-muted d-block">👤 Utente ID</small>
-                        <span className="fs-6">{exp.utente_id}</span>
-                      </div>
-                    )}
+
                   </div>
 
                   {/* Pulsanti azione */}

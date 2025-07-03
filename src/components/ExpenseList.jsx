@@ -187,17 +187,36 @@ export default function ExpenseList() {
                   {/* Informazioni aggiuntive */}
                   <div className="row g-2 mb-3">
                     {exp.banca && (
-                      <div className="col-md-4">
-                        <small className="text-muted d-block">🏦 Banca</small>
-                        <span className="fs-6">{exp.banca}</span>
+                      <div className="col-md-6">
+                        <div className="d-flex align-items-center">
+                          <div className="me-3">
+                            <div className="bg-secondary bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                              <span className="text-secondary">🏦</span>
+                            </div>
+                          </div>
+                          <div>
+                            <small className="text-muted d-block">Banca</small>
+                            <strong className="fs-6">{exp.banca}</strong>
+                          </div>
+                        </div>
                       </div>
                     )}
                     {exp.metodo_pagamento && (
-                      <div className="col-md-4">
-                        <small className="text-muted d-block">💸 Metodo Pagamento</small>
-                        <span className="fs-6">{exp.metodo_pagamento}</span>
+                      <div className="col-md-6">
+                        <div className="d-flex align-items-center">
+                          <div className="me-3">
+                            <div className="bg-dark bg-opacity-10 rounded-circle p-2 d-inline-flex">
+                              <span className="text-dark">💸</span>
+                            </div>
+                          </div>
+                          <div>
+                            <small className="text-muted d-block">Metodo Pagamento</small>
+                            <strong className="fs-6">{exp.metodo_pagamento}</strong>
+                          </div>
+                        </div>
                       </div>
                     )}
+
                     {(exp.data_creazione || exp.utente_id) && (
                       <div className="col-12">
                         <div className="p-3 bg-light rounded-3">

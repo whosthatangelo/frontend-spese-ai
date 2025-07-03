@@ -1,9 +1,39 @@
+import { useEffect, useState } from 'react';
 import AudioRecorder from '../components/AudioRecorder';
+import { getLatestExpenses, getLatestIncome } from '../api';
 
 function Home() {
+  const [latestExpenses, setLatestExpenses] = useState([]);
+  const [latestIncome, setLatestIncome] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const [expenses, income] = await Promise.all([
+        getLatestExpenses(),
+        getLatestIncome()
+      ]);
+      setLatestExpenses(expenses);
+      setLatestIncome(income);
+    }
+    fetchData();
+  }, []);
+
+  const renderCard = (item, type) => (
+    <div className="card mb-3 shadow-sm border-0 rounded-4" key={item.id}>
+      <div className="card-body">
+        <h5 className="card-title">
+          {type === 'expense' ? '📄 Fattura' : '💰 Incasso'} #{item.numero_fattura || item.id}
+        </h5>
+        <p className="mb-1">🗓️ {new Date(item.data_fattura || item.data_creazione).toLocaleDateString("it-IT")}</p>
+        {item.azienda && <p className="mb-1">🏢 {item.azienda}</p>}
+        <p className="mb-1">💶 {parseFloat(item.importo).toFixed(2)} {item.valuta || 'EUR'}</p>
+        {item.tipo_pagamento && <p className="mb-0">💳 {item.tipo_pagamento}</p>}
+      </div>
+    </div>
+  );
+
   return (
     <>
-
       <section
         className="py-5 text-white mb-5"
         style={{
@@ -29,6 +59,22 @@ function Home() {
               <h2 className="h4 mb-3 fw-semibold">🎙️ Registra Spesa o Incasso</h2>
               <AudioRecorder />
             </div>
+
+            {/* Ultimi 3 Incassi */}
+            {latestIncome.length > 0 && (
+              <div className="p-4 bg-white shadow rounded-4 mb-4">
+                <h2 className="h5 mb-3 fw-semibold">🟢 Ultimi 3 Incassi</h2>
+                {latestIncome.map(item => renderCard(item, 'income'))}
+              </div>
+            )}
+
+            {/* Ultime 3 Spese */}
+            {latestExpenses.length > 0 && (
+              <div className="p-4 bg-white shadow rounded-4 mb-4">
+                <h2 className="h5 mb-3 fw-semibold">🔴 Ultime 3 Spese</h2>
+                {latestExpenses.map(item => renderCard(item, 'expense'))}
+              </div>
+            )}
 
             <div className="p-4 bg-white shadow rounded-4">
               <h2 className="h4 mb-3 fw-semibold">🚀 Benvenuto!</h2>

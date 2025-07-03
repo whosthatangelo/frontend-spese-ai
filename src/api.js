@@ -94,3 +94,13 @@ export async function getIncomeStats() {
   if (!res.ok) throw new Error('Errore nel caricamento delle statistiche incassi');
   return await res.json();
 }
+
+export async function getLatestExpenses() {
+  const res = await fetch(`${API_URL}/latest-expenses`);
+  return res.json();
+}
+
+export async function getLatestIncome() {
+  const res = await fetch(`${API_URL}/latest-income`);
+  return res.json();
+}

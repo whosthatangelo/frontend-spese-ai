@@ -182,40 +182,32 @@ export default function ExpenseList() {
                     </div>
                   </div>
 
-                  {/* Descrizione se presente */}
-                  {exp.descrizione && (
-                    <div className="mb-3 p-3 bg-light rounded-3">
-                      <small className="text-muted d-block mb-1">📝 Descrizione</small>
-                      <p className="mb-0 fs-6">{exp.descrizione}</p>
-                    </div>
-                  )}
-
-                  {/* Note se presenti */}
-                  {exp.note && (
-                    <div className="mb-3 p-3 bg-light rounded-3">
-                      <small className="text-muted d-block mb-1">📋 Note</small>
-                      <p className="mb-0 fs-6">{exp.note}</p>
-                    </div>
-                  )}
+                  {/* Descrizione e note rimosse - non sono nei campi effettivi */}
 
                   {/* Informazioni aggiuntive */}
                   <div className="row g-2 mb-3">
-                    {exp.fornitore && (
+                    {exp.banca && (
                       <div className="col-md-4">
-                        <small className="text-muted d-block">👤 Fornitore</small>
-                        <span className="fs-6">{exp.fornitore}</span>
+                        <small className="text-muted d-block">🏦 Banca</small>
+                        <span className="fs-6">{exp.banca}</span>
                       </div>
                     )}
-                    {exp.categoria && (
+                    {exp.metodo_pagamento && (
                       <div className="col-md-4">
-                        <small className="text-muted d-block">🏷️ Categoria</small>
-                        <span className="fs-6">{exp.categoria}</span>
+                        <small className="text-muted d-block">💸 Metodo Pagamento</small>
+                        <span className="fs-6">{exp.metodo_pagamento}</span>
                       </div>
                     )}
-                    {exp.progetto && (
+                    {exp.data_creazione && (
                       <div className="col-md-4">
-                        <small className="text-muted d-block">📂 Progetto</small>
-                        <span className="fs-6">{exp.progetto}</span>
+                        <small className="text-muted d-block">📅 Data Creazione</small>
+                        <span className="fs-6">{new Date(exp.data_creazione).toLocaleDateString("it-IT")}</span>
+                      </div>
+                    )}
+                    {exp.utente_id && (
+                      <div className="col-md-4">
+                        <small className="text-muted d-block">👤 Utente ID</small>
+                        <span className="fs-6">{exp.utente_id}</span>
                       </div>
                     )}
                   </div>

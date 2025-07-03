@@ -81,7 +81,7 @@ export default function ExpenseList() {
 
       {/* Mini dashboard */}
       <div className="text-center mb-4">
-        <h5 className="fw-bold">📊 Totale Spese Filtrate</h5>
+        <h5 className="fw-bold">📊 Totale Spese</h5>
         <p className="mb-1">💸 Totale: <strong>{totaleSpese.toFixed(2)} EUR</strong></p>
         <p className="text-muted">🧾 Documenti: {filteredExpenses.length}</p>
       </div>

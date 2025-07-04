@@ -5,30 +5,38 @@ import axios from 'axios';
 const UserCompanyContext = createContext();
 
 export function UserCompanyProvider({ children }) {
-  const [userId, setUserId] = useState(localStorage.getItem('userId'));
+  const [userId, setUserId] = useState(() => localStorage.getItem('userId'));
   const [companies, setCompanies] = useState([]);
-  const [currentCompany, setCurrentCompany] = useState(null);
+  const [currentCompany, setCurrentCompany] = useState(() => localStorage.getItem('companyId'));
   const apiBase = import.meta.env.VITE_API_URL;
 
-  // Appena ho userId, prendo la lista di aziende
+  // 🔄 Ogni volta che userId cambia o si inizializza, carico le aziende
   useEffect(() => {
     if (!userId) return;
+
     axios.get(`${apiBase}/user/companies`, {
       headers: { 'x-user-id': userId }
     })
     .then(res => {
       setCompanies(res.data);
-      // se non ne ho ancora scelta, faccio default alla prima
-      if (res.data.length > 0 && !currentCompany) {
-        setCurrentCompany(res.data[0].id);
+
+      // Se non c'è ancora company selezionata, la imposto alla prima disponibile
+      if (res.data.length > 0 && !localStorage.getItem('companyId')) {
+        const defaultCompanyId = res.data[0].id;
+        setCurrentCompany(defaultCompanyId);
+        localStorage.setItem('companyId', defaultCompanyId);
       }
     })
-    .catch(console.error);
+    .catch(err => {
+      console.error('Errore nel caricamento aziende:', err);
+    });
   }, [userId]);
 
-  // Persistiamo la scelta
+  // 🧠 Ogni volta che currentCompany cambia, salvala
   useEffect(() => {
-    if (currentCompany) localStorage.setItem('companyId', currentCompany);
+    if (currentCompany) {
+      localStorage.setItem('companyId', currentCompany);
+    }
   }, [currentCompany]);
 
   return (

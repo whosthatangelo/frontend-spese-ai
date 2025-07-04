@@ -1,23 +1,39 @@
+// src/pages/Home.jsx
 import { useEffect, useState } from 'react';
 import AudioRecorder from '../components/AudioRecorder';
 import { getLatestExpenses, getLatestIncomes } from '../api';
+import { useUserCompany } from '../contexts/UserCompanyContext';
 
 function Home() {
+  const { company } = useUserCompany();
   const [latestExpenses, setLatestExpenses] = useState([]);
   const [latestIncomes, setLatestIncomes] = useState([]);
 
-
   useEffect(() => {
+    if (!company) return;  // aspettiamo che l'utente selezioni l'azienda
     async function fetchData() {
-      const [expenses, income] = await Promise.all([
-        getLatestExpenses(),
-        getLatestIncomes()
-      ]);
-      setLatestExpenses(expenses);
-      setLatestIncomes(income);
+      try {
+        const [expenses, incomes] = await Promise.all([
+          getLatestExpenses(),
+          getLatestIncomes()
+        ]);
+        setLatestExpenses(expenses);
+        setLatestIncomes(incomes);
+      } catch (err) {
+        console.error('Errore nel caricamento degli ultimi documenti:', err);
+      }
     }
     fetchData();
-  }, []);
+  }, [company]);
+
+  if (!company) {
+    return (
+      <div className="container py-5 text-center">
+        <h2>🏢 Seleziona un’azienda</h2>
+        <p>Per favore scegli un’azienda dal menu in alto per visualizzare la dashboard.</p>
+      </div>
+    );
+  }
 
   const renderExpenseCard = (exp) => (
     <div className="col-12 mb-3" key={exp.id}>
@@ -35,12 +51,17 @@ function Home() {
                 </small>
               )}
             </div>
-            <span className={`badge fs-6 px-3 py-2 bg-${exp.stato === 'Pagata' ? 'success' : exp.stato === 'In attesa' ? 'warning' : exp.stato === 'Annullata' ? 'danger' : 'secondary'}`}>
-              {exp.stato || "N/D"}
+            <span className={`badge fs-6 px-3 py-2 bg-${
+              exp.stato === 'Pagata' ? 'success'
+              : exp.stato === 'In attesa' ? 'warning'
+              : exp.stato === 'Annullata' ? 'danger'
+              : 'secondary'
+            }`}>
+              {exp.stato || 'N/D'}
             </span>
           </div>
 
-          {/* Dettagli principali in griglia */}
+          {/* Griglia dettagli */}
           <div className="row g-3 mb-3">
             {/* Azienda */}
             <div className="col-md-6">
@@ -56,7 +77,6 @@ function Home() {
                 </div>
               </div>
             </div>
-
             {/* Importo */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
@@ -68,12 +88,13 @@ function Home() {
                 <div>
                   <small className="text-muted d-block">Importo</small>
                   <strong className="fs-5 text-success">
-                    {exp.importo ? `${parseFloat(exp.importo).toFixed(2)} ${exp.valuta || 'EUR'}` : 'N/D'}
+                    {exp.importo != null
+                      ? `${parseFloat(exp.importo).toFixed(2)} ${exp.valuta || 'EUR'}`
+                      : 'N/D'}
                   </strong>
                 </div>
               </div>
             </div>
-
             {/* Tipo documento */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
@@ -83,12 +104,11 @@ function Home() {
                   </div>
                 </div>
                 <div>
-                  <small className="text-muted d-block">Tipo Documento</small>
+                  <small className="text-muted d-block">Documento</small>
                   <strong className="fs-6">{exp.tipo_documento || 'N/D'}</strong>
                 </div>
               </div>
             </div>
-
             {/* Tipo pagamento */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
@@ -98,7 +118,7 @@ function Home() {
                   </div>
                 </div>
                 <div>
-                  <small className="text-muted d-block">Tipo Pagamento</small>
+                  <small className="text-muted d-block">Pagamento</small>
                   <strong className="fs-6">{exp.tipo_pagamento || 'N/D'}</strong>
                 </div>
               </div>
@@ -106,7 +126,7 @@ function Home() {
           </div>
 
           {/* Informazioni aggiuntive */}
-          <div className="row g-2 mb-3">
+          <div className="row g-2">
             {exp.banca && (
               <div className="col-md-6">
                 <div className="d-flex align-items-center">
@@ -131,7 +151,7 @@ function Home() {
                     </div>
                   </div>
                   <div>
-                    <small className="text-muted d-block">Metodo Pagamento</small>
+                    <small className="text-muted d-block">Metodo</small>
                     <strong className="fs-6">{exp.metodo_pagamento}</strong>
                   </div>
                 </div>
@@ -147,11 +167,11 @@ function Home() {
     <div className="col-12 mb-3" key={inc.id}>
       <div className="card shadow-sm border-0 rounded-4">
         <div className="card-body p-4">
-          {/* Header con ID incasso */}
+          {/* Header incasso */}
           <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
             <div>
               <h5 className="card-title mb-1 fw-bold text-success">
-                📥 Incasso #{inc.id || 'N/D'}
+                📥 Incasso #{inc.id}
               </h5>
               {inc.data_incasso && (
                 <small className="text-muted">
@@ -160,9 +180,7 @@ function Home() {
               )}
             </div>
           </div>
-
-          {/* Dettagli principali in griglia */}
-          <div className="row g-3 mb-3">
+          <div className="row g-3">
             {/* Importo */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
@@ -174,12 +192,13 @@ function Home() {
                 <div>
                   <small className="text-muted d-block">Importo</small>
                   <strong className="fs-5 text-success">
-                    {inc.importo ? `${parseFloat(inc.importo).toFixed(2)} ${inc.valuta || 'EUR'}` : 'N/D'}
+                    {inc.importo != null
+                      ? `${parseFloat(inc.importo).toFixed(2)} ${inc.valuta || 'EUR'}`
+                      : 'N/D'}
                   </strong>
                 </div>
               </div>
             </div>
-
             {/* Metodo incasso */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
@@ -189,7 +208,7 @@ function Home() {
                   </div>
                 </div>
                 <div>
-                  <small className="text-muted d-block">Metodo Incasso</small>
+                  <small className="text-muted d-block">Metodo</small>
                   <strong className="fs-6">{inc.metodo_incasso || 'N/D'}</strong>
                 </div>
               </div>
@@ -207,15 +226,15 @@ function Home() {
         style={{
           background: "linear-gradient(135deg, #4f46e5, #6d28d9)",
           borderRadius: "20px",
-          margin: "0 auto",
           maxWidth: "960px",
+          margin: "0 auto",
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
         }}
       >
         <div className="container text-center">
-          <h1 className="display-5 fw-bold">💸 ExpenseAI</h1>
+          <h1 className="display-5 fw-bold">💸 ExpenseAI — {company.nome}</h1>
           <p className="lead">
-            Registra le tue spese con la voce. Semplice, veloce e intelligente.
+            Registra le tue spese o incassi con la voce, veloce e intelligente.
           </p>
         </div>
       </section>
@@ -223,23 +242,14 @@ function Home() {
       <div className="container pb-5">
         <div className="row justify-content-center">
           <div className="col-md-8">
-            <div className="p-4 bg-white shadow rounded-4 mb-4">
-              <h2 className="h4 mb-3 fw-semibold">🚀 Benvenuto!</h2>
-              <p className="mb-3">
-                Questa app ti permette di <strong>registrare, visualizzare, modificare</strong> e <strong>gestire</strong> tutte le tue spese direttamente dal tuo smartphone o computer.
-                Grazie all'integrazione con l'intelligenza artificiale, puoi anche usare la tua voce per inserire le spese!
-              </p>
-              <ul className="list-unstyled">
-                <li>🎙️ Inserisci spese vocali</li>
-                <li>🧾 Gestisci fatture e documenti</li>
-                <li>📊 Visualizza l'andamento delle spese</li>
-                <li>🔐 Tutto sicuro e archiviato nel tuo database</li>
-              </ul>
-            </div>
-
+            {/* Registrazione vocale */}
             <div className="p-4 bg-white shadow rounded-4 mb-4">
               <h2 className="h4 mb-3 fw-semibold">🎙️ Registra Spesa o Incasso</h2>
-              <AudioRecorder />
+              <AudioRecorder onProcessed={() => {
+                // ricarica gli ultimi
+                getLatestExpenses().then(setLatestExpenses);
+                getLatestIncomes().then(setLatestIncomes);
+              }} />
             </div>
 
             {/* Ultimi 3 Incassi */}
@@ -247,7 +257,7 @@ function Home() {
               <div className="p-4 bg-white shadow rounded-4 mb-4">
                 <h2 className="h5 mb-3 fw-semibold">🟢 Ultimi 3 Incassi</h2>
                 <div className="row g-3">
-                  {latestIncomes.map(item => renderIncomeCard(item))}
+                  {latestIncomes.map(renderIncomeCard)}
                 </div>
               </div>
             )}
@@ -257,7 +267,7 @@ function Home() {
               <div className="p-4 bg-white shadow rounded-4 mb-4">
                 <h2 className="h5 mb-3 fw-semibold">🔴 Ultime 3 Spese</h2>
                 <div className="row g-3">
-                  {latestExpenses.map(item => renderExpenseCard(item))}
+                  {latestExpenses.map(renderExpenseCard)}
                 </div>
               </div>
             )}

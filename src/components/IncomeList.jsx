@@ -1,30 +1,54 @@
-import { useEffect, useState } from 'react';
+// src/components/IncomeList.jsx
+import React, { useEffect, useState } from 'react';
 import { getIncomes, deleteIncome } from '../api';
 import EditIncomeModal from './EditIncomeModal';
 
-export default function IncomeList() {
+export default function IncomeList({ onAction }) {
   const [incomes, setIncomes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedIncome, setSelectedIncome] = useState(null);
+
+  // Carica gli incassi dal backend
+  const loadIncomes = async () => {
+    setLoading(true);
+    try {
+      const data = await getIncomes();
+      setIncomes(data);
+    } catch (err) {
+      console.error('❌ Errore caricamento incassi:', err);
+      alert('Errore nel caricamento degli incassi. Controlla la console.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadIncomes();
   }, []);
 
-  async function loadIncomes() {
-    setLoading(true);
-    const data = await getIncomes();
-    setIncomes(data);
-    setLoading(false);
-  }
-
-  async function handleDelete(id) {
-    if (confirm(`Sei sicuro di voler eliminare l'incasso con ID ${id}?`)) {
-      await deleteIncome(id);
-      loadIncomes();
+  // Elimina un incasso e ricarica la lista
+  const handleDelete = async (id) => {
+    if (!confirm(`Sei sicuro di voler eliminare l'incasso con ID ${id}?`)) {
+      return;
     }
-  }
+    try {
+      await deleteIncome(id);
+      await loadIncomes();
+      if (onAction) onAction();
+    } catch (err) {
+      console.error('❌ Errore durante eliminazione incasso:', err);
+      alert('Errore durante l\'eliminazione. Controlla la console.');
+    }
+  };
 
+  // Chiusura della modal di modifica: ricarica e notifica il parent
+  const handleModalClose = async () => {
+    setSelectedIncome(null);
+    await loadIncomes();
+    if (onAction) onAction();
+  };
+
+  // Calcola il totale
   const totale = incomes.reduce(
     (acc, inc) => acc + parseFloat(inc.importo || 0),
     0
@@ -36,7 +60,9 @@ export default function IncomeList() {
 
       <div className="text-center mb-4">
         <h5 className="fw-bold">💰 Totale Incassi</h5>
-        <p className="mb-1">Totale: <strong>{totale.toFixed(2)} EUR</strong></p>
+        <p className="mb-1">
+          Totale: <strong>{totale.toFixed(2)} EUR</strong>
+        </p>
         <p className="text-muted">📄 Documenti: {incomes.length}</p>
       </div>
 
@@ -49,11 +75,11 @@ export default function IncomeList() {
         <p className="text-center text-muted">📭 Nessun incasso registrato.</p>
       ) : (
         <div className="row g-3">
-          {incomes.map(inc => (
+          {incomes.map((inc) => (
             <div className="col-12" key={inc.id}>
               <div className="card shadow-sm border-0 rounded-4">
                 <div className="card-body p-4">
-                  {/* Header con ID incasso */}
+                  {/* Header */}
                   <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
                     <div>
                       <h5 className="card-title mb-1 fw-bold text-success">
@@ -61,15 +87,14 @@ export default function IncomeList() {
                       </h5>
                       {inc.data_incasso && (
                         <small className="text-muted">
-                          🗓️ {new Date(inc.data_incasso).toLocaleDateString("it-IT")}
+                          🗓️ {new Date(inc.data_incasso).toLocaleDateString('it-IT')}
                         </small>
                       )}
                     </div>
                   </div>
 
-                  {/* Dettagli principali in griglia */}
+                  {/* Dati principali */}
                   <div className="row g-3 mb-3">
-                    {/* Importo */}
                     <div className="col-md-6">
                       <div className="d-flex align-items-center">
                         <div className="me-3">
@@ -80,13 +105,14 @@ export default function IncomeList() {
                         <div>
                           <small className="text-muted d-block">Importo</small>
                           <strong className="fs-5 text-success">
-                            {inc.importo ? `${parseFloat(inc.importo).toFixed(2)} ${inc.valuta || 'EUR'}` : 'N/D'}
+                            {inc.importo
+                              ? `${parseFloat(inc.importo).toFixed(2)} ${inc.valuta || 'EUR'}`
+                              : 'N/D'}
                           </strong>
                         </div>
                       </div>
                     </div>
 
-                    {/* Metodo incasso */}
                     <div className="col-md-6">
                       <div className="d-flex align-items-center">
                         <div className="me-3">
@@ -102,7 +128,7 @@ export default function IncomeList() {
                     </div>
                   </div>
 
-                  {/* Informazioni aggiuntive */}
+                  {/* Meta info */}
                   {(inc.data_creazione || inc.utente_id || inc.id) && (
                     <div className="mb-3 p-3 bg-light rounded-3">
                       {inc.id && (
@@ -114,7 +140,10 @@ export default function IncomeList() {
                       {inc.data_creazione && (
                         <>
                           <small className="text-muted d-block mb-1">📅 Load Timestamp</small>
-                          <p className="mb-2 fs-6">{new Date(inc.data_creazione).toLocaleDateString("it-IT")} alle {new Date(inc.data_creazione).toLocaleTimeString("it-IT")}</p>
+                          <p className="mb-2 fs-6">
+                            {new Date(inc.data_creazione).toLocaleDateString('it-IT')} alle{' '}
+                            {new Date(inc.data_creazione).toLocaleTimeString('it-IT')}
+                          </p>
                         </>
                       )}
                       {inc.utente_id && (
@@ -126,8 +155,7 @@ export default function IncomeList() {
                     </div>
                   )}
 
-
-                  {/* Pulsanti azione */}
+                  {/* Azioni */}
                   <div className="d-flex justify-content-end gap-2 pt-2 border-top">
                     <button
                       className="btn btn-outline-primary btn-sm px-3"
@@ -152,13 +180,7 @@ export default function IncomeList() {
       )}
 
       {selectedIncome && (
-        <EditIncomeModal
-          income={selectedIncome}
-          onClose={() => {
-            setSelectedIncome(null);
-            loadIncomes();
-          }}
-        />
+        <EditIncomeModal income={selectedIncome} onClose={handleModalClose} />
       )}
     </div>
   );

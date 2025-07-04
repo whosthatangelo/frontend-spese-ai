@@ -3,13 +3,19 @@ import Home from './pages/Home';
 import Spese from './pages/Spese';
 import Incassi from './pages/Incassi';
 import Dashboard from './pages/Dashboard';
+import CompanySwitcher from './components/CompanySwitcher';
+import { useUserCompany } from './contexts/UserCompanyContext';
 import './App.css';
 
 export default function App() {
   const navigate = useNavigate();
+  const { setUserId, setCompanyId, company } = useUserCompany();
 
   const handleLogout = () => {
     localStorage.removeItem('userId');
+    localStorage.removeItem('companyId');
+    setUserId(null);
+    setCompanyId(null);
     navigate('/login');
   };
 
@@ -18,6 +24,10 @@ export default function App() {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm rounded-bottom px-3">
         <div className="container-fluid">
           <Link className="navbar-brand fw-bold" to="/">💸 ExpenseAI</Link>
+          <div className="d-flex align-items-center me-3">
+            <CompanySwitcher />
+            {company && <span className="text-light ms-2">[{company.nome}]</span>}
+          </div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
             <span className="navbar-toggler-icon"></span>
           </button>

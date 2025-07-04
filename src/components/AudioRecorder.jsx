@@ -1,22 +1,34 @@
+// src/components/AudioRecorder.jsx
 import React, { useRef, useState } from 'react';
-
-const BASE_URL = import.meta.env.VITE_API_URL || '';
+import { useUserCompany } from '../contexts/UserCompanyContext';
 
 export default function AudioRecorder({ onAdd }) {
+  const { userId, company } = useUserCompany();
   const [isRecording, setIsRecording] = useState(false);
   const [status, setStatus] = useState('');
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
+  // Build headers including user & company
+  function buildHeaders() {
+    return {
+      'x-user-id': userId || '',
+      'x-company-id': company?.id || ''
+    };
+  }
+
   async function handleStart() {
+    if (!company) {
+      setStatus('❗ Seleziona prima un’azienda');
+      return;
+    }
     setStatus('🎙️ Sto registrando...');
     chunksRef.current = [];
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
       let recorder;
-      const mimeTypes = ['audio/webm', 'audio/webm;codecs=opus'];
+      const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm'];
       let selectedMimeType = '';
 
       for (const type of mimeTypes) {
@@ -35,7 +47,6 @@ export default function AudioRecorder({ onAdd }) {
       recorder.ondataavailable = e => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
-
       recorder.onstop = () => handleStop(recorder, selectedMimeType);
 
       recorder.start();
@@ -62,19 +73,19 @@ export default function AudioRecorder({ onAdd }) {
     formData.append('audio', audioBlob, `audio.${extension}`);
 
     try {
-      const res = await fetch(`${BASE_URL}/upload-audio`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/upload-audio`, {
         method: 'POST',
+        headers: buildHeaders(),
         body: formData,
       });
-
       const result = await res.json();
 
-      if (result?.spesa) {
+      if (result.spesa) {
         setStatus('✅ Spesa salvata');
-        if (onAdd) onAdd(result.spesa);
-      } else if (result?.incasso) {
+        onAdd?.(result.spesa);
+      } else if (result.incasso) {
         setStatus('✅ Incasso salvato');
-        if (onAdd) onAdd(result.incasso); // opzionale, in base a come gestisci la lista
+        onAdd?.(result.incasso);
       } else {
         setStatus('❌ Errore salvataggio');
       }
@@ -83,16 +94,16 @@ export default function AudioRecorder({ onAdd }) {
     }
   }
 
-
   return (
-    <div>
+    <div className="d-flex align-items-center">
       <button
         onClick={isRecording ? () => mediaRecorderRef.current?.stop() : handleStart}
-        className={`btn ${isRecording ? 'btn-danger' : 'btn-primary'}`}
+        className={`btn ${isRecording ? 'btn-danger' : company ? 'btn-primary' : 'btn-secondary'}`}
+        disabled={!company}
       >
         {isRecording ? 'Ferma' : '🎤 Registra'}
       </button>
-      <p>{status}</p>
+      <span className="ms-3">{status}</span>
     </div>
   );
 }

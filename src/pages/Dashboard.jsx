@@ -1,27 +1,53 @@
+// src/pages/Dashboard.jsx
 import { useEffect, useState } from 'react';
 import { getStats, getIncomeStats, getExpenses } from '../api';
 import ExpensesChart from '../components/ExpensesChart';
+import { useUserCompany } from '../contexts/UserCompanyContext';
 
 function Dashboard() {
+  const { company } = useUserCompany();
   const [stats, setStats] = useState(null);
   const [incomeStats, setIncomeStats] = useState(null);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadData() {
-      const [statsData, incomeData, expensesData] = await Promise.all([
-        getStats(),
-        getIncomeStats(),
-        getExpenses(),
-      ]);
-      setStats(statsData);
-      setIncomeStats(incomeData);
-      setExpenses(expensesData);
+    if (!company) {
+      setStats(null);
+      setIncomeStats(null);
+      setExpenses([]);
       setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    async function loadData() {
+      try {
+        const [statsData, incomeData, expensesData] = await Promise.all([
+          getStats(),
+          getIncomeStats(),
+          getExpenses(),
+        ]);
+        setStats(statsData);
+        setIncomeStats(incomeData);
+        setExpenses(expensesData);
+      } catch (err) {
+        console.error('Errore nel caricamento dei dati dashboard:', err);
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
-  }, []);
+  }, [company]);
+
+  if (!company) {
+    return (
+      <div className="container py-5 text-center">
+        <h2>🏢 Seleziona un’azienda</h2>
+        <p>Per favore scegli un’azienda dal selettore in alto per visualizzare la dashboard.</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -36,7 +62,7 @@ function Dashboard() {
         }}
       >
         <div className="container text-center">
-          <h1 className="display-5 fw-bold">📊 Dashboard</h1>
+          <h1 className="display-5 fw-bold">📊 Dashboard — {company.nome}</h1>
           <p className="lead">Statistiche aggiornate su spese e incassi</p>
         </div>
       </section>
@@ -104,7 +130,7 @@ function Dashboard() {
               ))}
             </div>
 
-            <div className="card shadow-sm border-0 rounded-4 p-4 mb-5">
+            <div className="card shadow-sm border-0 rounded-4 p-4">
               <ExpensesChart expenses={expenses} />
             </div>
           </>

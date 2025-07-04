@@ -27,7 +27,7 @@ function RootRouter() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login onLogin={setUserId} />} />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/*"
           element={

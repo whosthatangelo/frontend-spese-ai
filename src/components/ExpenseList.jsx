@@ -217,18 +217,24 @@ export default function ExpenseList() {
                       </div>
                     )}
 
-                    {(exp.data_creazione || exp.utente_id) && (
+                    {(exp.data_creazione || exp.utente_id || exp.id) && (
                       <div className="col-12">
                         <div className="p-3 bg-light rounded-3">
+                          {exp.id && (
+                            <>
+                              <small className="text-muted d-block mb-1">🆔 Record ID</small>
+                              <p className="mb-2 fs-6">{exp.id}</p>
+                            </>
+                          )}
                           {exp.data_creazione && (
                             <>
-                              <small className="text-muted d-block mb-1">📅 Data Creazione</small>
-                              <p className="mb-2 fs-6">{new Date(exp.data_creazione).toLocaleDateString("it-IT")}</p>
+                              <small className="text-muted d-block mb-1">📅 Load Timestamp</small>
+                              <p className="mb-2 fs-6">{new Date(exp.data_creazione).toLocaleDateString("it-IT")} alle {new Date(exp.data_creazione).toLocaleTimeString("it-IT")}</p>
                             </>
                           )}
                           {exp.utente_id && (
                             <>
-                              <small className="text-muted d-block mb-1">👤 ID Utente</small>
+                              <small className="text-muted d-block mb-1">👤 Load User</small>
                               <p className="mb-0 fs-6">{exp.utente_id}</p>
                             </>
                           )}

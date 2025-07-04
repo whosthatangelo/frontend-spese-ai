@@ -53,7 +53,7 @@ export default function IncomeList() {
             <div className="col-12" key={inc.id}>
               <div className="card shadow-sm border-0 rounded-4">
                 <div className="card-body p-4">
-                  {/* Header con ID incasso e stato */}
+                  {/* Header con ID incasso */}
                   <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
                     <div>
                       <h5 className="card-title mb-1 fw-bold text-success">
@@ -65,9 +65,6 @@ export default function IncomeList() {
                         </small>
                       )}
                     </div>
-                    <span className="badge fs-6 px-3 py-2 bg-success">
-                      ✅ Incassato
-                    </span>
                   </div>
 
                   {/* Dettagli principali in griglia */}
@@ -105,18 +102,24 @@ export default function IncomeList() {
                     </div>
                   </div>
 
-                  {/* Data creazione se presente */}
-                  {(inc.data_creazione || inc.utente_id) && (
+                  {/* Informazioni aggiuntive */}
+                  {(inc.data_creazione || inc.utente_id || inc.id) && (
                     <div className="mb-3 p-3 bg-light rounded-3">
+                      {inc.id && (
+                        <>
+                          <small className="text-muted d-block mb-1">🆔 Record ID</small>
+                          <p className="mb-2 fs-6">{inc.id}</p>
+                        </>
+                      )}
                       {inc.data_creazione && (
                         <>
-                          <small className="text-muted d-block mb-1">📅 Data Creazione</small>
-                          <p className="mb-2 fs-6">{new Date(inc.data_creazione).toLocaleDateString("it-IT")}</p>
+                          <small className="text-muted d-block mb-1">📅 Load Timestamp</small>
+                          <p className="mb-2 fs-6">{new Date(inc.data_creazione).toLocaleDateString("it-IT")} alle {new Date(inc.data_creazione).toLocaleTimeString("it-IT")}</p>
                         </>
                       )}
                       {inc.utente_id && (
                         <>
-                          <small className="text-muted d-block mb-1">👤 ID Utente</small>
+                          <small className="text-muted d-block mb-1">👤 Load User</small>
                           <p className="mb-0 fs-6">{inc.utente_id}</p>
                         </>
                       )}

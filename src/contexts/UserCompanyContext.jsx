@@ -28,7 +28,7 @@ export function UserCompanyProvider({ children }) {
 
     console.log(`📡 Fetch aziende per userId = ${userId}`);
 
-    axios.get(`${apiBase}/user/companies`, {
+    axios.get(`${apiBase}/companies`, {
       headers: { 'x-user-id': userId }
     })
     .then(res => {

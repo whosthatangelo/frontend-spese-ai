@@ -7,7 +7,7 @@ import App from './App';
 import Login from './components/Login';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
+import { UserCompanyProvider } from './contexts/UserCompanyContext'; // ✅ importa il provider
 
 function ProtectedRoute({ children }) {
   const userId = localStorage.getItem('userId');
@@ -26,17 +26,19 @@ function RootRouter() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/*"
-          element={
-            <ProtectedRoute>
-              <App />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <UserCompanyProvider> {/* ✅ Avvolge tutto il Router */}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </UserCompanyProvider>
     </Router>
   );
 }

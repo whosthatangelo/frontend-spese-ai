@@ -1,40 +1,56 @@
-// src/contexts/UserCompanyContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const UserCompanyContext = createContext();
 
 export function UserCompanyProvider({ children }) {
-  const [userId, setUserId] = useState(() => localStorage.getItem('userId'));
+  const [userId, setUserId] = useState(() => {
+    const stored = localStorage.getItem('userId');
+    console.log('🧠 userId iniziale dal localStorage:', stored);
+    return stored;
+  });
+
   const [companies, setCompanies] = useState([]);
-  const [currentCompany, setCurrentCompany] = useState(() => localStorage.getItem('companyId'));
+  const [currentCompany, setCurrentCompany] = useState(() => {
+    const stored = localStorage.getItem('companyId');
+    console.log('🏢 companyId iniziale dal localStorage:', stored);
+    return stored;
+  });
+
   const apiBase = import.meta.env.VITE_API_URL;
 
-  // 🔄 Ogni volta che userId cambia o si inizializza, carico le aziende
+  // 🔄 Carico le aziende per l'utente loggato
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      console.warn('⚠️ userId non definito, salta chiamata alle aziende');
+      return;
+    }
+
+    console.log(`📡 Fetch aziende per userId = ${userId}`);
 
     axios.get(`${apiBase}/user/companies`, {
       headers: { 'x-user-id': userId }
     })
     .then(res => {
+      console.log('✅ Aziende ricevute dal backend:', res.data);
       setCompanies(res.data);
 
-      // Se non c'è ancora company selezionata, la imposto alla prima disponibile
       if (res.data.length > 0 && !localStorage.getItem('companyId')) {
         const defaultCompanyId = res.data[0].id;
+        console.log(`🎯 Nessuna azienda selezionata, imposto la prima: ${defaultCompanyId}`);
         setCurrentCompany(defaultCompanyId);
         localStorage.setItem('companyId', defaultCompanyId);
       }
     })
     .catch(err => {
-      console.error('Errore nel caricamento aziende:', err);
+      console.error('❌ Errore nel caricamento aziende:', err);
     });
   }, [userId]);
 
-  // 🧠 Ogni volta che currentCompany cambia, salvala
+  // 🧠 Salva il cambio azienda nel localStorage
   useEffect(() => {
     if (currentCompany) {
+      console.log(`💾 Salvo companyId: ${currentCompany}`);
       localStorage.setItem('companyId', currentCompany);
     }
   }, [currentCompany]);

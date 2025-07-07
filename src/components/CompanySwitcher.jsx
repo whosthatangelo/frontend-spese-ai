@@ -8,7 +8,7 @@ export default function CompanySwitcher() {
     <select
       className="form-select form-select-sm me-3"
       value={currentCompany || ''}
-      onChange={e => setCurrentCompany(e.target.value)}
+      onChange={e => setCurrentCompany(parseInt(e.target.value))} // Converte a numero
     >
       {companies.map(c =>
         <option key={c.id} value={c.id}>{c.nome}</option>

@@ -15,7 +15,7 @@ export function UserCompanyProvider({ children }) {
   const [currentCompany, setCurrentCompany] = useState(() => {
     const stored = localStorage.getItem('companyId');
     console.log('🏢 companyId iniziale dal localStorage:', stored);
-    return stored;
+    return stored ? parseInt(stored) : null; // Converte a numero
   });
 
   const apiBase = import.meta.env.VITE_API_URL;
@@ -39,7 +39,7 @@ export function UserCompanyProvider({ children }) {
         const defaultCompanyId = res.data[0].id;
         console.log(`🎯 Nessuna azienda selezionata, imposto la prima: ${defaultCompanyId}`);
         setCurrentCompany(defaultCompanyId);
-        localStorage.setItem('companyId', defaultCompanyId);
+        localStorage.setItem('companyId', String(defaultCompanyId)); // Salva come stringa
       }
     })
     .catch(err => {
@@ -51,12 +51,13 @@ export function UserCompanyProvider({ children }) {
   useEffect(() => {
     if (currentCompany) {
       console.log(`💾 Salvo companyId: ${currentCompany}`);
-      localStorage.setItem('companyId', currentCompany);
+      localStorage.setItem('companyId', String(currentCompany)); // Salva come stringa
     }
   }, [currentCompany]);
 
   // 🎯 Trova l'oggetto azienda completo basato su currentCompany
-  const company = companies.find(c => c.id === currentCompany) || null;
+  // Converte currentCompany da stringa (localStorage) a numero (PostgreSQL)
+  const company = companies.find(c => c.id === parseInt(currentCompany)) || null;
 
   console.log('🔍 Context Debug:', {
     userId,

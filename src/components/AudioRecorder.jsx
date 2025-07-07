@@ -1,4 +1,3 @@
-// src/components/AudioRecorder.jsx
 import React, { useRef, useState } from 'react';
 import { useUserCompany } from '../contexts/UserCompanyContext';
 
@@ -19,9 +18,10 @@ export default function AudioRecorder({ onAdd }) {
 
   async function handleStart() {
     if (!company) {
-      setStatus('❗ Seleziona prima un’azienda');
+      setStatus('❗ Seleziona prima un'azienda');
       return;
     }
+
     setStatus('🎙️ Sto registrando...');
     chunksRef.current = [];
 
@@ -47,8 +47,8 @@ export default function AudioRecorder({ onAdd }) {
       recorder.ondataavailable = e => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
-      recorder.onstop = () => handleStop(recorder, selectedMimeType);
 
+      recorder.onstop = () => handleStop(recorder, selectedMimeType);
       recorder.start();
       mediaRecorderRef.current = recorder;
       setIsRecording(true);
@@ -78,6 +78,7 @@ export default function AudioRecorder({ onAdd }) {
         headers: buildHeaders(),
         body: formData,
       });
+
       const result = await res.json();
 
       if (result.spesa) {
@@ -95,15 +96,30 @@ export default function AudioRecorder({ onAdd }) {
   }
 
   return (
-    <div className="d-flex align-items-center">
-      <button
-        onClick={isRecording ? () => mediaRecorderRef.current?.stop() : handleStart}
-        className={`btn ${isRecording ? 'btn-danger' : company ? 'btn-primary' : 'btn-secondary'}`}
-        disabled={!company}
-      >
-        {isRecording ? 'Ferma' : '🎤 Registra'}
-      </button>
-      <span className="ms-3">{status}</span>
+    <div className="d-flex flex-column align-items-start">
+      <div className="d-flex align-items-center mb-3">
+        <button
+          onClick={isRecording ? () => mediaRecorderRef.current?.stop() : handleStart}
+          className={`btn ${
+            isRecording ? 'btn-danger' : 
+            company ? 'btn-primary' : 'btn-secondary'
+          }`}
+          disabled={!company}
+        >
+          {isRecording ? '⏹️ Ferma' : '🎤 Registra'}
+        </button>
+        {status && (
+          <span className="ms-3 fw-medium">{status}</span>
+        )}
+      </div>
+
+      {!company && (
+        <div className="alert alert-info mb-0">
+          <small>
+            <strong>💡 Suggerimento:</strong> Seleziona un'azienda per abilitare la registrazione
+          </small>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,6 +5,14 @@ import { useUserCompany } from '../contexts/UserCompanyContext';
 
 function Home() {
   const { company } = useUserCompany();
+
+  // 🔍 DEBUG TEMPORANEO
+  console.log('=== HOME DEBUG ===');
+  console.log('company:', company);
+  console.log('company type:', typeof company);
+  console.log('company truthiness:', !!company);
+  console.log('==================');
+  
   const [latestExpenses, setLatestExpenses] = useState([]);
   const [latestIncomes, setLatestIncomes] = useState([]);
 

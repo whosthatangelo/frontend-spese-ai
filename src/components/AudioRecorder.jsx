@@ -3,6 +3,15 @@ import { useUserCompany } from '../contexts/UserCompanyContext';
 
 export default function AudioRecorder({ onAdd }) {
   const { userId, company } = useUserCompany();
+
+  // 🔍 DEBUG TEMPORANEO
+  console.log('=== AUDIORECORDER DEBUG ===');
+  console.log('userId:', userId);
+  console.log('company:', company);
+  console.log('company ID:', company?.id);
+  console.log('!company:', !company);
+  console.log('===========================');
+  
   const [isRecording, setIsRecording] = useState(false);
   const [status, setStatus] = useState('');
   const mediaRecorderRef = useRef(null);

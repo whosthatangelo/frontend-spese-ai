@@ -166,7 +166,7 @@ function Home() {
           <div className="col-md-8">
             <div className="p-4 bg-white shadow rounded-4 mb-4">
               <h2 className="h4 mb-3 fw-semibold">🎙️ Registra Spesa o Incasso</h2>
-              <AudioRecorder />
+              <AudioRecorder company={company} />
             </div>
 
             {latestIncomes.length > 0 && (

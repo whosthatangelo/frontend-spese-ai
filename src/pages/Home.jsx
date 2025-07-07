@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import { useEffect, useState } from 'react';
 import AudioRecorder from '../components/AudioRecorder';
 import { getLatestExpenses, getLatestIncomes } from '../api';
@@ -14,8 +13,8 @@ function Home() {
     async function fetchData() {
       try {
         const [expenses, incomes] = await Promise.all([
-          getLatestExpenses(),
-          getLatestIncomes()
+          getLatestExpenses(company.id),
+          getLatestIncomes(company.id)
         ]);
         setLatestExpenses(expenses);
         setLatestIncomes(incomes);
@@ -164,12 +163,32 @@ function Home() {
       <div className="container pb-5">
         <div className="row justify-content-center">
           <div className="col-md-8">
+            {/* Messaggio se nessuna azienda è selezionata */}
+            {!company && (
+              <div className="alert alert-warning mb-4">
+                <h4 className="alert-heading">⚠️ Nessuna azienda selezionata</h4>
+                <p className="mb-0">
+                  Seleziona un'azienda per registrare spese e incassi e visualizzare i dati.
+                </p>
+              </div>
+            )}
+
             <div className="p-4 bg-white shadow rounded-4 mb-4">
               <h2 className="h4 mb-3 fw-semibold">🎙️ Registra Spesa o Incasso</h2>
-              <AudioRecorder company={company} />
+              <AudioRecorder 
+                company={company}
+                onAdd={(item) => {
+                  // Aggiorna la lista locale quando viene aggiunto un nuovo elemento
+                  if (item.numero_fattura) {
+                    setLatestExpenses(prev => [item, ...prev.slice(0, 2)]);
+                  } else {
+                    setLatestIncomes(prev => [item, ...prev.slice(0, 2)]);
+                  }
+                }}
+              />
             </div>
 
-            {latestIncomes.length > 0 && (
+            {company && latestIncomes.length > 0 && (
               <div className="p-4 bg-white shadow rounded-4 mb-4">
                 <h2 className="h5 mb-3 fw-semibold">🟢 Ultimi 3 Incassi</h2>
                 <div className="row g-3">
@@ -178,7 +197,7 @@ function Home() {
               </div>
             )}
 
-            {latestExpenses.length > 0 && (
+            {company && latestExpenses.length > 0 && (
               <div className="p-4 bg-white shadow rounded-4 mb-4">
                 <h2 className="h5 mb-3 fw-semibold">🔴 Ultime 3 Spese</h2>
                 <div className="row g-3">

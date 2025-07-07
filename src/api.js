@@ -106,18 +106,19 @@ export async function getIncomeStats() {
   return res.json();
 }
 
-export async function getLatestExpenses() {
-  const res = await fetch(`${BASE_URL}/latest-expenses`, {
+export async function getLatestExpenses(companyId) {
+  const res = await fetch(`${BASE_URL}/latest-expenses?companyId=${companyId}`, {
     headers: buildHeaders()
   });
   if (!res.ok) throw new Error('Errore nel caricamento delle ultime spese');
   return res.json();
 }
 
-export async function getLatestIncomes() {
-  const res = await fetch(`${BASE_URL}/latest-income`, {
+export async function getLatestIncomes(companyId) {
+  const res = await fetch(`${BASE_URL}/latest-income?companyId=${companyId}`, {
     headers: buildHeaders()
   });
   if (!res.ok) throw new Error('Errore nel caricamento degli ultimi incassi');
   return res.json();
 }
+

@@ -18,7 +18,7 @@ export default function AudioRecorder({ onAdd }) {
 
   async function handleStart() {
     if (!company) {
-      setStatus('❗ Seleziona prima un'azienda');
+      setStatus('❗ Seleziona prima un\'azienda');
       return;
     }
 

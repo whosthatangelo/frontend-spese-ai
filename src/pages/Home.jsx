@@ -10,7 +10,7 @@ function Home() {
   const [latestIncomes, setLatestIncomes] = useState([]);
 
   useEffect(() => {
-    if (!company) return;  // aspettiamo che l'utente selezioni l'azienda
+    if (!company) return;
     async function fetchData() {
       try {
         const [expenses, incomes] = await Promise.all([
@@ -26,20 +26,10 @@ function Home() {
     fetchData();
   }, [company]);
 
-  if (!company) {
-    return (
-      <div className="container py-5 text-center">
-        <h2>🏢 Seleziona un’azienda</h2>
-        <p>Per favore scegli un’azienda dal menu in alto per visualizzare la dashboard.</p>
-      </div>
-    );
-  }
-
   const renderExpenseCard = (exp) => (
     <div className="col-12 mb-3" key={exp.id}>
       <div className="card shadow-sm border-0 rounded-4">
         <div className="card-body p-4">
-          {/* Header con numero fattura e stato */}
           <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
             <div>
               <h5 className="card-title mb-1 fw-bold text-primary">
@@ -61,9 +51,7 @@ function Home() {
             </span>
           </div>
 
-          {/* Griglia dettagli */}
           <div className="row g-3 mb-3">
-            {/* Azienda */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
                 <div className="me-3">
@@ -77,7 +65,6 @@ function Home() {
                 </div>
               </div>
             </div>
-            {/* Importo */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
                 <div className="me-3">
@@ -95,68 +82,6 @@ function Home() {
                 </div>
               </div>
             </div>
-            {/* Tipo documento */}
-            <div className="col-md-6">
-              <div className="d-flex align-items-center">
-                <div className="me-3">
-                  <div className="bg-info bg-opacity-10 rounded-circle p-2 d-inline-flex">
-                    <span className="text-info">📎</span>
-                  </div>
-                </div>
-                <div>
-                  <small className="text-muted d-block">Documento</small>
-                  <strong className="fs-6">{exp.tipo_documento || 'N/D'}</strong>
-                </div>
-              </div>
-            </div>
-            {/* Tipo pagamento */}
-            <div className="col-md-6">
-              <div className="d-flex align-items-center">
-                <div className="me-3">
-                  <div className="bg-warning bg-opacity-10 rounded-circle p-2 d-inline-flex">
-                    <span className="text-warning">💳</span>
-                  </div>
-                </div>
-                <div>
-                  <small className="text-muted d-block">Pagamento</small>
-                  <strong className="fs-6">{exp.tipo_pagamento || 'N/D'}</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Informazioni aggiuntive */}
-          <div className="row g-2">
-            {exp.banca && (
-              <div className="col-md-6">
-                <div className="d-flex align-items-center">
-                  <div className="me-3">
-                    <div className="bg-secondary bg-opacity-10 rounded-circle p-2 d-inline-flex">
-                      <span className="text-secondary">🏦</span>
-                    </div>
-                  </div>
-                  <div>
-                    <small className="text-muted d-block">Banca</small>
-                    <strong className="fs-6">{exp.banca}</strong>
-                  </div>
-                </div>
-              </div>
-            )}
-            {exp.metodo_pagamento && (
-              <div className="col-md-6">
-                <div className="d-flex align-items-center">
-                  <div className="me-3">
-                    <div className="bg-dark bg-opacity-10 rounded-circle p-2 d-inline-flex">
-                      <span className="text-dark">💸</span>
-                    </div>
-                  </div>
-                  <div>
-                    <small className="text-muted d-block">Metodo</small>
-                    <strong className="fs-6">{exp.metodo_pagamento}</strong>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -167,7 +92,6 @@ function Home() {
     <div className="col-12 mb-3" key={inc.id}>
       <div className="card shadow-sm border-0 rounded-4">
         <div className="card-body p-4">
-          {/* Header incasso */}
           <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
             <div>
               <h5 className="card-title mb-1 fw-bold text-success">
@@ -181,7 +105,6 @@ function Home() {
             </div>
           </div>
           <div className="row g-3">
-            {/* Importo */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
                 <div className="me-3">
@@ -199,7 +122,6 @@ function Home() {
                 </div>
               </div>
             </div>
-            {/* Metodo incasso */}
             <div className="col-md-6">
               <div className="d-flex align-items-center">
                 <div className="me-3">
@@ -232,7 +154,7 @@ function Home() {
         }}
       >
         <div className="container text-center">
-          <h1 className="display-5 fw-bold">💸 ExpenseAI — {company.nome}</h1>
+          <h1 className="display-5 fw-bold">💸 ExpenseAI — {company?.nome || ''}</h1>
           <p className="lead">
             Registra le tue spese o incassi con la voce, veloce e intelligente.
           </p>
@@ -242,17 +164,14 @@ function Home() {
       <div className="container pb-5">
         <div className="row justify-content-center">
           <div className="col-md-8">
-            {/* Registrazione vocale */}
             <div className="p-4 bg-white shadow rounded-4 mb-4">
               <h2 className="h4 mb-3 fw-semibold">🎙️ Registra Spesa o Incasso</h2>
               <AudioRecorder onProcessed={() => {
-                // ricarica gli ultimi
                 getLatestExpenses().then(setLatestExpenses);
                 getLatestIncomes().then(setLatestIncomes);
               }} />
             </div>
 
-            {/* Ultimi 3 Incassi */}
             {latestIncomes.length > 0 && (
               <div className="p-4 bg-white shadow rounded-4 mb-4">
                 <h2 className="h5 mb-3 fw-semibold">🟢 Ultimi 3 Incassi</h2>
@@ -262,7 +181,6 @@ function Home() {
               </div>
             )}
 
-            {/* Ultime 3 Spese */}
             {latestExpenses.length > 0 && (
               <div className="p-4 bg-white shadow rounded-4 mb-4">
                 <h2 className="h5 mb-3 fw-semibold">🔴 Ultime 3 Spese</h2>

@@ -11,6 +11,7 @@ export function UserCompanyProvider({ children }) {
   });
 
   const [companies, setCompanies] = useState([]);
+
   const [currentCompany, setCurrentCompany] = useState(() => {
     const stored = localStorage.getItem('companyId');
     console.log('🏢 companyId iniziale dal localStorage:', stored);
@@ -27,7 +28,6 @@ export function UserCompanyProvider({ children }) {
     }
 
     console.log(`📡 Fetch aziende per userId = ${userId}`);
-
     axios.get(`${apiBase}/companies`, {
       headers: { 'x-user-id': userId }
     })
@@ -55,6 +55,16 @@ export function UserCompanyProvider({ children }) {
     }
   }, [currentCompany]);
 
+  // 🎯 Trova l'oggetto azienda completo basato su currentCompany
+  const company = companies.find(c => c.id === currentCompany) || null;
+
+  console.log('🔍 Context Debug:', {
+    userId,
+    currentCompany,
+    company,
+    companiesCount: companies.length
+  });
+
   return (
     <UserCompanyContext.Provider value={{
       userId,
@@ -62,6 +72,7 @@ export function UserCompanyProvider({ children }) {
       companies,
       currentCompany,
       setCurrentCompany,
+      company, // 👈 AGGIUNTO: oggetto azienda completo
       apiBase
     }}>
       {children}

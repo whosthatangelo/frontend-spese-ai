@@ -47,7 +47,7 @@ function Dashboard() {
 
   // Applica filtri in base al periodo selezionato
   const filterDataByPeriod = (data, dateField) => {
-    if (!selectedPeriod || selectedPeriod === 'all') return data;
+    if (!data || data.length === 0) return [];
 
     const now = new Date();
     const periodStart = new Date();
@@ -71,7 +71,7 @@ function Dashboard() {
 
     return data.filter(item => {
       const itemDate = new Date(item[dateField]);
-      return itemDate >= periodStart;
+      return itemDate >= periodStart && itemDate <= now;
     });
   };
 
@@ -83,6 +83,21 @@ function Dashboard() {
   const periodExpenseTotal = filteredExpenses.reduce((acc, exp) => acc + parseFloat(exp.importo || 0), 0);
   const periodIncomeTotal = filteredIncomes.reduce((acc, inc) => acc + parseFloat(inc.importo || 0), 0);
   const periodProfit = periodIncomeTotal - periodExpenseTotal;
+  const periodProfitMargin = periodIncomeTotal > 0 ? ((periodProfit / periodIncomeTotal) * 100) : 0;
+
+  // Usa dati del periodo selezionato o dati completi come fallback
+  const displayIncomeTotal = selectedPeriod === 'month' ? 
+    (incomeStats ? parseFloat(incomeStats.totale || 0) : periodIncomeTotal) : 
+    periodIncomeTotal;
+  const displayExpenseTotal = selectedPeriod === 'month' ? 
+    (stats ? parseFloat(stats.totale || 0) : periodExpenseTotal) : 
+    periodExpenseTotal;
+  const displayIncomeCount = selectedPeriod === 'month' ? 
+    (incomeStats?.numero || filteredIncomes.length) : 
+    filteredIncomes.length;
+  const displayExpenseCount = selectedPeriod === 'month' ? 
+    (stats?.numero || filteredExpenses.length) : 
+    filteredExpenses.length;
   // Calcoli avanzati (mantengo quelli originali per compatibilità)
   const profit = incomeStats && stats ? 
     (parseFloat(incomeStats.totale || 0) - parseFloat(stats.totale || 0)) : 0;
@@ -215,13 +230,13 @@ function Dashboard() {
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
                             <small className="opacity-90">💰 Ricavi Totali</small>
-                            <h4 className="mb-0 fw-bold">€{selectedPeriod === 'month' && incomeStats ? parseFloat(incomeStats.totale || 0).toLocaleString() : periodIncomeTotal.toLocaleString()}</h4>
+                            <h4 className="mb-0 fw-bold">€{displayIncomeTotal.toLocaleString()}</h4>
                           </div>
                           <div className="text-end">
                             <div className="badge bg-white bg-opacity-30 rounded-pill mb-1" style={{ fontSize: '0.75rem' }}>
                               📈 +12%
                             </div>
-                            <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>{selectedPeriod === 'month' && incomeStats ? incomeStats.numero || 0 : filteredIncomes.length} incassi</small>
+                            <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>{displayIncomeCount} incassi</small>
                           </div>
                         </div>
                       </div>
@@ -234,13 +249,13 @@ function Dashboard() {
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
                             <small className="opacity-90">🧾 Spese Totali</small>
-                            <h4 className="mb-0 fw-bold">€{selectedPeriod === 'month' && stats ? parseFloat(stats.totale || 0).toLocaleString() : periodExpenseTotal.toLocaleString()}</h4>
+                            <h4 className="mb-0 fw-bold">€{displayExpenseTotal.toLocaleString()}</h4>
                           </div>
                           <div className="text-end">
                             <div className="badge bg-white bg-opacity-30 rounded-pill mb-1" style={{ fontSize: '0.75rem' }}>
                               📉 +8%
                             </div>
-                            <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>{selectedPeriod === 'month' && stats ? stats.numero || 0 : filteredExpenses.length} fatture</small>
+                            <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>{displayExpenseCount} fatture</small>
                           </div>
                         </div>
                       </div>
@@ -249,19 +264,19 @@ function Dashboard() {
 
                   <div className="col-lg-4 col-md-12">
                     <div className={`card text-white border-0 hover-card`} style={{ 
-                      background: profit >= 0 ? 
+                      background: (displayIncomeTotal - displayExpenseTotal) >= 0 ? 
                         'linear-gradient(135deg, #4facfe, #00f2fe)' : 
                         'linear-gradient(135deg, #fa709a, #fee140)'
                     }}>
                       <div className="card-body p-3">
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
-                            <small className="opacity-90">{profit >= 0 ? '📈' : '📉'} Profitto Netto</small>
-                            <h4 className="mb-0 fw-bold">€{selectedPeriod === 'month' ? profit.toLocaleString() : periodProfit.toLocaleString()}</h4>
+                            <small className="opacity-90">{(displayIncomeTotal - displayExpenseTotal) >= 0 ? '📈' : '📉'} Profitto Netto</small>
+                            <h4 className="mb-0 fw-bold">€{(displayIncomeTotal - displayExpenseTotal).toLocaleString()}</h4>
                           </div>
                           <div className="text-end">
                             <div className="badge bg-white bg-opacity-30 rounded-pill mb-1" style={{ fontSize: '0.75rem' }}>
-                              {profit >= 0 ? '📈' : '📉'} {profitMargin.toFixed(1)}%
+                              {(displayIncomeTotal - displayExpenseTotal) >= 0 ? '📈' : '📉'} {displayIncomeTotal > 0 ? (((displayIncomeTotal - displayExpenseTotal) / displayIncomeTotal) * 100).toFixed(1) : 0}%
                             </div>
                             <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>margine</small>
                           </div>
@@ -279,7 +294,7 @@ function Dashboard() {
                         <h6 className="mb-0">📈 Andamento Finanziario</h6>
                       </div>
                       <div className="card-body p-3">
-                        <ExpensesChart expenses={selectedPeriod === 'month' ? expenses : filteredExpenses} />
+                        <ExpensesChart expenses={filteredExpenses.length > 0 ? filteredExpenses : expenses} />
                       </div>
                     </div>
                   </div>

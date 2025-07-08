@@ -9,7 +9,7 @@ import './App.css';
 
 export default function App() {
   const navigate = useNavigate();
-  const { setUserId, setCompanyId, company } = useUserCompany();
+  const { setUserId, setCompanyId } = useUserCompany();
 
   const handleLogout = () => {
     localStorage.removeItem('userId');
@@ -26,12 +26,10 @@ export default function App() {
           <Link className="navbar-brand fw-bold" to="/">💸 ExpenseAI</Link>
           <div className="d-flex align-items-center me-3">
             <CompanySwitcher />
-            {company && <span className="text-light ms-2">[{company.nome}]</span>}
           </div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
             <span className="navbar-toggler-icon"></span>
           </button>
-
           <div className="collapse navbar-collapse" id="navContent">
             <ul className="navbar-nav ms-auto align-items-center">
               <li className="nav-item">
@@ -55,7 +53,6 @@ export default function App() {
           </div>
         </div>
       </nav>
-
       <div className="container mt-4">
         <Routes>
           <Route path="/" element={<Home />} />

@@ -1,7 +1,7 @@
 // src/pages/Spese.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import ExpenseList from '../components/ExpenseList';
+import ExpenseListClean from '../components/ExpenseListClean';
 import { useUserCompany } from '../contexts/UserCompanyContext';
 import { getStats } from '../api';
 
@@ -149,12 +149,12 @@ function Spese() {
         <div className="row justify-content-center">
           <div className="col-12">
 
-            {/* Barra Controlli Essenziali */}
+            {/* Barra Controlli Unica */}
             <div className="card mb-4">
               <div className="card-body p-3">
-                <div className="row align-items-center">
-                  <div className="col-md-6">
-                    <div className="d-flex gap-2 flex-wrap">
+                <div className="row align-items-center g-3">
+                  <div className="col-md-4">
+                    <div className="d-flex gap-2">
                       <Link to="/" className="btn btn-primary rounded-pill" style={{ fontSize: '0.9rem' }}>
                         🎙️ Nuova Spesa
                       </Link>
@@ -170,35 +170,32 @@ function Spese() {
                       </button>
                     </div>
                   </div>
-                  <div className="col-md-6">
-                    <div className="d-flex gap-2 justify-content-md-end flex-wrap">
-                      {/* Filtro Periodo */}
-                      <select 
-                        className="form-select form-select-sm"
-                        style={{ maxWidth: '140px', fontSize: '0.85rem' }}
-                        value={filterPeriod}
-                        onChange={e => setFilterPeriod(e.target.value)}
-                      >
-                        <option value="all">📅 Tutti</option>
-                        <option value="today">Oggi</option>
-                        <option value="week">Settimana</option>
-                        <option value="month">Mese</option>
-                        <option value="year">Anno</option>
-                      </select>
-
-                      {/* Ordinamento */}
-                      <select 
-                        className="form-select form-select-sm"
-                        style={{ maxWidth: '140px', fontSize: '0.85rem' }}
-                        value={sortBy}
-                        onChange={e => setSortBy(e.target.value)}
-                      >
-                        <option value="date_desc">📅 Recenti</option>
-                        <option value="date_asc">📅 Vecchie</option>
-                        <option value="amount_desc">💰 Importo ↓</option>
-                        <option value="amount_asc">💰 Importo ↑</option>
-                      </select>
-                    </div>
+                  <div className="col-md-4">
+                    <select 
+                      className="form-select form-select-sm"
+                      style={{ fontSize: '0.85rem' }}
+                      value={filterPeriod}
+                      onChange={e => setFilterPeriod(e.target.value)}
+                    >
+                      <option value="all">📅 Tutti i periodi</option>
+                      <option value="today">Oggi</option>
+                      <option value="week">Settimana</option>
+                      <option value="month">Mese</option>
+                      <option value="year">Anno</option>
+                    </select>
+                  </div>
+                  <div className="col-md-4">
+                    <select 
+                      className="form-select form-select-sm"
+                      style={{ fontSize: '0.85rem' }}
+                      value={sortBy}
+                      onChange={e => setSortBy(e.target.value)}
+                    >
+                      <option value="date_desc">📅 Più recenti</option>
+                      <option value="date_asc">📅 Più vecchie</option>
+                      <option value="amount_desc">💰 Importo ↓</option>
+                      <option value="amount_asc">💰 Importo ↑</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -217,7 +214,7 @@ function Spese() {
                 </div>
               </div>
               <div className="card-body p-3">
-                <ExpenseList 
+                <ExpenseListClean 
                   key={listKey}
                   filterPeriod={filterPeriod}
                   sortBy={sortBy}

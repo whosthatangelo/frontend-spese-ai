@@ -35,13 +35,13 @@ function Incassi() {
       <div className="container py-5">
         <div className="row justify-content-center">
           <div className="col-md-8 text-center">
-            <div className="card border-0 shadow-lg p-5" style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', borderRadius: '24px' }}>
+            <div className="card card-lg p-5 text-white" style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)' }}>
               <div className="display-1 mb-4">💰</div>
-              <h2 className="mb-3">Gestione Incassi</h2>
+              <h2 className="mb-3 text-white">Gestione Incassi</h2>
               <p className="lead opacity-90 mb-4">
                 Seleziona un'azienda dal menu in alto per iniziare a gestire gli incassi
               </p>
-              <div className="d-flex justify-content-center gap-3">
+              <div className="d-flex justify-content-center gap-3 flex-wrap">
                 <span className="badge bg-white bg-opacity-20 rounded-pill px-3 py-2">
                   ✨ Registrazione vocale
                 </span>
@@ -63,13 +63,11 @@ function Incassi() {
     <>
       {/* Header Potenziato */}
       <section
-        className="py-5 text-white mb-5 position-relative overflow-hidden"
+        className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
         style={{
           background: "linear-gradient(135deg, #16a34a, #15803d)",
-          borderRadius: "24px",
           margin: "0 auto",
-          maxWidth: "1200px",
-          boxShadow: "0 20px 40px rgba(22, 163, 74, 0.3)"
+          maxWidth: "1200px"
         }}
       >
         {/* Decorazioni di sfondo */}
@@ -83,10 +81,10 @@ function Incassi() {
         <div className="container text-center position-relative">
           <div className="row align-items-center">
             <div className="col-lg-8 mx-auto">
-              <h1 className="display-4 fw-bold mb-3">
-                💰 Centro Incassi
+              <h1 className="display-4 fw-bold mb-3 text-white">
+                💰 Centro Incassi Enterprise
               </h1>
-              <h2 className="h4 mb-3 opacity-90">{company.nome}</h2>
+              <h2 className="h4 mb-3 opacity-90 text-white">{company.nome}</h2>
               <p className="lead mb-4 opacity-75">
                 Gestione intelligente degli incassi con analytics in tempo reale
               </p>
@@ -121,7 +119,7 @@ function Incassi() {
 
       <div className="container mb-5">
         {/* Barra Azioni */}
-        <div className="card border-0 shadow-sm rounded-4 mb-4">
+        <div className="card mb-4">
           <div className="card-body py-3">
             <div className="row align-items-center">
               <div className="col-md-6">
@@ -179,8 +177,8 @@ function Incassi() {
         </div>
 
         {/* Lista Incassi Potenziata */}
-        <div className="card border-0 shadow-sm rounded-4">
-          <div className="card-header bg-transparent border-0 pt-4 px-4">
+        <div className="card">
+          <div className="card-header bg-transparent pt-4 px-4">
             <div className="d-flex justify-content-between align-items-center">
               <h5 className="mb-0">📈 Registro Completo</h5>
               <span className="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">
@@ -204,7 +202,7 @@ function Incassi() {
         {/* Azioni Rapide */}
         <div className="row g-4 mt-4">
           <div className="col-md-4">
-            <div className="card border-0 bg-light rounded-4 text-center p-4">
+            <div className="card text-center p-4 hover-card">
               <div className="display-6 mb-3">📊</div>
               <h6>Analisi Dettagliate</h6>
               <p className="text-muted small mb-3">Visualizza report e statistiche avanzate</p>
@@ -214,7 +212,7 @@ function Incassi() {
             </div>
           </div>
           <div className="col-md-4">
-            <div className="card border-0 bg-light rounded-4 text-center p-4">
+            <div className="card text-center p-4 hover-card">
               <div className="display-6 mb-3">📤</div>
               <h6>Export Dati</h6>
               <p className="text-muted small mb-3">Scarica incassi in formato Excel/PDF</p>
@@ -224,7 +222,7 @@ function Incassi() {
             </div>
           </div>
           <div className="col-md-4">
-            <div className="card border-0 bg-light rounded-4 text-center p-4">
+            <div className="card text-center p-4 hover-card">
               <div className="display-6 mb-3">🔔</div>
               <h6>Notifiche</h6>
               <p className="text-muted small mb-3">Imposta alert per obiettivi mensili</p>

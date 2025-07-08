@@ -36,15 +36,9 @@ function Spese() {
       <div className="container py-5">
         <div className="row justify-content-center">
           <div className="col-md-8 text-center">
-            <div 
-              className="card border-0 shadow-lg p-5 text-white" 
-              style={{ 
-                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', 
-                borderRadius: '24px' 
-              }}
-            >
+            <div className="card card-lg p-5 text-white" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
               <div className="display-1 mb-4">🧾</div>
-              <h2 className="mb-3">Centro Controllo Spese</h2>
+              <h2 className="mb-3 text-white">Centro Controllo Spese</h2>
               <p className="lead opacity-90 mb-4">
                 Seleziona un'azienda dal menu in alto per accedere al sistema di gestione spese avanzato
               </p>
@@ -73,13 +67,11 @@ function Spese() {
     <>
       {/* Header Potenziato */}
       <section
-        className="py-5 text-white mb-5 position-relative overflow-hidden"
+        className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
         style={{
           background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-          borderRadius: "24px",
           margin: "0 auto",
-          maxWidth: "1200px",
-          boxShadow: "0 20px 40px rgba(240, 147, 251, 0.3)"
+          maxWidth: "1200px"
         }}
       >
         {/* Decorazioni di sfondo */}
@@ -93,10 +85,10 @@ function Spese() {
         <div className="container text-center position-relative">
           <div className="row align-items-center">
             <div className="col-lg-8 mx-auto">
-              <h1 className="display-4 fw-bold mb-3">
+              <h1 className="display-4 fw-bold mb-3 text-white">
                 🧾 Centro Spese Enterprise
               </h1>
-              <h2 className="h4 mb-3 opacity-90">{company.nome}</h2>
+              <h2 className="h4 mb-3 opacity-90 text-white">{company.nome}</h2>
               <p className="lead mb-4 opacity-75">
                 Sistema avanzato di gestione e tracking delle spese aziendali
               </p>
@@ -131,7 +123,7 @@ function Spese() {
 
       <div className="container mb-5">
         {/* Barra Controlli Avanzata */}
-        <div className="card border-0 shadow-sm rounded-4 mb-4">
+        <div className="card mb-4">
           <div className="card-body py-3">
             <div className="row align-items-center">
               <div className="col-lg-6">
@@ -220,48 +212,40 @@ function Spese() {
         {/* Analytics Cards */}
         <div className="row g-4 mb-4">
           <div className="col-lg-3 col-md-6">
-            <div className="card border-0 shadow-sm rounded-4 h-100">
-              <div className="card-body text-center p-4">
-                <div className="display-6 mb-2">💰</div>
-                <h6 className="text-muted mb-1">Spesa Media</h6>
-                <h4 className="text-primary mb-0">
-                  €{quickStats ? (parseFloat(quickStats.totale || 0) / Math.max(quickStats.numero || 1, 1)).toFixed(2) : '0.00'}
-                </h4>
-              </div>
+            <div className="card text-center p-4 h-100 hover-card">
+              <div className="display-6 mb-2">💰</div>
+              <h6 className="text-muted mb-1">Spesa Media</h6>
+              <h4 className="text-primary mb-0">
+                €{quickStats ? (parseFloat(quickStats.totale || 0) / Math.max(quickStats.numero || 1, 1)).toFixed(2) : '0.00'}
+              </h4>
             </div>
           </div>
           <div className="col-lg-3 col-md-6">
-            <div className="card border-0 shadow-sm rounded-4 h-100">
-              <div className="card-body text-center p-4">
-                <div className="display-6 mb-2">📈</div>
-                <h6 className="text-muted mb-1">Trend Mensile</h6>
-                <h4 className="text-success mb-0">+12%</h4>
-              </div>
+            <div className="card text-center p-4 h-100 hover-card">
+              <div className="display-6 mb-2">📈</div>
+              <h6 className="text-muted mb-1">Trend Mensile</h6>
+              <h4 className="text-success mb-0">+12%</h4>
             </div>
           </div>
           <div className="col-lg-3 col-md-6">
-            <div className="card border-0 shadow-sm rounded-4 h-100">
-              <div className="card-body text-center p-4">
-                <div className="display-6 mb-2">⏰</div>
-                <h6 className="text-muted mb-1">In Attesa</h6>
-                <h4 className="text-warning mb-0">3</h4>
-              </div>
+            <div className="card text-center p-4 h-100 hover-card">
+              <div className="display-6 mb-2">⏰</div>
+              <h6 className="text-muted mb-1">In Attesa</h6>
+              <h4 className="text-warning mb-0">3</h4>
             </div>
           </div>
           <div className="col-lg-3 col-md-6">
-            <div className="card border-0 shadow-sm rounded-4 h-100">
-              <div className="card-body text-center p-4">
-                <div className="display-6 mb-2">✅</div>
-                <h6 className="text-muted mb-1">Pagate</h6>
-                <h4 className="text-success mb-0">{quickStats ? quickStats.numero - 3 : 0}</h4>
-              </div>
+            <div className="card text-center p-4 h-100 hover-card">
+              <div className="display-6 mb-2">✅</div>
+              <h6 className="text-muted mb-1">Pagate</h6>
+              <h4 className="text-success mb-0">{quickStats ? quickStats.numero - 3 : 0}</h4>
             </div>
           </div>
         </div>
 
         {/* Lista Spese Principale */}
-        <div className="card border-0 shadow-sm rounded-4">
-          <div className="card-header bg-transparent border-0 pt-4 px-4">
+        <div className="card">
+          <div className="card-header bg-transparent pt-4 px-4">
             <div className="d-flex justify-content-between align-items-center">
               <h5 className="mb-0">📋 Registro Completo Spese</h5>
               <div className="d-flex gap-2">
@@ -292,57 +276,53 @@ function Spese() {
         {/* Sezione Insights e Azioni */}
         <div className="row g-4 mt-4">
           <div className="col-md-6">
-            <div className="card border-0 bg-light rounded-4 h-100">
-              <div className="card-body p-4">
-                <h6 className="mb-3">💡 Insights Automatici</h6>
-                <div className="small text-muted space-y-2">
-                  <div className="d-flex align-items-center mb-2">
-                    <span className="text-success me-2">✓</span>
-                    Le spese di questo mese sono in linea con il budget
-                  </div>
-                  <div className="d-flex align-items-center mb-2">
-                    <span className="text-warning me-2">⚠</span>
-                    3 fatture in attesa di pagamento
-                  </div>
-                  <div className="d-flex align-items-center mb-2">
-                    <span className="text-info me-2">ℹ</span>
-                    Metodo di pagamento più utilizzato: POS (45%)
-                  </div>
+            <div className="card p-4 h-100 hover-card">
+              <h6 className="mb-3">💡 Insights Automatici</h6>
+              <div className="small text-muted space-y-2">
+                <div className="d-flex align-items-center mb-2">
+                  <span className="text-success me-2">✓</span>
+                  Le spese di questo mese sono in linea con il budget
+                </div>
+                <div className="d-flex align-items-center mb-2">
+                  <span className="text-warning me-2">⚠</span>
+                  3 fatture in attesa di pagamento
+                </div>
+                <div className="d-flex align-items-center mb-2">
+                  <span className="text-info me-2">ℹ</span>
+                  Metodo di pagamento più utilizzato: POS (45%)
                 </div>
               </div>
             </div>
           </div>
           <div className="col-md-6">
-            <div className="card border-0 bg-light rounded-4 h-100">
-              <div className="card-body p-4">
-                <h6 className="mb-3">🚀 Azioni Rapide</h6>
-                <div className="d-grid gap-2">
-                  <Link to="/dashboard" className="btn btn-outline-primary btn-sm rounded-pill">
-                    📊 Visualizza Analytics Dettagliate
-                  </Link>
-                  <button className="btn btn-outline-success btn-sm rounded-pill">
-                    📄 Genera Report Mensile
-                  </button>
-                  <button className="btn btn-outline-warning btn-sm rounded-pill">
-                    ⚡ Sollecita Pagamenti in Sospeso
-                  </button>
-                </div>
+            <div className="card p-4 h-100 hover-card">
+              <h6 className="mb-3">🚀 Azioni Rapide</h6>
+              <div className="d-grid gap-2">
+                <Link to="/dashboard" className="btn btn-outline-primary btn-sm rounded-pill">
+                  📊 Visualizza Analytics Dettagliate
+                </Link>
+                <button className="btn btn-outline-success btn-sm rounded-pill">
+                  📄 Genera Report Mensile
+                </button>
+                <button className="btn btn-outline-warning btn-sm rounded-pill">
+                  ⚡ Sollecita Pagamenti in Sospeso
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         {/* Footer con Statistiche Avanzate */}
-        <div className="card border-0 bg-gradient-primary text-white rounded-4 mt-4">
+        <div className="card bg-gradient-primary text-white mt-4">
           <div className="card-body text-center py-4">
             <div className="row">
               <div className="col-md-3">
                 <div className="opacity-75 small">Budget Utilizzato</div>
-                <div className="h5 mb-0">72%</div>
+                <div className="h5 mb-0 text-white">72%</div>
               </div>
               <div className="col-md-3">
                 <div className="opacity-75 small">Previsione Fine Mese</div>
-                <div className="h5 mb-0">€{quickStats ? (parseFloat(quickStats.totale) * 1.15).toFixed(0) : '0'}</div>
+                <div className="h5 mb-0 text-white">€{quickStats ? (parseFloat(quickStats.totale) * 1.15).toFixed(0) : '0'}</div>
               </div>
               <div className="col-md-3">
                 <div className="opacity-75 small">Risparmio Potenziale</div>

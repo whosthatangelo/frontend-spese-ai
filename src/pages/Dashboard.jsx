@@ -47,27 +47,61 @@ function Dashboard() {
 
   // Calcoli avanzati
   const profit = incomeStats && stats ? 
-    (parseFloat(incomeStats.totale) - parseFloat(stats.totale)) : 0;
+    (parseFloat(incomeStats.totale || 0) - parseFloat(stats.totale || 0)) : 0;
 
-  const profitMargin = incomeStats && stats && parseFloat(incomeStats.totale) > 0 ? 
-    ((parseFloat(incomeStats.totale) - parseFloat(stats.totale)) / parseFloat(incomeStats.totale) * 100) : 0;
+  const profitMargin = incomeStats && stats && parseFloat(incomeStats.totale || 0) > 0 ? 
+    ((parseFloat(incomeStats.totale || 0) - parseFloat(stats.totale || 0)) / parseFloat(incomeStats.totale || 0) * 100) : 0;
 
   const recentActivity = [...(expenses || []), ...(incomes || [])]
-    .sort((a, b) => new Date(b.data_creazione || b.data_incasso) - new Date(a.data_creazione || a.data_incasso))
+    .sort((a, b) => new Date(b.data_creazione || b.data_incasso || b.data_fattura) - new Date(a.data_creazione || a.data_incasso || a.data_fattura))
     .slice(0, 5);
 
   if (!company) {
     return (
       <div className="container py-5">
         <div className="row justify-content-center">
-          <div className="col-md-8 text-center">
-            <div className="card card-lg p-5">
-              <div className="display-1 mb-4">🏢</div>
-              <h2 className="text-muted mb-3">Seleziona un'azienda</h2>
-              <p className="lead text-muted">
-                Scegli un'azienda dal selettore in alto per visualizzare analytics avanzate.
-              </p>
-            </div>
+          <div className="col-lg-10">
+            <section
+              className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+              }}
+            >
+              <div className="position-absolute top-0 end-0 opacity-10">
+                <div style={{ 
+                  fontSize: '8rem', 
+                  transform: 'rotate(15deg)',
+                  animation: 'float 6s ease-in-out infinite'
+                }}>📊</div>
+              </div>
+              <div className="container text-center position-relative">
+                <div className="display-1 mb-4">📊</div>
+                <h1 className="display-4 fw-bold mb-4">Business Analytics</h1>
+                <p className="lead mb-4 opacity-90">
+                  Seleziona un'azienda dal menu in alto per visualizzare le analytics
+                </p>
+                <div className="row g-3 justify-content-center mb-4">
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>📈 Grafici avanzati</span>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>💰 KPI in tempo reale</span>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>🎯 Insights automatici</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="alert alert-warning d-inline-block bg-white bg-opacity-90 text-dark border-0 rounded-pill px-4 py-3">
+                  <strong>⚠️ Seleziona un'azienda</strong> dal menu in alto per iniziare
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -76,192 +110,236 @@ function Dashboard() {
 
   return (
     <>
-      {/* Header con Gradient Animato */}
+      {/* Header Coerente con Home */}
       <section
-        className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
+        className="py-4 text-white mb-4 position-relative overflow-hidden"
         style={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          margin: "0 auto",
-          maxWidth: "1200px"
+          borderRadius: "16px",
+          margin: "0 auto"
         }}
       >
-        <div className="position-absolute top-0 end-0 p-3">
-          <select 
-            className="form-select form-select-sm bg-white bg-opacity-20 text-white border-0"
-            value={selectedPeriod}
-            onChange={e => setSelectedPeriod(e.target.value)}
-          >
-            <option value="week">Ultima settimana</option>
-            <option value="month">Ultimo mese</option>
-            <option value="quarter">Ultimo trimestre</option>
-            <option value="year">Ultimo anno</option>
-          </select>
+        {/* Decorazioni animate */}
+        <div className="position-absolute top-0 end-0 opacity-10">
+          <div style={{ 
+            fontSize: '4rem', 
+            transform: 'rotate(15deg)', 
+            animation: 'float 6s ease-in-out infinite' 
+          }}>📊</div>
         </div>
-        <div className="container text-center">
-          <h1 className="display-4 fw-bold mb-3 text-white">📊 Business Analytics</h1>
-          <h2 className="h4 mb-2 text-white">{company.nome}</h2>
-          <p className="lead opacity-90">Dashboard avanzata con insights in tempo reale</p>
+        <div className="position-absolute bottom-0 start-0 opacity-05">
+          <div style={{ 
+            fontSize: '5rem', 
+            transform: 'rotate(-15deg)',
+            animation: 'float 8s ease-in-out infinite reverse'
+          }}>📈</div>
+        </div>
+
+        <div className="container position-relative">
+          <div className="row align-items-center">
+            <div className="col-md-8">
+              <h1 style={{ fontSize: '2rem', color: 'white', marginBottom: '0.5rem' }}>📊 Business Analytics</h1>
+              <h2 style={{ fontSize: '1.1rem', color: 'white', opacity: 0.9 }}>{company.nome}</h2>
+            </div>
+            <div className="col-md-4 text-md-end">
+              <select 
+                className="form-select form-select-sm bg-white bg-opacity-20 text-white border-0"
+                style={{ fontSize: '0.85rem', maxWidth: '150px', marginLeft: 'auto' }}
+                value={selectedPeriod}
+                onChange={e => setSelectedPeriod(e.target.value)}
+              >
+                <option value="week">Settimana</option>
+                <option value="month">Mese</option>
+                <option value="quarter">Trimestre</option>
+                <option value="year">Anno</option>
+              </select>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="container mb-5">
-        {loading ? (
-          <div className="text-center py-5">
-            <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }}></div>
-            <p className="lead">⚡ Caricamento analytics...</p>
-          </div>
-        ) : (
-          <>
-            {/* KPI Cards Avanzate */}
-            <div className="row g-4 mb-5">
-              {[
-                {
-                  title: 'Ricavi Totali',
-                  value: incomeStats ? `€${parseFloat(incomeStats.totale).toLocaleString()}` : '€0',
-                  icon: '💰',
-                  trend: '+12%',
-                  bg: 'linear-gradient(135deg, #667eea, #764ba2)',
-                  subtitle: `${incomeStats?.numero || 0} transazioni`
-                },
-                {
-                  title: 'Spese Totali', 
-                  value: stats ? `€${parseFloat(stats.totale).toLocaleString()}` : '€0',
-                  icon: '📊',
-                  trend: '+8%',
-                  bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
-                  subtitle: `${stats?.numero || 0} fatture`
-                },
-                {
-                  title: 'Profitto Netto',
-                  value: `€${profit.toLocaleString()}`,
-                  icon: profit >= 0 ? '📈' : '📉',
-                  trend: `${profit >= 0 ? '+' : ''}${profitMargin.toFixed(1)}%`,
-                  bg: profit >= 0 ? 
-                    'linear-gradient(135deg, #4facfe, #00f2fe)' : 
-                    'linear-gradient(135deg, #fa709a, #fee140)',
-                  subtitle: 'Margine di profitto'
-                }
-              ].map((card, idx) => (
-                <div key={idx} className="col-lg-4 col-md-6">
-                  <div 
-                    className="card border-0 text-white h-100 position-relative overflow-hidden hover-card"
-                    style={{ 
-                      background: card.bg,
-                      backdropFilter: 'blur(10px)'
-                    }}
-                  >
-                    <div className="card-body p-4">
-                      <div className="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                          <h6 className="opacity-90 mb-1 text-white">{card.title}</h6>
-                          <h3 className="fw-bold mb-0 text-white">{card.value}</h3>
+      <div className="container pb-3">
+        <div className="row justify-content-center">
+          <div className="col-12">
+
+            {loading ? (
+              <div className="text-center py-5">
+                <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }}></div>
+                <p className="lead">⚡ Caricamento analytics...</p>
+              </div>
+            ) : (
+              <>
+                {/* KPI Cards Compatte */}
+                <div className="row g-3 mb-4">
+                  <div className="col-lg-4 col-md-6">
+                    <div className="card text-white border-0 hover-card" style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)' }}>
+                      <div className="card-body p-3">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div>
+                            <small className="opacity-90">💰 Ricavi Totali</small>
+                            <h4 className="mb-0 fw-bold">€{incomeStats ? parseFloat(incomeStats.totale || 0).toLocaleString() : '0'}</h4>
+                          </div>
+                          <div className="text-end">
+                            <div className="badge bg-white bg-opacity-20 rounded-pill mb-1">+12%</div>
+                            <small className="opacity-75 d-block">{incomeStats?.numero || 0} incassi</small>
+                          </div>
                         </div>
-                        <div className="display-6">{card.icon}</div>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-end">
-                        <small className="opacity-75">{card.subtitle}</small>
-                        <span className="badge bg-white bg-opacity-20 rounded-pill">
-                          {card.trend}
-                        </span>
                       </div>
                     </div>
-                    <div 
-                      className="position-absolute bottom-0 start-0 w-100 opacity-10"
-                      style={{ height: '40px', background: 'white' }}
-                    ></div>
                   </div>
-                </div>
-              ))}
-            </div>
 
-            {/* Statistiche Dettagliate */}
-            <div className="row g-4 mb-5">
-              <div className="col-lg-8">
-                <div className="card h-100 hover-card">
-                  <div className="card-header bg-transparent pt-4 px-4">
-                    <h5 className="mb-0">📈 Andamento Finanziario</h5>
-                  </div>
-                  <div className="card-body p-4">
-                    <ExpensesChart expenses={expenses} />
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-4">
-                <div className="card h-100 hover-card">
-                  <div className="card-header bg-transparent pt-4 px-4">
-                    <h5 className="mb-0">⚡ Attività Recenti</h5>
-                  </div>
-                  <div className="card-body p-4">
-                    {recentActivity.length > 0 ? (
-                      <div className="list-group list-group-flush">
-                        {recentActivity.map((item, idx) => (
-                          <div key={idx} className="list-group-item border-0 px-0 py-2">
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="d-flex align-items-center">
-                                <div className="me-3">
-                                  {item.numero_fattura ? '🧾' : '💰'}
-                                </div>
-                                <div>
-                                  <div className="fw-medium">
-                                    {item.numero_fattura ? 'Spesa' : 'Incasso'}
-                                  </div>
-                                  <small className="text-muted">
-                                    {new Date(item.data_creazione || item.data_incasso).toLocaleDateString('it-IT')}
-                                  </small>
-                                </div>
-                              </div>
-                              <span className={`fw-bold ${item.numero_fattura ? 'text-danger' : 'text-success'}`}>
-                                {item.numero_fattura ? '-' : '+'}€{parseFloat(item.importo || 0).toFixed(2)}
-                              </span>
-                            </div>
+                  <div className="col-lg-4 col-md-6">
+                    <div className="card text-white border-0 hover-card" style={{ background: 'linear-gradient(135deg, #f093fb, #f5576c)' }}>
+                      <div className="card-body p-3">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div>
+                            <small className="opacity-90">🧾 Spese Totali</small>
+                            <h4 className="mb-0 fw-bold">€{stats ? parseFloat(stats.totale || 0).toLocaleString() : '0'}</h4>
                           </div>
-                        ))}
+                          <div className="text-end">
+                            <div className="badge bg-white bg-opacity-20 rounded-pill mb-1">+8%</div>
+                            <small className="opacity-75 d-block">{stats?.numero || 0} fatture</small>
+                          </div>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="text-center py-4 text-muted">
-                        <div className="display-6 mb-2">📋</div>
-                        <p>Nessuna attività recente</p>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-4 col-md-12">
+                    <div className={`card text-white border-0 hover-card`} style={{ 
+                      background: profit >= 0 ? 
+                        'linear-gradient(135deg, #4facfe, #00f2fe)' : 
+                        'linear-gradient(135deg, #fa709a, #fee140)'
+                    }}>
+                      <div className="card-body p-3">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div>
+                            <small className="opacity-90">{profit >= 0 ? '📈' : '📉'} Profitto Netto</small>
+                            <h4 className="mb-0 fw-bold">€{profit.toLocaleString()}</h4>
+                          </div>
+                          <div className="text-end">
+                            <div className="badge bg-white bg-opacity-20 rounded-pill mb-1">
+                              {profitMargin.toFixed(1)}%
+                            </div>
+                            <small className="opacity-75 d-block">margine</small>
+                          </div>
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Insights Rapidi */}
-            <div className="row g-4">
-              <div className="col-md-3">
-                <div className="card text-center p-3 hover-card">
-                  <div className="display-6 mb-2">💳</div>
-                  <h6>Metodo Preferito</h6>
-                  <p className="text-muted mb-0">POS</p>
+                {/* Grafico e Attività */}
+                <div className="row g-4 mb-4">
+                  <div className="col-lg-8">
+                    <div className="card hover-card">
+                      <div className="card-header bg-transparent py-2 px-3">
+                        <h6 className="mb-0">📈 Andamento Finanziario</h6>
+                      </div>
+                      <div className="card-body p-3">
+                        <ExpensesChart expenses={expenses} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-4">
+                    <div className="card hover-card h-100">
+                      <div className="card-header bg-transparent py-2 px-3">
+                        <h6 className="mb-0">⚡ Attività Recenti</h6>
+                      </div>
+                      <div className="card-body p-3">
+                        {recentActivity.length > 0 ? (
+                          <div className="space-y-3">
+                            {recentActivity.map((item, idx) => (
+                              <div key={idx} className="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                <div className="d-flex align-items-center">
+                                  <div className={`rounded-circle p-1 me-2 ${item.numero_fattura ? 'bg-danger bg-opacity-10' : 'bg-success bg-opacity-10'}`} style={{ width: '30px', height: '30px' }}>
+                                    <span style={{ fontSize: '0.8rem' }}>{item.numero_fattura ? '🧾' : '💰'}</span>
+                                  </div>
+                                  <div>
+                                    <div style={{ fontSize: '0.85rem', fontWeight: '500' }}>
+                                      {item.numero_fattura ? 'Spesa' : 'Incasso'}
+                                    </div>
+                                    <small className="text-muted">
+                                      {new Date(item.data_creazione || item.data_incasso || item.data_fattura).toLocaleDateString('it-IT')}
+                                    </small>
+                                  </div>
+                                </div>
+                                <span className={`fw-bold ${item.numero_fattura ? 'text-danger' : 'text-success'}`} style={{ fontSize: '0.85rem' }}>
+                                  {item.numero_fattura ? '-' : '+'}€{parseFloat(item.importo || 0).toFixed(2)}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-4 text-muted">
+                            <div style={{ fontSize: '2rem', marginBottom: '0.5rem', opacity: 0.5 }}>📋</div>
+                            <p style={{ fontSize: '0.9rem' }}>Nessuna attività recente</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-3">
-                <div className="card text-center p-3 hover-card">
-                  <div className="display-6 mb-2">📅</div>
-                  <h6>Media Giornaliera</h6>
-                  <p className="text-muted mb-0">€{stats?.media_per_giorno || 0}</p>
+
+                {/* Insights Compatti */}
+                <div className="row g-3">
+                  <div className="col-lg-3 col-md-6">
+                    <div className="card text-center p-3 hover-card">
+                      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>💳</div>
+                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Metodo Preferito</h6>
+                      <p className="text-muted mb-0" style={{ fontSize: '0.8rem' }}>POS</p>
+                    </div>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <div className="card text-center p-3 hover-card">
+                      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📅</div>
+                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Media Giornaliera</h6>
+                      <p className="text-muted mb-0" style={{ fontSize: '0.8rem' }}>€{stats?.media_per_giorno || 0}</p>
+                    </div>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <div className="card text-center p-3 hover-card">
+                      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎯</div>
+                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Obiettivo Mensile</h6>
+                      <p className="text-warning mb-0 fw-bold" style={{ fontSize: '0.8rem' }}>85% raggiunto</p>
+                    </div>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <div className="card text-center p-3 hover-card">
+                      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⭐</div>
+                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Score Finanziario</h6>
+                      <p className="text-success mb-0 fw-bold" style={{ fontSize: '0.8rem' }}>Eccellente</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-3">
-                <div className="card text-center p-3 hover-card">
-                  <div className="display-6 mb-2">🎯</div>
-                  <h6>Obiettivo Mensile</h6>
-                  <p className="text-muted mb-0">85% raggiunto</p>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="card text-center p-3 hover-card">
-                  <div className="display-6 mb-2">⭐</div>
-                  <h6>Score Finanziario</h6>
-                  <p className="text-success mb-0 fw-bold">Eccellente</p>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+              </>
+            )}
+
+          </div>
+        </div>
       </div>
+
+      {/* CSS per le animazioni */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(15deg); }
+          50% { transform: translateY(-20px) rotate(15deg); }
+        }
+
+        .hover-card {
+          transition: all 0.3s ease;
+        }
+
+        .hover-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .space-y-3 > * + * {
+          margin-top: 0.75rem;
+        }
+      `}</style>
     </>
   );
 }

@@ -249,14 +249,14 @@ function Home() {
   return (
     <>
       {/* Hero Section Compatto ma Accattivante */}
-      <div className="container">
-        <section
-          className="py-4 text-white mb-4 position-relative overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            borderRadius: "16px"
-          }}
-        >
+      <section
+        className="py-4 text-white mb-4 position-relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          borderRadius: "16px",
+          margin: "0 auto"
+        }}
+      >
         {/* Decorazioni animate */}
         <div className="position-absolute top-0 end-0 opacity-10">
           <div style={{ 
@@ -298,8 +298,8 @@ function Home() {
               </div>
             </div>
           )}
-        </section>
-      </div>
+        </div>
+      </section>
 
       <div className="container pb-3">
         <div className="row justify-content-center">

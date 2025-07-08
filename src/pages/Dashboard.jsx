@@ -45,7 +45,45 @@ function Dashboard() {
     loadData();
   }, [company]);
 
-  // Calcoli avanzati
+  // Applica filtri in base al periodo selezionato
+  const filterDataByPeriod = (data, dateField) => {
+    if (!selectedPeriod || selectedPeriod === 'all') return data;
+
+    const now = new Date();
+    const periodStart = new Date();
+
+    switch (selectedPeriod) {
+      case 'week':
+        periodStart.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        periodStart.setMonth(now.getMonth() - 1);
+        break;
+      case 'quarter':
+        periodStart.setMonth(now.getMonth() - 3);
+        break;
+      case 'year':
+        periodStart.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        return data;
+    }
+
+    return data.filter(item => {
+      const itemDate = new Date(item[dateField]);
+      return itemDate >= periodStart;
+    });
+  };
+
+  // Dati filtrati per periodo
+  const filteredExpenses = filterDataByPeriod(expenses, 'data_fattura');
+  const filteredIncomes = filterDataByPeriod(incomes, 'data_incasso');
+
+  // Ricalcola statistiche per il periodo selezionato
+  const periodExpenseTotal = filteredExpenses.reduce((acc, exp) => acc + parseFloat(exp.importo || 0), 0);
+  const periodIncomeTotal = filteredIncomes.reduce((acc, inc) => acc + parseFloat(inc.importo || 0), 0);
+  const periodProfit = periodIncomeTotal - periodExpenseTotal;
+  // Calcoli avanzati (mantengo quelli originali per compatibilità)
   const profit = incomeStats && stats ? 
     (parseFloat(incomeStats.totale || 0) - parseFloat(stats.totale || 0)) : 0;
 
@@ -177,11 +215,13 @@ function Dashboard() {
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
                             <small className="opacity-90">💰 Ricavi Totali</small>
-                            <h4 className="mb-0 fw-bold">€{incomeStats ? parseFloat(incomeStats.totale || 0).toLocaleString() : '0'}</h4>
+                            <h4 className="mb-0 fw-bold">€{selectedPeriod === 'month' && incomeStats ? parseFloat(incomeStats.totale || 0).toLocaleString() : periodIncomeTotal.toLocaleString()}</h4>
                           </div>
                           <div className="text-end">
-                            <div className="badge bg-white bg-opacity-20 rounded-pill mb-1">+12%</div>
-                            <small className="opacity-75 d-block">{incomeStats?.numero || 0} incassi</small>
+                            <div className="badge bg-white bg-opacity-30 rounded-pill mb-1" style={{ fontSize: '0.75rem' }}>
+                              📈 +12%
+                            </div>
+                            <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>{selectedPeriod === 'month' && incomeStats ? incomeStats.numero || 0 : filteredIncomes.length} incassi</small>
                           </div>
                         </div>
                       </div>
@@ -194,11 +234,13 @@ function Dashboard() {
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
                             <small className="opacity-90">🧾 Spese Totali</small>
-                            <h4 className="mb-0 fw-bold">€{stats ? parseFloat(stats.totale || 0).toLocaleString() : '0'}</h4>
+                            <h4 className="mb-0 fw-bold">€{selectedPeriod === 'month' && stats ? parseFloat(stats.totale || 0).toLocaleString() : periodExpenseTotal.toLocaleString()}</h4>
                           </div>
                           <div className="text-end">
-                            <div className="badge bg-white bg-opacity-20 rounded-pill mb-1">+8%</div>
-                            <small className="opacity-75 d-block">{stats?.numero || 0} fatture</small>
+                            <div className="badge bg-white bg-opacity-30 rounded-pill mb-1" style={{ fontSize: '0.75rem' }}>
+                              📉 +8%
+                            </div>
+                            <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>{selectedPeriod === 'month' && stats ? stats.numero || 0 : filteredExpenses.length} fatture</small>
                           </div>
                         </div>
                       </div>
@@ -215,13 +257,13 @@ function Dashboard() {
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
                             <small className="opacity-90">{profit >= 0 ? '📈' : '📉'} Profitto Netto</small>
-                            <h4 className="mb-0 fw-bold">€{profit.toLocaleString()}</h4>
+                            <h4 className="mb-0 fw-bold">€{selectedPeriod === 'month' ? profit.toLocaleString() : periodProfit.toLocaleString()}</h4>
                           </div>
                           <div className="text-end">
-                            <div className="badge bg-white bg-opacity-20 rounded-pill mb-1">
-                              {profitMargin.toFixed(1)}%
+                            <div className="badge bg-white bg-opacity-30 rounded-pill mb-1" style={{ fontSize: '0.75rem' }}>
+                              {profit >= 0 ? '📈' : '📉'} {profitMargin.toFixed(1)}%
                             </div>
-                            <small className="opacity-75 d-block">margine</small>
+                            <small className="opacity-85 d-block" style={{ fontSize: '0.75rem' }}>margine</small>
                           </div>
                         </div>
                       </div>
@@ -237,7 +279,7 @@ function Dashboard() {
                         <h6 className="mb-0">📈 Andamento Finanziario</h6>
                       </div>
                       <div className="card-body p-3">
-                        <ExpensesChart expenses={expenses} />
+                        <ExpensesChart expenses={selectedPeriod === 'month' ? expenses : filteredExpenses} />
                       </div>
                     </div>
                   </div>
@@ -301,15 +343,24 @@ function Dashboard() {
                   <div className="col-lg-3 col-md-6">
                     <div className="card text-center p-3 hover-card">
                       <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎯</div>
-                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Obiettivo Mensile</h6>
-                      <p className="text-warning mb-0 fw-bold" style={{ fontSize: '0.8rem' }}>85% raggiunto</p>
+                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Budget Mensile</h6>
+                      <p className="text-warning mb-0 fw-bold" style={{ fontSize: '0.8rem' }}>
+                        {incomeStats && parseFloat(incomeStats.totale || 0) > 0 ? 
+                          `${Math.min(100, ((parseFloat(incomeStats.totale || 0) / 10000) * 100)).toFixed(0)}%` : 
+                          '0%'
+                        }
+                      </p>
+                      <small className="text-muted" style={{ fontSize: '0.7rem' }}>vs. €10,000 obiettivo</small>
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-6">
                     <div className="card text-center p-3 hover-card">
                       <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⭐</div>
-                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Score Finanziario</h6>
-                      <p className="text-success mb-0 fw-bold" style={{ fontSize: '0.8rem' }}>Eccellente</p>
+                      <h6 style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Salute Finanziaria</h6>
+                      <p className={`mb-0 fw-bold ${profit > 0 ? 'text-success' : profit === 0 ? 'text-warning' : 'text-danger'}`} style={{ fontSize: '0.8rem' }}>
+                        {profit > 5000 ? 'Eccellente' : profit > 1000 ? 'Buona' : profit > 0 ? 'Discreta' : profit === 0 ? 'In Pareggio' : 'Critica'}
+                      </p>
+                      <small className="text-muted" style={{ fontSize: '0.7rem' }}>basato su profitto/perdite</small>
                     </div>
                   </div>
                 </div>

@@ -539,28 +539,6 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-md);
 }
 
-/* === Responsive === */
-@media (max-width: 768px) {
-  .container { padding: 0.5rem; }
-
-  h1, .display-4 { font-size: 2rem; }
-  h2, .display-5 { font-size: 1.5rem; }
-
-  .btn { 
-    padding: 0.625rem 1.25rem;
-    font-size: 0.95rem; 
-  }
-
-  .modal-dialog { width: 95%; }
-
-  .card-body { padding: 1rem; }
-
-  .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
-  .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
-    flex: 0 0 100%;
-  }
-}
-
 /* === Additional Enterprise Features === */
 .spinner-border {
   display: inline-block;
@@ -613,9 +591,7 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent !important;
 }
 
-/* === Aggiungi questo alla fine del file App.css === */
-
-/* Background Opacity Classes */
+/* === Background Opacity Classes === */
 .bg-opacity-10 { 
   background-color: rgba(255, 255, 255, 0.1) !important; 
 }
@@ -647,4 +623,34 @@ h1, h2, h3, h4, h5, h6 {
 .badge.bg-white.bg-opacity-30 {
   color: rgba(255, 255, 255, 0.95) !important;
   font-weight: 600;
+}
+
+/* === MOBILE CONTAINER FIX === */
+@media (max-width: 768px) {
+  .container { 
+    padding: 0.75rem 1rem !important;
+  }
+
+  h1, .display-4 { font-size: 2rem; }
+  h2, .display-5 { font-size: 1.5rem; }
+
+  .btn { 
+    padding: 0.625rem 1.25rem;
+    font-size: 0.95rem; 
+  }
+
+  .modal-dialog { width: 95%; }
+
+  .card-body { padding: 1rem; }
+
+  .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
+  .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+    flex: 0 0 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .container { 
+    padding: 0.5rem 0.75rem !important;
+  }
 }

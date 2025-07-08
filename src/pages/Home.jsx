@@ -9,6 +9,7 @@ function Home() {
   const [latestExpenses, setLatestExpenses] = useState([]);
   const [latestIncomes, setLatestIncomes] = useState([]);
   const [quickStats, setQuickStats] = useState({ expenses: null, incomes: null });
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
     if (!company) return;
@@ -31,43 +32,55 @@ function Home() {
   }, [company]);
 
   const renderExpenseCard = (exp) => (
-    <div key={exp.id} className="card" style={{ marginBottom: '1rem' }}>
-      <div style={{ padding: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-          <div>
-            <h4 style={{ color: '#6366f1', marginBottom: '0.25rem' }}>
-              📄 Fattura #{exp.numero_fattura || 'N/D'}
-            </h4>
-            {exp.data_fattura && (
-              <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: 0 }}>
-                📅 {new Date(exp.data_fattura).toLocaleDateString("it-IT")}
-              </p>
-            )}
+    <div className="col-12 mb-3" key={exp.id}>
+      <div className="card hover-card">
+        <div className="card-body p-4">
+          <div className="d-flex justify-content-between align-items-start mb-3">
+            <div className="d-flex align-items-center">
+              <div className="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                <span className="text-primary">🧾</span>
+              </div>
+              <div>
+                <h6 className="mb-1 fw-bold text-primary">
+                  Fattura #{exp.numero_fattura || 'N/D'}
+                </h6>
+                {exp.data_fattura && (
+                  <small className="text-muted">
+                    📅 {new Date(exp.data_fattura).toLocaleDateString("it-IT")}
+                  </small>
+                )}
+              </div>
+            </div>
+            <span className={`badge rounded-pill px-3 py-2 ${
+              exp.stato === 'Pagata' ? 'bg-success' :
+              exp.stato === 'In attesa' ? 'bg-warning' :
+              exp.stato === 'Annullata' ? 'bg-danger' : 'bg-secondary'
+            }`}>
+              {exp.stato || 'N/D'}
+            </span>
           </div>
-          <span 
-            style={{ 
-              padding: '0.5rem 1rem',
-              borderRadius: '9999px',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              backgroundColor: exp.stato === 'Pagata' ? '#10b981' : exp.stato === 'In attesa' ? '#f59e0b' : '#ef4444',
-              color: 'white'
-            }}
-          >
-            {exp.stato || 'N/D'}
-          </span>
-        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-          <div>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: '0 0 0.25rem 0' }}>💰 Importo</p>
-            <p style={{ fontWeight: '600', color: '#ef4444', fontSize: '1.125rem', margin: 0 }}>
-              -{exp.importo != null ? `€${parseFloat(exp.importo).toFixed(2)}` : 'N/D'}
-            </p>
-          </div>
-          <div>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: '0 0 0.25rem 0' }}>🏢 Azienda</p>
-            <p style={{ fontWeight: '500', margin: 0 }}>{exp.azienda || 'N/D'}</p>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <div className="d-flex align-items-center">
+                <div className="me-2">
+                  <small className="text-muted">💰 Importo</small>
+                </div>
+              </div>
+              <div className="fw-bold text-danger fs-6">
+                -{exp.importo != null ? `€${parseFloat(exp.importo).toFixed(2)}` : 'N/D'}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="d-flex align-items-center">
+                <div className="me-2">
+                  <small className="text-muted">🏢 {exp.azienda || 'N/D'}</small>
+                </div>
+              </div>
+              <div className="small text-muted">
+                {exp.metodo_pagamento || 'Metodo N/D'}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -75,31 +88,48 @@ function Home() {
   );
 
   const renderIncomeCard = (inc) => (
-    <div key={inc.id} className="card" style={{ marginBottom: '1rem' }}>
-      <div style={{ padding: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-          <div>
-            <h4 style={{ color: '#10b981', marginBottom: '0.25rem' }}>
-              💰 Incasso #{inc.id}
-            </h4>
-            {inc.data_incasso && (
-              <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: 0 }}>
-                📅 {new Date(inc.data_incasso).toLocaleDateString("it-IT")}
-              </p>
-            )}
+    <div className="col-12 mb-3" key={inc.id}>
+      <div className="card hover-card">
+        <div className="card-body p-4">
+          <div className="d-flex justify-content-between align-items-start mb-3">
+            <div className="d-flex align-items-center">
+              <div className="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                <span className="text-success">💰</span>
+              </div>
+              <div>
+                <h6 className="mb-1 fw-bold text-success">
+                  Incasso #{inc.id}
+                </h6>
+                {inc.data_incasso && (
+                  <small className="text-muted">
+                    📅 {new Date(inc.data_incasso).toLocaleDateString("it-IT")}
+                  </small>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-          <div>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: '0 0 0.25rem 0' }}>💎 Importo</p>
-            <p style={{ fontWeight: '600', color: '#10b981', fontSize: '1.125rem', margin: 0 }}>
-              +{inc.importo != null ? `€${parseFloat(inc.importo).toFixed(2)}` : 'N/D'}
-            </p>
-          </div>
-          <div>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: '0 0 0.25rem 0' }}>💳 Metodo</p>
-            <p style={{ fontWeight: '500', margin: 0 }}>{inc.metodo_incasso || 'N/D'}</p>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <div className="d-flex align-items-center">
+                <div className="me-2">
+                  <small className="text-muted">💎 Importo</small>
+                </div>
+              </div>
+              <div className="fw-bold text-success fs-6">
+                +{inc.importo != null ? `€${parseFloat(inc.importo).toFixed(2)}` : 'N/D'}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="d-flex align-items-center">
+                <div className="me-2">
+                  <small className="text-muted">💳 Metodo</small>
+                </div>
+              </div>
+              <div className="small text-muted">
+                {inc.metodo_incasso || 'N/D'}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -109,78 +139,71 @@ function Home() {
   // No company state
   if (!company) {
     return (
-      <div className="container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          {/* Hero Section senza azienda */}
-          <div 
-            className="card" 
-            style={{ 
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              textAlign: 'center',
-              padding: '4rem 2rem',
-              marginBottom: '3rem'
-            }}
-          >
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💸</div>
-            <h1 style={{ fontSize: '2.5rem', color: 'white', marginBottom: '1rem' }}>ExpenseAI</h1>
-            <p style={{ fontSize: '1.25rem', opacity: 0.9, marginBottom: '2rem' }}>
-              L'assistente intelligente per la gestione di spese e incassi
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2rem' }}>
-              <span style={{ 
-                background: 'rgba(255,255,255,0.2)', 
-                padding: '0.5rem 1rem', 
-                borderRadius: '9999px',
-                fontSize: '0.875rem'
-              }}>
-                🎙️ Registrazione vocale
-              </span>
-              <span style={{ 
-                background: 'rgba(255,255,255,0.2)', 
-                padding: '0.5rem 1rem', 
-                borderRadius: '9999px',
-                fontSize: '0.875rem'
-              }}>
-                🤖 AI-Powered
-              </span>
-              <span style={{ 
-                background: 'rgba(255,255,255,0.2)', 
-                padding: '0.5rem 1rem', 
-                borderRadius: '9999px',
-                fontSize: '0.875rem'
-              }}>
-                📊 Analytics Real-time
-              </span>
-            </div>
-            <div style={{ 
-              background: 'rgba(255,255,255,0.9)', 
-              color: '#111827', 
-              padding: '1rem 2rem', 
-              borderRadius: '9999px',
-              display: 'inline-block',
-              fontWeight: '600'
-            }}>
-              ⚠️ Seleziona un'azienda dal menu in alto per iniziare
-            </div>
-          </div>
+      <div className="container py-5">
+        <div className="row justify-content-center">
+          <div className="col-lg-10">
+            {/* Hero Section senza azienda */}
+            <section
+              className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+              }}
+            >
+              <div className="position-absolute top-0 end-0 opacity-10">
+                <div style={{ fontSize: '8rem', transform: 'rotate(15deg)' }}>🤖</div>
+              </div>
+              <div className="container text-center position-relative">
+                <div className="display-1 mb-4">💸</div>
+                <h1 className="display-4 fw-bold mb-4">ExpenseAI</h1>
+                <p className="lead mb-4 opacity-90">
+                  L'assistente intelligente per la gestione di spese e incassi
+                </p>
+                <div className="row g-3 justify-content-center mb-4">
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>🎙️ Registrazione vocale</span>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>🤖 AI-Powered</span>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>📊 Analytics Real-time</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="alert alert-warning d-inline-block bg-white bg-opacity-90 text-dark border-0 rounded-pill px-4 py-3">
+                  <strong>⚠️ Seleziona un'azienda</strong> dal menu in alto per iniziare
+                </div>
+              </div>
+            </section>
 
-          {/* Features Preview */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-            <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎙️</div>
-              <h3>Registrazione Vocale</h3>
-              <p style={{ color: '#6b7280' }}>Parla naturalmente per registrare spese e incassi</p>
-            </div>
-            <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
-              <h3>Dashboard Avanzata</h3>
-              <p style={{ color: '#6b7280' }}>Analytics e statistiche in tempo reale</p>
-            </div>
-            <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🤖</div>
-              <h3>AI Intelligente</h3>
-              <p style={{ color: '#6b7280' }}>Riconoscimento automatico di categorie e importi</p>
+            {/* Features Preview */}
+            <div className="row g-4">
+              <div className="col-md-4">
+                <div className="card text-center p-4 h-100 hover-card">
+                  <div className="display-6 mb-3">🎙️</div>
+                  <h5>Registrazione Vocale</h5>
+                  <p className="text-muted">Parla naturalmente per registrare spese e incassi</p>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="card text-center p-4 h-100 hover-card">
+                  <div className="display-6 mb-3">📊</div>
+                  <h5>Dashboard Avanzata</h5>
+                  <p className="text-muted">Analytics e statistiche in tempo reale</p>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="card text-center p-4 h-100 hover-card">
+                  <div className="display-6 mb-3">🤖</div>
+                  <h5>AI Intelligente</h5>
+                  <p className="text-muted">Riconoscimento automatico di categorie e importi</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -189,177 +212,198 @@ function Home() {
   }
 
   return (
-    <div className="container" style={{ paddingBottom: '3rem' }}>
-      {/* Hero Section */}
-      <div 
-        className="card" 
-        style={{ 
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          padding: '3rem 2rem',
-          marginBottom: '2rem',
-          textAlign: 'center'
+    <>
+      {/* Hero Section Potenziata */}
+      <section
+        className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          maxWidth: "1200px",
+          margin: "0 auto"
         }}
       >
-        <h1 style={{ fontSize: '2.5rem', color: 'white', marginBottom: '0.5rem' }}>💸 ExpenseAI</h1>
-        <h2 style={{ fontSize: '1.5rem', color: 'white', opacity: 0.9, marginBottom: '1rem' }}>{company.nome}</h2>
-        <p style={{ fontSize: '1.125rem', opacity: 0.75, marginBottom: '2rem' }}>
-          Il tuo assistente AI per gestire spese e incassi con la voce
-        </p>
+        {/* Decorazioni animate */}
+        <div className="position-absolute top-0 end-0 opacity-10">
+          <div style={{ fontSize: '6rem', transform: 'rotate(15deg)', animation: 'float 6s ease-in-out infinite' }}>🚀</div>
+        </div>
+        <div className="position-absolute bottom-0 start-0 opacity-05">
+          <div style={{ fontSize: '8rem', transform: 'rotate(-15deg)' }}>💡</div>
+        </div>
 
-        {/* Quick Stats */}
-        {quickStats.expenses && quickStats.incomes && (
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <div style={{ 
-              background: 'rgba(239, 68, 68, 0.2)', 
-              padding: '0.75rem 1.5rem', 
-              borderRadius: '9999px'
-            }}>
-              <strong>€{parseFloat(quickStats.expenses.totale || 0).toLocaleString()}</strong>
-              <span style={{ marginLeft: '0.5rem', opacity: 0.75, fontSize: '0.875rem' }}>Spese</span>
+        <div className="container text-center position-relative">
+          <div className="row align-items-center">
+            <div className="col-lg-6">
+              <h1 className="display-4 fw-bold mb-3">💸 ExpenseAI</h1>
+              <h2 className="h4 mb-3 opacity-90">{company.nome}</h2>
+              <p className="lead mb-4 opacity-75">
+                Il tuo assistente AI per gestire spese e incassi con la voce
+              </p>
+
+              {/* Quick Stats */}
+              {quickStats.expenses && quickStats.incomes && (
+                <div className="row g-3 justify-content-center">
+                  <div className="col-auto">
+                    <div className="bg-danger bg-opacity-20 rounded-pill px-4 py-2">
+                      <strong>€{parseFloat(quickStats.expenses.totale || 0).toLocaleString()}</strong>
+                      <small className="ms-2 opacity-75">Spese</small>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-success bg-opacity-20 rounded-pill px-4 py-2">
+                      <strong>€{parseFloat(quickStats.incomes.totale || 0).toLocaleString()}</strong>
+                      <small className="ms-2 opacity-75">Incassi</small>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <strong>{((quickStats.expenses.numero || 0) + (quickStats.incomes.numero || 0))}</strong>
+                      <small className="ms-2 opacity-75">Totali</small>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            <div style={{ 
-              background: 'rgba(16, 185, 129, 0.2)', 
-              padding: '0.75rem 1.5rem', 
-              borderRadius: '9999px'
-            }}>
-              <strong>€{parseFloat(quickStats.incomes.totale || 0).toLocaleString()}</strong>
-              <span style={{ marginLeft: '0.5rem', opacity: 0.75, fontSize: '0.875rem' }}>Incassi</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-
-        {/* Sezione Registrazione */}
-        <div className="card" style={{ marginBottom: '2rem' }}>
-          <div style={{ 
-            background: 'linear-gradient(135deg, #667eea, #764ba2)',
-            color: 'white',
-            padding: '1.5rem',
-            borderRadius: '16px 16px 0 0'
-          }}>
-            <h3 style={{ color: 'white', marginBottom: '0.5rem' }}>🎙️ Centro di Registrazione</h3>
-            <p style={{ margin: 0, opacity: 0.9 }}>Parla naturalmente per registrare spese e incassi</p>
-          </div>
-          <div style={{ padding: '1.5rem' }}>
-            <AudioRecorder 
-              company={company}
-              onAdd={(item) => {
-                if (item.numero_fattura) {
-                  setLatestExpenses(prev => [item, ...prev.slice(0, 2)]);
-                } else {
-                  setLatestIncomes(prev => [item, ...prev.slice(0, 2)]);
-                }
-              }}
-            />
-
-            {/* Suggerimenti */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
-              <div style={{ background: '#f9fafc', padding: '1rem', borderRadius: '8px', textAlign: 'center' }}>
-                <div style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '0.5rem' }}>💡 Esempio Spesa</div>
-                <div style={{ fontSize: '0.875rem' }}>"Spesa di oggi 50 euro contanti per benzina"</div>
-              </div>
-              <div style={{ background: '#f9fafc', padding: '1rem', borderRadius: '8px', textAlign: 'center' }}>
-                <div style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '0.5rem' }}>💡 Esempio Incasso</div>
-                <div style={{ fontSize: '0.875rem' }}>"Incasso di ieri 200 euro POS"</div>
-              </div>
-              <div style={{ background: '#f9fafc', padding: '1rem', borderRadius: '8px', textAlign: 'center' }}>
-                <div style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '0.5rem' }}>🤖 AI Tip</div>
-                <div style={{ fontSize: '0.875rem' }}>Parla chiaramente per risultati migliori</div>
+            <div className="col-lg-6">
+              <div className="text-center">
+                <div className="display-1 mb-3">🎙️</div>
+                <p className="opacity-75">Parla e registra automaticamente</p>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Quick Access */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-          <Link to="/spese" className="card" style={{ padding: '2rem', textAlign: 'center', textDecoration: 'none', color: 'inherit' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🧾</div>
-            <h4 style={{ marginBottom: '0.5rem' }}>Gestisci Spese</h4>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem' }}>Visualizza e modifica tutte le spese</p>
-            <span style={{ 
-              background: '#6366f1', 
-              color: 'white', 
-              padding: '0.25rem 0.75rem', 
-              borderRadius: '9999px',
-              fontSize: '0.875rem'
-            }}>
-              {latestExpenses.length} recenti
-            </span>
-          </Link>
-          <Link to="/incassi" className="card" style={{ padding: '2rem', textAlign: 'center', textDecoration: 'none', color: 'inherit' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💰</div>
-            <h4 style={{ marginBottom: '0.5rem' }}>Gestisci Incassi</h4>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem' }}>Visualizza e modifica tutti gli incassi</p>
-            <span style={{ 
-              background: '#10b981', 
-              color: 'white', 
-              padding: '0.25rem 0.75rem', 
-              borderRadius: '9999px',
-              fontSize: '0.875rem'
-            }}>
-              {latestIncomes.length} recenti
-            </span>
-          </Link>
-          <Link to="/dashboard" className="card" style={{ padding: '2rem', textAlign: 'center', textDecoration: 'none', color: 'inherit' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
-            <h4 style={{ marginBottom: '0.5rem' }}>Analytics</h4>
-            <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '1rem' }}>Dashboard con statistiche avanzate</p>
-            <span style={{ 
-              background: '#06b6d4', 
-              color: 'white', 
-              padding: '0.25rem 0.75rem', 
-              borderRadius: '9999px',
-              fontSize: '0.875rem'
-            }}>
-              Live
-            </span>
-          </Link>
+      <div className="container pb-5">
+        <div className="row justify-content-center">
+          <div className="col-lg-10">
+
+            {/* Sezione Registrazione Potenziata */}
+            <div className="card mb-5 overflow-hidden">
+              <div className="card-header bg-gradient-primary text-white py-4">
+                <div className="row align-items-center">
+                  <div className="col">
+                    <h3 className="mb-1 text-white">🎙️ Centro di Registrazione</h3>
+                    <p className="mb-0 opacity-90">Parla naturalmente per registrare spese e incassi</p>
+                  </div>
+                  <div className="col-auto">
+                    <div className={`badge rounded-pill px-3 py-2 ${isRecording ? 'bg-danger' : 'bg-success bg-opacity-20'}`}>
+                      {isRecording ? '🔴 Registrando...' : '✅ Pronto'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card-body p-4">
+                <AudioRecorder 
+                  company={company}
+                  onRecordingChange={setIsRecording}
+                  onAdd={(item) => {
+                    if (item.numero_fattura) {
+                      setLatestExpenses(prev => [item, ...prev.slice(0, 2)]);
+                    } else {
+                      setLatestIncomes(prev => [item, ...prev.slice(0, 2)]);
+                    }
+                  }}
+                />
+
+                {/* Suggerimenti AI */}
+                <div className="row g-3 mt-3">
+                  <div className="col-md-4">
+                    <div className="card bg-light rounded-3 p-3 text-center">
+                      <div className="small text-muted mb-1">💡 Esempio Spesa</div>
+                      <div className="small">"Spesa di oggi 50 euro contanti per benzina"</div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="card bg-light rounded-3 p-3 text-center">
+                      <div className="small text-muted mb-1">💡 Esempio Incasso</div>
+                      <div className="small">"Incasso di ieri 200 euro POS"</div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="card bg-light rounded-3 p-3 text-center">
+                      <div className="small text-muted mb-1">🤖 AI Tip</div>
+                      <div className="small">Parla chiaramente per risultati migliori</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Dashboard Quick Access */}
+            <div className="row g-4 mb-5">
+              <div className="col-md-4">
+                <Link to="/spese" className="card text-decoration-none h-100 hover-card">
+                  <div className="card-body text-center p-4">
+                    <div className="display-6 mb-3">🧾</div>
+                    <h5 className="text-dark">Gestisci Spese</h5>
+                    <p className="text-muted small mb-3">Visualizza e modifica tutte le spese</p>
+                    <span className="badge bg-primary rounded-pill">{latestExpenses.length} recenti</span>
+                  </div>
+                </Link>
+              </div>
+              <div className="col-md-4">
+                <Link to="/incassi" className="card text-decoration-none h-100 hover-card">
+                  <div className="card-body text-center p-4">
+                    <div className="display-6 mb-3">💰</div>
+                    <h5 className="text-dark">Gestisci Incassi</h5>
+                    <p className="text-muted small mb-3">Visualizza e modifica tutti gli incassi</p>
+                    <span className="badge bg-success rounded-pill">{latestIncomes.length} recenti</span>
+                  </div>
+                </Link>
+              </div>
+              <div className="col-md-4">
+                <Link to="/dashboard" className="card text-decoration-none h-100 hover-card">
+                  <div className="card-body text-center p-4">
+                    <div className="display-6 mb-3">📊</div>
+                    <h5 className="text-dark">Analytics</h5>
+                    <p className="text-muted small mb-3">Dashboard con statistiche avanzate</p>
+                    <span className="badge bg-info rounded-pill">Live</span>
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+            {/* Ultimi Incassi */}
+            {latestIncomes.length > 0 && (
+              <div className="card mb-4">
+                <div className="card-header bg-transparent pt-4 px-4">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h5 className="mb-0">💰 Ultimi Incassi</h5>
+                    <Link to="/incassi" className="btn btn-sm btn-outline-success rounded-pill">
+                      Vedi tutti
+                    </Link>
+                  </div>
+                </div>
+                <div className="card-body p-4">
+                  <div className="row g-3">
+                    {latestIncomes.map(renderIncomeCard)}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Ultime Spese */}
+            {latestExpenses.length > 0 && (
+              <div className="card mb-4">
+                <div className="card-header bg-transparent pt-4 px-4">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h5 className="mb-0">🧾 Ultime Spese</h5>
+                    <Link to="/spese" className="btn btn-sm btn-outline-primary rounded-pill">
+                      Vedi tutte
+                    </Link>
+                  </div>
+                </div>
+                <div className="card-body p-4">
+                  <div className="row g-3">
+                    {latestExpenses.map(renderExpenseCard)}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Ultimi Incassi */}
-        {latestIncomes.length > 0 && (
-          <div className="card" style={{ marginBottom: '2rem' }}>
-            <div style={{ padding: '1.5rem 1.5rem 0 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3>💰 Ultimi Incassi</h3>
-              <Link to="/incassi" className="btn" style={{ 
-                background: '#10b981', 
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
-                borderRadius: '9999px'
-              }}>
-                Vedi tutti
-              </Link>
-            </div>
-            <div style={{ padding: '0 1.5rem 1.5rem 1.5rem' }}>
-              {latestIncomes.map(renderIncomeCard)}
-            </div>
-          </div>
-        )}
-
-        {/* Ultime Spese */}
-        {latestExpenses.length > 0 && (
-          <div className="card" style={{ marginBottom: '2rem' }}>
-            <div style={{ padding: '1.5rem 1.5rem 0 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3>🧾 Ultime Spese</h3>
-              <Link to="/spese" className="btn" style={{ 
-                background: '#6366f1', 
-                padding: '0.5rem 1rem',
-                fontSize: '0.875rem',
-                borderRadius: '9999px'
-              }}>
-                Vedi tutte
-              </Link>
-            </div>
-            <div style={{ padding: '0 1.5rem 1.5rem 1.5rem' }}>
-              {latestExpenses.map(renderExpenseCard)}
-            </div>
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 }
 

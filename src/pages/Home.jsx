@@ -81,22 +81,42 @@ function Home() {
           </div>
 
           {/* Riga secondaria: Metodo pagamento e Tipo documento */}
-          <div className="row g-2">
+          <div className="row g-2 mb-2">
             <div className="col-6">
-              <small className="text-muted">💳 Metodo</small>
+              <small className="text-muted">💳 Metodo Pagamento</small>
               <div className="text-muted" style={{ fontSize: '0.8rem' }}>
                 {exp.metodo_pagamento || 'N/D'}
               </div>
             </div>
-            {exp.tipo_documento && (
-              <div className="col-6">
-                <small className="text-muted">📄 Tipo</small>
-                <div className="text-muted" style={{ fontSize: '0.8rem' }}>
-                  {exp.tipo_documento}
-                </div>
+            <div className="col-6">
+              <small className="text-muted">📄 Tipo Documento</small>
+              <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                {exp.tipo_documento || 'N/D'}
               </div>
-            )}
+            </div>
           </div>
+
+          {/* Riga aggiuntive se presenti */}
+          {(exp.banca || exp.tipo_pagamento) && (
+            <div className="row g-2">
+              {exp.banca && (
+                <div className="col-6">
+                  <small className="text-muted">🏦 Banca</small>
+                  <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                    {exp.banca}
+                  </div>
+                </div>
+              )}
+              {exp.tipo_pagamento && (
+                <div className="col-6">
+                  <small className="text-muted">⚡ Tipo Pagamento</small>
+                  <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                    {exp.tipo_pagamento}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

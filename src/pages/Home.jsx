@@ -254,7 +254,7 @@ function Home() {
         style={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
           borderRadius: "16px",
-          margin: "0 auto"
+          margin: "0 1rem"
         }}
       >
         {/* Decorazioni animate */}

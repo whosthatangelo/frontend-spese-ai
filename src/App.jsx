@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import CompanySwitcher from './components/CompanySwitcher';
 import { useUserCompany } from './contexts/UserCompanyContext';
 import './App.css';
+import './components/Navbar.css'; // Aggiungi questa riga
 
 export default function App() {
   const navigate = useNavigate();

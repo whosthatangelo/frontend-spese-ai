@@ -612,3 +612,39 @@ h1, h2, h3, h4, h5, h6 {
 .bg-transparent {
   background: transparent !important;
 }
+
+/* === Aggiungi questo alla fine del file App.css === */
+
+/* Background Opacity Classes */
+.bg-opacity-10 { 
+  background-color: rgba(255, 255, 255, 0.1) !important; 
+}
+.bg-opacity-20 { 
+  background-color: rgba(255, 255, 255, 0.2) !important; 
+}
+.bg-opacity-30 { 
+  background-color: rgba(255, 255, 255, 0.3) !important; 
+}
+.bg-opacity-85 { 
+  background-color: rgba(255, 255, 255, 0.85) !important; 
+}
+.bg-opacity-90 { 
+  background-color: rgba(255, 255, 255, 0.9) !important; 
+}
+
+/* Specific opacity for colored backgrounds */
+.bg-white.bg-opacity-20 { 
+  background-color: rgba(255, 255, 255, 0.2) !important; 
+}
+.bg-white.bg-opacity-30 { 
+  background-color: rgba(255, 255, 255, 0.3) !important; 
+}
+.bg-white.bg-opacity-90 { 
+  background-color: rgba(255, 255, 255, 0.9) !important; 
+}
+
+/* Ensure text is visible on semi-transparent backgrounds */
+.badge.bg-white.bg-opacity-30 {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 600;
+}

@@ -1,4 +1,4 @@
-// src/components/IncomeListClean.jsx
+// src/components/IncomeList.jsx
 import { useEffect, useState } from 'react';
 import { getIncomes, deleteIncome } from '../api';
 import EditIncomeModal from './EditIncomeModal';
@@ -88,7 +88,7 @@ export default function IncomeListClean({ filterPeriod, sortBy, onUpdate }) {
     }
   });
 
-  // Render della singola card - STESSO STILE DELLA HOME
+  // Render della singola card - COMPLETA CON TUTTI I CAMPI
   const renderIncomeCard = (inc) => (
     <div className="col-12 mb-3" key={inc.id}>
       <div className="card hover-card">
@@ -111,29 +111,61 @@ export default function IncomeListClean({ filterPeriod, sortBy, onUpdate }) {
             </div>
           </div>
 
-          <div className="row g-2">
+          {/* Riga principale: Importo e Metodo */}
+          <div className="row g-2 mb-2">
             <div className="col-6">
               <small className="text-muted">💎 Importo</small>
               <div className="fw-bold text-success" style={{ fontSize: '0.9rem' }}>
                 +{inc.importo != null ? `€${parseFloat(inc.importo).toFixed(2)}` : 'N/D'}
+                {inc.valuta && inc.valuta !== 'EUR' && (
+                  <small className="text-muted ms-1">({inc.valuta})</small>
+                )}
               </div>
             </div>
             <div className="col-6">
-              <small className="text-muted">💳 Metodo</small>
+              <small className="text-muted">💳 Metodo Incasso</small>
               <div className="text-muted" style={{ fontSize: '0.8rem' }}>
                 {inc.metodo_incasso || 'N/D'}
               </div>
             </div>
           </div>
 
-          {/* Informazioni aggiuntive se presenti */}
-          {(inc.valuta && inc.valuta !== 'EUR') && (
-            <div className="row g-2 mt-2">
-              <div className="col-6">
-                <small className="text-muted">💱 Valuta</small>
-                <div className="text-muted" style={{ fontSize: '0.8rem' }}>
-                  {inc.valuta}
-                </div>
+          {/* Info creazione - sezione tecnica meno prominente */}
+          {(inc.data_creazione || inc.utente_id || inc.azienda_id) && (
+            <div className="border-top pt-2 mt-2" style={{ backgroundColor: '#f8f9fa', margin: '0.75rem -0.75rem -0.75rem -0.75rem', padding: '0.5rem 0.75rem' }}>
+              <small className="text-muted mb-2 d-block">ℹ️ Info Tecniche</small>
+              <div className="row g-2">
+                {inc.data_creazione && (
+                  <div className="col-md-4 col-6">
+                    <small className="text-muted" style={{ fontSize: '0.7rem' }}>🕒 Creato</small>
+                    <div className="text-muted" style={{ fontSize: '0.7rem' }}>
+                      {new Date(inc.data_creazione).toLocaleDateString("it-IT", { 
+                        day: '2-digit', 
+                        month: '2-digit',
+                        year: '2-digit'
+                      })} {new Date(inc.data_creazione).toLocaleTimeString("it-IT", { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
+                  </div>
+                )}
+                {inc.utente_id && (
+                  <div className="col-md-4 col-6">
+                    <small className="text-muted" style={{ fontSize: '0.7rem' }}>👤 User ID</small>
+                    <div className="text-muted" style={{ fontSize: '0.7rem' }}>
+                      {inc.utente_id}
+                    </div>
+                  </div>
+                )}
+                {inc.azienda_id && (
+                  <div className="col-md-4 col-6">
+                    <small className="text-muted" style={{ fontSize: '0.7rem' }}>🏢 Company ID</small>
+                    <div className="text-muted" style={{ fontSize: '0.7rem' }}>
+                      {inc.azienda_id}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

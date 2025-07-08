@@ -10,7 +10,7 @@ function Incassi() {
   const [listKey, setListKey] = useState(0);
   const [quickStats, setQuickStats] = useState(null);
   const [filterPeriod, setFilterPeriod] = useState('all');
-  const [viewMode, setViewMode] = useState('cards'); // cards | table
+  const [sortBy, setSortBy] = useState('date_desc');
 
   // Ricarica la lista quando cambia l'azienda
   useEffect(() => {
@@ -34,25 +34,48 @@ function Incassi() {
     return (
       <div className="container py-5">
         <div className="row justify-content-center">
-          <div className="col-md-8 text-center">
-            <div className="card card-lg p-5 text-white" style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)' }}>
-              <div className="display-1 mb-4">💰</div>
-              <h2 className="mb-3 text-white">Gestione Incassi</h2>
-              <p className="lead opacity-90 mb-4">
-                Seleziona un'azienda dal menu in alto per iniziare a gestire gli incassi
-              </p>
-              <div className="d-flex justify-content-center gap-3 flex-wrap">
-                <span className="badge bg-white bg-opacity-20 rounded-pill px-3 py-2">
-                  ✨ Registrazione vocale
-                </span>
-                <span className="badge bg-white bg-opacity-20 rounded-pill px-3 py-2">
-                  📊 Analytics avanzate
-                </span>
-                <span className="badge bg-white bg-opacity-20 rounded-pill px-3 py-2">
-                  💳 Multi-metodo
-                </span>
+          <div className="col-lg-10">
+            <section
+              className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
+              style={{
+                background: "linear-gradient(135deg, #16a34a, #15803d)"
+              }}
+            >
+              <div className="position-absolute top-0 end-0 opacity-10">
+                <div style={{ 
+                  fontSize: '8rem', 
+                  transform: 'rotate(15deg)',
+                  animation: 'float 6s ease-in-out infinite'
+                }}>💰</div>
               </div>
-            </div>
+              <div className="container text-center position-relative">
+                <div className="display-1 mb-4">💰</div>
+                <h1 className="display-4 fw-bold mb-4">Gestione Incassi</h1>
+                <p className="lead mb-4 opacity-90">
+                  Seleziona un'azienda dal menu in alto per gestire gli incassi
+                </p>
+                <div className="row g-3 justify-content-center mb-4">
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>🎙️ Registrazione vocale</span>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>✏️ Modifica facile</span>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
+                      <span>🔍 Filtri avanzati</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="alert alert-warning d-inline-block bg-white bg-opacity-90 text-dark border-0 rounded-pill px-4 py-3">
+                  <strong>⚠️ Seleziona un'azienda</strong> dal menu in alto per iniziare
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -61,178 +84,168 @@ function Incassi() {
 
   return (
     <>
-      {/* Header Potenziato */}
+      {/* Header Coerente con Home */}
       <section
-        className="py-5 text-white mb-5 position-relative overflow-hidden card-lg"
+        className="py-4 text-white mb-4 position-relative overflow-hidden"
         style={{
           background: "linear-gradient(135deg, #16a34a, #15803d)",
-          margin: "0 auto",
-          maxWidth: "1200px"
+          borderRadius: "16px",
+          margin: "0 auto"
         }}
       >
-        {/* Decorazioni di sfondo */}
+        {/* Decorazioni animate come nella Home */}
         <div className="position-absolute top-0 end-0 opacity-10">
-          <div style={{ fontSize: '8rem', transform: 'rotate(15deg)' }}>💰</div>
+          <div style={{ 
+            fontSize: '4rem', 
+            transform: 'rotate(15deg)', 
+            animation: 'float 6s ease-in-out infinite' 
+          }}>💰</div>
         </div>
         <div className="position-absolute bottom-0 start-0 opacity-05">
-          <div style={{ fontSize: '12rem', transform: 'rotate(-15deg)' }}>💎</div>
+          <div style={{ 
+            fontSize: '5rem', 
+            transform: 'rotate(-15deg)',
+            animation: 'float 8s ease-in-out infinite reverse'
+          }}>💎</div>
         </div>
 
         <div className="container text-center position-relative">
-          <div className="row align-items-center">
-            <div className="col-lg-8 mx-auto">
-              <h1 className="display-4 fw-bold mb-3 text-white">
-                💰 Centro Incassi Enterprise
-              </h1>
-              <h2 className="h4 mb-3 opacity-90 text-white">{company.nome}</h2>
-              <p className="lead mb-4 opacity-75">
-                Gestione intelligente degli incassi con analytics in tempo reale
-              </p>
+          <h1 style={{ fontSize: '2rem', color: 'white', marginBottom: '0.5rem' }}>💰 Gestione Incassi</h1>
+          <h2 style={{ fontSize: '1.1rem', color: 'white', opacity: 0.9, marginBottom: '1rem' }}>{company.nome}</h2>
 
-              {/* Quick Stats */}
-              {quickStats && (
-                <div className="row g-3 justify-content-center">
-                  <div className="col-auto">
-                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
-                      <strong>€{parseFloat(quickStats.totale || 0).toLocaleString()}</strong>
-                      <small className="ms-2 opacity-75">Totale</small>
-                    </div>
+          {/* Quick Stats reali - solo se abbiamo dati */}
+          {quickStats && (
+            <div className="row g-2 justify-content-center">
+              <div className="col-4">
+                <div className="bg-success bg-opacity-20 rounded-pill px-3 py-2">
+                  <div style={{ fontSize: '1rem', fontWeight: '600' }}>
+                    €{parseFloat(quickStats.totale || 0).toLocaleString()}
                   </div>
-                  <div className="col-auto">
-                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
-                      <strong>{quickStats.numero || 0}</strong>
-                      <small className="ms-2 opacity-75">Incassi</small>
-                    </div>
-                  </div>
-                  <div className="col-auto">
-                    <div className="bg-white bg-opacity-20 rounded-pill px-4 py-2">
-                      <strong>€{quickStats.media_per_giorno || 0}</strong>
-                      <small className="ms-2 opacity-75">Media/giorno</small>
-                    </div>
-                  </div>
+                  <small style={{ fontSize: '0.75rem', opacity: 0.85 }}>Totale</small>
                 </div>
-              )}
+              </div>
+              <div className="col-4">
+                <div className="bg-info bg-opacity-20 rounded-pill px-3 py-2">
+                  <div style={{ fontSize: '1rem', fontWeight: '600' }}>
+                    {quickStats.numero || 0}
+                  </div>
+                  <small style={{ fontSize: '0.75rem', opacity: 0.85 }}>Incassi</small>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="bg-warning bg-opacity-20 rounded-pill px-3 py-2">
+                  <div style={{ fontSize: '1rem', fontWeight: '600' }}>
+                    €{quickStats.numero > 0 ? (parseFloat(quickStats.totale || 0) / quickStats.numero).toFixed(0) : '0'}
+                  </div>
+                  <small style={{ fontSize: '0.75rem', opacity: 0.85 }}>Media</small>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      <div className="container mb-5">
-        {/* Barra Azioni */}
-        <div className="card mb-4">
-          <div className="card-body py-3">
-            <div className="row align-items-center">
-              <div className="col-md-6">
-                <div className="d-flex gap-3">
-                  <Link to="/" className="btn btn-success rounded-pill">
-                    🎙️ Nuovo Incasso
-                  </Link>
-                  <button 
-                    className="btn btn-outline-success rounded-pill"
-                    onClick={() => setListKey(k => k + 1)}
-                  >
-                    🔄 Aggiorna
-                  </button>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <div className="d-flex gap-2 justify-content-md-end">
-                  {/* Filtro Periodo */}
-                  <select 
-                    className="form-select form-select-sm"
-                    style={{ maxWidth: '150px' }}
-                    value={filterPeriod}
-                    onChange={e => setFilterPeriod(e.target.value)}
-                  >
-                    <option value="all">Tutti i periodi</option>
-                    <option value="today">Oggi</option>
-                    <option value="week">Questa settimana</option>
-                    <option value="month">Questo mese</option>
-                    <option value="quarter">Questo trimestre</option>
-                  </select>
+      <div className="container pb-3">
+        <div className="row justify-content-center">
+          <div className="col-12">
 
-                  {/* Toggle Vista */}
-                  <div className="btn-group btn-group-sm" role="group">
-                    <button 
-                      type="button" 
-                      className={`btn ${viewMode === 'cards' ? 'btn-success' : 'btn-outline-success'}`}
-                      onClick={() => setViewMode('cards')}
-                      title="Vista Card"
+            {/* Barra Controlli Unica */}
+            <div className="card mb-4">
+              <div className="card-body p-3">
+                <div className="row align-items-center g-3">
+                  <div className="col-md-4">
+                    <div className="d-flex gap-2">
+                      <Link to="/" className="btn btn-success rounded-pill" style={{ fontSize: '0.9rem' }}>
+                        🎙️ Nuovo Incasso
+                      </Link>
+                      <button 
+                        className="btn btn-outline-success rounded-pill"
+                        style={{ fontSize: '0.9rem' }}
+                        onClick={() => {
+                          setListKey(k => k + 1);
+                          loadQuickStats();
+                        }}
+                      >
+                        🔄 Aggiorna
+                      </button>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <select 
+                      className="form-select form-select-sm"
+                      style={{ fontSize: '0.85rem' }}
+                      value={filterPeriod}
+                      onChange={e => setFilterPeriod(e.target.value)}
                     >
-                      🔲
-                    </button>
-                    <button 
-                      type="button" 
-                      className={`btn ${viewMode === 'table' ? 'btn-success' : 'btn-outline-success'}`}
-                      onClick={() => setViewMode('table')}
-                      title="Vista Tabella"
+                      <option value="all">📅 Tutti i periodi</option>
+                      <option value="today">Oggi</option>
+                      <option value="week">Settimana</option>
+                      <option value="month">Mese</option>
+                      <option value="year">Anno</option>
+                    </select>
+                  </div>
+                  <div className="col-md-4">
+                    <select 
+                      className="form-select form-select-sm"
+                      style={{ fontSize: '0.85rem' }}
+                      value={sortBy}
+                      onChange={e => setSortBy(e.target.value)}
                     >
-                      📋
-                    </button>
+                      <option value="date_desc">📅 Più recenti</option>
+                      <option value="date_asc">📅 Più vecchi</option>
+                      <option value="amount_desc">💰 Importo ↓</option>
+                      <option value="amount_asc">💰 Importo ↑</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Lista Incassi Potenziata */}
-        <div className="card">
-          <div className="card-header bg-transparent pt-4 px-4">
-            <div className="d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">📈 Registro Completo</h5>
-              <span className="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">
-                {quickStats?.numero || 0} incassi registrati
-              </span>
+            {/* Lista Incassi - Focus Principale */}
+            <div className="card">
+              <div className="card-header bg-transparent py-2 px-3">
+                <div className="d-flex justify-content-between align-items-center">
+                  <h6 className="mb-0">📋 Elenco Incassi</h6>
+                  {quickStats && (
+                    <span className="badge bg-success bg-opacity-10 text-success rounded-pill" style={{ fontSize: '0.75rem' }}>
+                      {quickStats.numero || 0} totali
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="card-body p-3">
+                <IncomeList 
+                  key={listKey}
+                  filterPeriod={filterPeriod}
+                  sortBy={sortBy}
+                  onUpdate={() => {
+                    setListKey(k => k + 1);
+                    loadQuickStats();
+                  }}
+                />
+              </div>
             </div>
-          </div>
-          <div className="card-body p-4">
-            <IncomeList
-              key={listKey}
-              onAction={() => {
-                setListKey((k) => k + 1);
-                loadQuickStats();
-              }}
-              viewMode={viewMode}
-              filterPeriod={filterPeriod}
-            />
-          </div>
-        </div>
 
-        {/* Azioni Rapide */}
-        <div className="row g-4 mt-4">
-          <div className="col-md-4">
-            <div className="card text-center p-4 hover-card">
-              <div className="display-6 mb-3">📊</div>
-              <h6>Analisi Dettagliate</h6>
-              <p className="text-muted small mb-3">Visualizza report e statistiche avanzate</p>
-              <Link to="/dashboard" className="btn btn-sm btn-outline-success rounded-pill">
-                Vai alla Dashboard
-              </Link>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card text-center p-4 hover-card">
-              <div className="display-6 mb-3">📤</div>
-              <h6>Export Dati</h6>
-              <p className="text-muted small mb-3">Scarica incassi in formato Excel/PDF</p>
-              <button className="btn btn-sm btn-outline-success rounded-pill">
-                Download
-              </button>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card text-center p-4 hover-card">
-              <div className="display-6 mb-3">🔔</div>
-              <h6>Notifiche</h6>
-              <p className="text-muted small mb-3">Imposta alert per obiettivi mensili</p>
-              <button className="btn btn-sm btn-outline-success rounded-pill">
-                Configura
-              </button>
-            </div>
           </div>
         </div>
       </div>
+
+      {/* CSS per le animazioni */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(15deg); }
+          50% { transform: translateY(-20px) rotate(15deg); }
+        }
+
+        .hover-card {
+          transition: all 0.3s ease;
+        }
+
+        .hover-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+      `}</style>
     </>
   );
 }

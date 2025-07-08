@@ -11,7 +11,6 @@ function Dashboard() {
   const [expenses, setExpenses] = useState([]);
   const [incomes, setIncomes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState('month');
 
   useEffect(() => {
     if (!company) {
@@ -58,12 +57,20 @@ function Dashboard() {
 
   if (!company) {
     return (
-      <div className="container py-5 text-center">
-        <div className="card border-0 shadow-lg p-5" style={{ background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)' }}>
-          <div className="mb-4">
-            <div className="display-1 mb-3">🏢</div>
-            <h2 className="text-muted">Seleziona un'azienda</h2>
-            <p className="lead text-muted">Scegli un'azienda dal selettore in alto per visualizzare analytics avanzate.</p>
+      <div className="container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
+          <div 
+            className="card" 
+            style={{ 
+              background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+              padding: '4rem 2rem'
+            }}
+          >
+            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🏢</div>
+            <h2 style={{ color: '#6b7280', marginBottom: '1rem' }}>Seleziona un'azienda</h2>
+            <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>
+              Scegli un'azienda dal selettore in alto per visualizzare analytics avanzate.
+            </p>
           </div>
         </div>
       </div>
@@ -71,197 +78,237 @@ function Dashboard() {
   }
 
   return (
-    <>
-      {/* Header con Gradient Animato */}
-      <section
-        className="py-5 text-white mb-5 position-relative overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          borderRadius: "24px",
-          margin: "0 auto",
-          maxWidth: "1200px",
-          boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)"
+    <div className="container" style={{ paddingBottom: '3rem' }}>
+      {/* Header */}
+      <div 
+        className="card" 
+        style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          padding: '3rem 2rem',
+          marginBottom: '2rem',
+          textAlign: 'center'
         }}
       >
-        <div className="position-absolute top-0 end-0 p-3">
-          <select 
-            className="form-select form-select-sm bg-white bg-opacity-20 text-white border-0"
-            value={selectedPeriod}
-            onChange={e => setSelectedPeriod(e.target.value)}
-          >
-            <option value="week">Ultima settimana</option>
-            <option value="month">Ultimo mese</option>
-            <option value="quarter">Ultimo trimestre</option>
-            <option value="year">Ultimo anno</option>
-          </select>
-        </div>
-        <div className="container text-center">
-          <h1 className="display-4 fw-bold mb-3">📊 Business Analytics</h1>
-          <h2 className="h4 mb-2">{company.nome}</h2>
-          <p className="lead opacity-90">Dashboard avanzata con insights in tempo reale</p>
-        </div>
-      </section>
-
-      <div className="container mb-5">
-        {loading ? (
-          <div className="text-center py-5">
-            <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }}></div>
-            <p className="lead">⚡ Caricamento analytics...</p>
-          </div>
-        ) : (
-          <>
-            {/* KPI Cards Avanzate */}
-            <div className="row g-4 mb-5">
-              {[
-                {
-                  title: 'Ricavi Totali',
-                  value: incomeStats ? `€${parseFloat(incomeStats.totale).toLocaleString()}` : '€0',
-                  icon: '💰',
-                  trend: '+12%',
-                  bg: 'linear-gradient(135deg, #667eea, #764ba2)',
-                  subtitle: `${incomeStats?.numero || 0} transazioni`
-                },
-                {
-                  title: 'Spese Totali', 
-                  value: stats ? `€${parseFloat(stats.totale).toLocaleString()}` : '€0',
-                  icon: '📊',
-                  trend: '+8%',
-                  bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
-                  subtitle: `${stats?.numero || 0} fatture`
-                },
-                {
-                  title: 'Profitto Netto',
-                  value: `€${profit.toLocaleString()}`,
-                  icon: profit >= 0 ? '📈' : '📉',
-                  trend: `${profit >= 0 ? '+' : ''}${profitMargin.toFixed(1)}%`,
-                  bg: profit >= 0 ? 
-                    'linear-gradient(135deg, #4facfe, #00f2fe)' : 
-                    'linear-gradient(135deg, #fa709a, #fee140)',
-                  subtitle: 'Margine di profitto'
-                }
-              ].map((card, idx) => (
-                <div key={idx} className="col-lg-4 col-md-6">
-                  <div 
-                    className="card border-0 text-white shadow-lg h-100 position-relative overflow-hidden"
-                    style={{ 
-                      background: card.bg,
-                      borderRadius: '20px',
-                      backdropFilter: 'blur(10px)'
-                    }}
-                  >
-                    <div className="card-body p-4">
-                      <div className="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                          <h6 className="opacity-90 mb-1">{card.title}</h6>
-                          <h3 className="fw-bold mb-0">{card.value}</h3>
-                        </div>
-                        <div className="display-6">{card.icon}</div>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-end">
-                        <small className="opacity-75">{card.subtitle}</small>
-                        <span className="badge bg-white bg-opacity-20 rounded-pill">
-                          {card.trend}
-                        </span>
-                      </div>
-                    </div>
-                    <div 
-                      className="position-absolute bottom-0 start-0 w-100 opacity-10"
-                      style={{ height: '40px', background: 'white' }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Statistiche Dettagliate */}
-            <div className="row g-4 mb-5">
-              <div className="col-lg-8">
-                <div className="card border-0 shadow-sm rounded-4 h-100">
-                  <div className="card-header bg-transparent border-0 pt-4 px-4">
-                    <h5 className="mb-0">📈 Andamento Finanziario</h5>
-                  </div>
-                  <div className="card-body p-4">
-                    <ExpensesChart expenses={expenses} />
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-4">
-                <div className="card border-0 shadow-sm rounded-4 h-100">
-                  <div className="card-header bg-transparent border-0 pt-4 px-4">
-                    <h5 className="mb-0">⚡ Attività Recenti</h5>
-                  </div>
-                  <div className="card-body p-4">
-                    {recentActivity.length > 0 ? (
-                      <div className="list-group list-group-flush">
-                        {recentActivity.map((item, idx) => (
-                          <div key={idx} className="list-group-item border-0 px-0 py-2">
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="d-flex align-items-center">
-                                <div className="me-3">
-                                  {item.numero_fattura ? '🧾' : '💰'}
-                                </div>
-                                <div>
-                                  <div className="fw-medium">
-                                    {item.numero_fattura ? 'Spesa' : 'Incasso'}
-                                  </div>
-                                  <small className="text-muted">
-                                    {new Date(item.data_creazione || item.data_incasso).toLocaleDateString('it-IT')}
-                                  </small>
-                                </div>
-                              </div>
-                              <span className={`fw-bold ${item.numero_fattura ? 'text-danger' : 'text-success'}`}>
-                                {item.numero_fattura ? '-' : '+'}€{parseFloat(item.importo || 0).toFixed(2)}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-4 text-muted">
-                        <div className="display-6 mb-2">📋</div>
-                        <p>Nessuna attività recente</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Insights Rapidi */}
-            <div className="row g-4">
-              <div className="col-md-3">
-                <div className="card border-0 bg-light rounded-4 text-center p-3">
-                  <div className="display-6 mb-2">💳</div>
-                  <h6>Metodo Preferito</h6>
-                  <p className="text-muted mb-0">POS</p>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="card border-0 bg-light rounded-4 text-center p-3">
-                  <div className="display-6 mb-2">📅</div>
-                  <h6>Media Giornaliera</h6>
-                  <p className="text-muted mb-0">€{stats?.media_per_giorno || 0}</p>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="card border-0 bg-light rounded-4 text-center p-3">
-                  <div className="display-6 mb-2">🎯</div>
-                  <h6>Obiettivo Mensile</h6>
-                  <p className="text-muted mb-0">85% raggiunto</p>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="card border-0 bg-light rounded-4 text-center p-3">
-                  <div className="display-6 mb-2">⭐</div>
-                  <h6>Score Finanziario</h6>
-                  <p className="text-success mb-0 fw-bold">Eccellente</p>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        <h1 style={{ fontSize: '2.5rem', color: 'white', marginBottom: '0.5rem' }}>📊 Business Analytics</h1>
+        <h2 style={{ fontSize: '1.5rem', color: 'white', opacity: 0.9, marginBottom: '1rem' }}>{company.nome}</h2>
+        <p style={{ fontSize: '1.125rem', opacity: 0.75 }}>
+          Dashboard avanzata con insights in tempo reale
+        </p>
       </div>
-    </>
+
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem' }}>
+          <div style={{ 
+            width: '3rem', 
+            height: '3rem', 
+            border: '4px solid #f3f4f6', 
+            borderTop: '4px solid #6366f1',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }}></div>
+          <p style={{ fontSize: '1.125rem' }}>⚡ Caricamento analytics...</p>
+        </div>
+      ) : (
+        <>
+          {/* KPI Cards Principali */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            {/* Ricavi */}
+            <div 
+              className="card" 
+              style={{ 
+                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                color: 'white',
+                padding: '2rem',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                <div>
+                  <h4 style={{ color: 'white', opacity: 0.9, marginBottom: '0.5rem' }}>Ricavi Totali</h4>
+                  <h2 style={{ color: 'white', fontSize: '2rem', margin: 0 }}>
+                    €{incomeStats ? parseFloat(incomeStats.totale).toLocaleString() : '0'}
+                  </h2>
+                </div>
+                <div style={{ fontSize: '3rem' }}>💰</div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <small style={{ opacity: 0.75 }}>{incomeStats?.numero || 0} transazioni</small>
+                <span style={{ 
+                  background: 'rgba(255,255,255,0.2)', 
+                  padding: '0.25rem 0.75rem', 
+                  borderRadius: '9999px',
+                  fontSize: '0.875rem'
+                }}>
+                  +12%
+                </span>
+              </div>
+            </div>
+
+            {/* Spese */}
+            <div 
+              className="card" 
+              style={{ 
+                background: 'linear-gradient(135deg, #f093fb, #f5576c)',
+                color: 'white',
+                padding: '2rem',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                <div>
+                  <h4 style={{ color: 'white', opacity: 0.9, marginBottom: '0.5rem' }}>Spese Totali</h4>
+                  <h2 style={{ color: 'white', fontSize: '2rem', margin: 0 }}>
+                    €{stats ? parseFloat(stats.totale).toLocaleString() : '0'}
+                  </h2>
+                </div>
+                <div style={{ fontSize: '3rem' }}>📊</div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <small style={{ opacity: 0.75 }}>{stats?.numero || 0} fatture</small>
+                <span style={{ 
+                  background: 'rgba(255,255,255,0.2)', 
+                  padding: '0.25rem 0.75rem', 
+                  borderRadius: '9999px',
+                  fontSize: '0.875rem'
+                }}>
+                  +8%
+                </span>
+              </div>
+            </div>
+
+            {/* Profitto */}
+            <div 
+              className="card" 
+              style={{ 
+                background: profit >= 0 ? 
+                  'linear-gradient(135deg, #4facfe, #00f2fe)' : 
+                  'linear-gradient(135deg, #fa709a, #fee140)',
+                color: 'white',
+                padding: '2rem',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                <div>
+                  <h4 style={{ color: 'white', opacity: 0.9, marginBottom: '0.5rem' }}>Profitto Netto</h4>
+                  <h2 style={{ color: 'white', fontSize: '2rem', margin: 0 }}>
+                    €{profit.toLocaleString()}
+                  </h2>
+                </div>
+                <div style={{ fontSize: '3rem' }}>{profit >= 0 ? '📈' : '📉'}</div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <small style={{ opacity: 0.75 }}>Margine di profitto</small>
+                <span style={{ 
+                  background: 'rgba(255,255,255,0.2)', 
+                  padding: '0.25rem 0.75rem', 
+                  borderRadius: '9999px',
+                  fontSize: '0.875rem'
+                }}>
+                  {profit >= 0 ? '+' : ''}{profitMargin.toFixed(1)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Sezione Principale: Chart + Attività Recenti */}
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+            {/* Chart */}
+            <div className="card" style={{ padding: '1.5rem' }}>
+              <h3 style={{ marginBottom: '1.5rem' }}>📈 Andamento Finanziario</h3>
+              <ExpensesChart expenses={expenses} />
+            </div>
+
+            {/* Attività Recenti */}
+            <div className="card" style={{ padding: '1.5rem' }}>
+              <h3 style={{ marginBottom: '1.5rem' }}>⚡ Attività Recenti</h3>
+              {recentActivity.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {recentActivity.map((item, idx) => (
+                    <div key={idx} style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      padding: '0.75rem',
+                      background: '#f9fafc',
+                      borderRadius: '8px'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ fontSize: '1.5rem' }}>
+                          {item.numero_fattura ? '🧾' : '💰'}
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: '600', fontSize: '0.875rem' }}>
+                            {item.numero_fattura ? 'Spesa' : 'Incasso'}
+                          </div>
+                          <div style={{ color: '#6b7280', fontSize: '0.75rem' }}>
+                            {new Date(item.data_creazione || item.data_incasso).toLocaleDateString('it-IT')}
+                          </div>
+                        </div>
+                      </div>
+                      <span style={{ 
+                        fontWeight: '600', 
+                        color: item.numero_fattura ? '#ef4444' : '#10b981',
+                        fontSize: '0.875rem'
+                      }}>
+                        {item.numero_fattura ? '-' : '+'}€{parseFloat(item.importo || 0).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📋</div>
+                  <p>Nessuna attività recente</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Insights Rapidi */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+            <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💳</div>
+              <h4>Metodo Preferito</h4>
+              <p style={{ color: '#6b7280', margin: 0 }}>POS</p>
+            </div>
+            <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📅</div>
+              <h4>Media Giornaliera</h4>
+              <p style={{ color: '#6b7280', margin: 0 }}>€{stats?.media_per_giorno || 0}</p>
+            </div>
+            <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎯</div>
+              <h4>Obiettivo Mensile</h4>
+              <p style={{ color: '#6b7280', margin: 0 }}>85% raggiunto</p>
+            </div>
+            <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⭐</div>
+              <h4>Score Finanziario</h4>
+              <p style={{ color: '#10b981', fontWeight: '600', margin: 0 }}>Eccellente</p>
+            </div>
+          </div>
+        </>
+      )}
+
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+          .dashboard-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+    </div>
   );
 }
 

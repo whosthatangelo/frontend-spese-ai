@@ -61,19 +61,41 @@ function Home() {
             </span>
           </div>
 
-          <div className="row g-2">
+          {/* Riga principale: Importo e Azienda */}
+          <div className="row g-2 mb-2">
             <div className="col-6">
               <small className="text-muted">💰 Importo</small>
               <div className="fw-bold text-danger" style={{ fontSize: '0.9rem' }}>
                 -{exp.importo != null ? `€${parseFloat(exp.importo).toFixed(2)}` : 'N/D'}
+                {exp.valuta && exp.valuta !== 'EUR' && (
+                  <small className="text-muted ms-1">({exp.valuta})</small>
+                )}
               </div>
             </div>
             <div className="col-6">
-              <small className="text-muted">🏢 {exp.azienda || 'N/D'}</small>
+              <small className="text-muted">🏢 Azienda</small>
               <div className="text-muted" style={{ fontSize: '0.8rem' }}>
-                {exp.metodo_pagamento || 'Metodo N/D'}
+                {exp.azienda || 'N/D'}
               </div>
             </div>
+          </div>
+
+          {/* Riga secondaria: Metodo pagamento e Tipo documento */}
+          <div className="row g-2">
+            <div className="col-6">
+              <small className="text-muted">💳 Metodo</small>
+              <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                {exp.metodo_pagamento || 'N/D'}
+              </div>
+            </div>
+            {exp.tipo_documento && (
+              <div className="col-6">
+                <small className="text-muted">📄 Tipo</small>
+                <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                  {exp.tipo_documento}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -102,11 +124,15 @@ function Home() {
             </div>
           </div>
 
+          {/* Riga principale: Importo e Metodo */}
           <div className="row g-2">
             <div className="col-6">
               <small className="text-muted">💎 Importo</small>
               <div className="fw-bold text-success" style={{ fontSize: '0.9rem' }}>
                 +{inc.importo != null ? `€${parseFloat(inc.importo).toFixed(2)}` : 'N/D'}
+                {inc.valuta && inc.valuta !== 'EUR' && (
+                  <small className="text-muted ms-1">({inc.valuta})</small>
+                )}
               </div>
             </div>
             <div className="col-6">

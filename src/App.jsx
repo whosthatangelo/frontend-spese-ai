@@ -26,11 +26,13 @@ export default function App() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('companyId');
-    setUserId(null);
-    setCompanyId(null);
-    navigate('/login');
+    if (confirm('Sei sicuro di voler uscire?')) {
+      localStorage.removeItem('userId');
+      localStorage.removeItem('companyId');
+      setUserId(null);
+      setCompanyId(null);
+      navigate('/login');
+    }
   };
 
   const getPageTitle = () => {
@@ -116,33 +118,12 @@ export default function App() {
               </Link>
             </div>
 
-            {/* User Actions */}
+            {/* Actions: Solo Logout */}
             <div className="navbar-actions">
-              {/* Notifications */}
-              <button className="action-btn notification-btn d-none d-md-block">
-                <span className="action-icon">🔔</span>
-                <span className="notification-badge">3</span>
-              </button>
-
-              {/* User Menu */}
-              <div className="user-menu">
-                <button className="user-btn">
-                  <div className="user-avatar">
-                    <span className="user-initial">U</span>
-                  </div>
-                  <div className="user-info d-none d-md-block">
-                    <div className="user-name">Utente</div>
-                    <div className="user-role">Admin</div>
-                  </div>
-                  <span className="user-chevron d-none d-md-block">⌄</span>
-                </button>
-              </div>
-
-              {/* Logout */}
               <button 
                 className="btn-logout"
                 onClick={handleLogout}
-                title="Logout"
+                title="Esci dall'applicazione"
               >
                 <span className="logout-icon">🚪</span>
                 <span className="logout-text d-none d-md-inline">Esci</span>
@@ -153,6 +134,7 @@ export default function App() {
             <button 
               className="mobile-menu-toggle d-lg-none"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Menu"
             >
               <span className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`}>
                 <span></span>
@@ -212,16 +194,14 @@ export default function App() {
               </Link>
             </div>
 
-            {/* Mobile Actions */}
+            {/* Mobile Logout */}
             <div className="mobile-actions">
-              <button className="mobile-action-btn">
-                <span className="action-icon">🔔</span>
-                <span className="action-text">Notifiche</span>
-                <span className="notification-badge">3</span>
-              </button>
-              <button className="mobile-action-btn">
-                <span className="action-icon">⚙️</span>
-                <span className="action-text">Impostazioni</span>
+              <button 
+                className="mobile-action-btn mobile-logout"
+                onClick={handleLogout}
+              >
+                <span className="action-icon">🚪</span>
+                <span className="action-text">Esci</span>
               </button>
             </div>
           </div>

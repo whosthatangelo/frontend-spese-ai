@@ -308,85 +308,6 @@
   gap: 0.75rem;
 }
 
-.action-btn {
-  position: relative;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 0.75rem;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-.action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.notification-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #ef4444;
-  color: white;
-  font-size: 0.75rem;
-  padding: 0.125rem 0.375rem;
-  border-radius: 10px;
-  font-weight: 600;
-  min-width: 18px;
-  text-align: center;
-}
-
-/* === User Menu === */
-.user-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 0.5rem 0.75rem;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-
-.user-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.user-info {
-  text-align: left;
-  line-height: 1.2;
-}
-
-.user-name {
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.user-role {
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
-
-.user-chevron {
-  opacity: 0.7;
-  transition: transform 0.3s ease;
-}
-
 /* === Logout Button === */
 .btn-logout {
   display: flex;
@@ -399,12 +320,22 @@
   border-radius: 10px;
   transition: all 0.3s ease;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .btn-logout:hover {
   background: rgba(239, 68, 68, 0.3);
   border-color: rgba(239, 68, 68, 0.4);
   transform: translateY(-1px);
+  color: white;
+}
+
+.logout-icon {
+  font-size: 1.1rem;
+}
+
+.logout-text {
+  font-size: 0.9rem;
 }
 
 /* === Mobile Menu === */
@@ -415,6 +346,7 @@
   padding: 0.75rem;
   border-radius: 10px;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .mobile-menu-toggle:hover {
@@ -549,11 +481,23 @@
   color: #1f2937;
   transition: all 0.3s ease;
   position: relative;
+  cursor: pointer;
 }
 
 .mobile-action-btn:hover {
   background: #f3f4f6;
   color: #6366f1;
+}
+
+/* Mobile Logout Specific */
+.mobile-logout {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #dc2626 !important;
+}
+
+.mobile-logout:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #dc2626 !important;
 }
 
 .action-icon {
@@ -639,10 +583,6 @@
     display: none;
   }
 
-  .user-info {
-    display: none;
-  }
-
   .logout-text {
     display: none;
   }
@@ -671,9 +611,8 @@
 /* === Accessibility === */
 .nav-link:focus-visible,
 .company-switcher-btn:focus-visible,
-.user-btn:focus-visible,
-.action-btn:focus-visible,
-.btn-logout:focus-visible {
+.btn-logout:focus-visible,
+.mobile-menu-toggle:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.8);
   outline-offset: 2px;
 }

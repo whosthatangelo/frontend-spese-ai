@@ -88,7 +88,7 @@ export default function ExpenseListClean({ filterPeriod, sortBy, onUpdate }) {
     }
   });
 
-  // Render della singola card - STESSO STILE DELLA HOME
+  // Render della singola card - COMPLETA CON TUTTI I CAMPI
   const renderExpenseCard = (exp) => (
     <div className="col-12 mb-3" key={exp.id}>
       <div className="card hover-card">
@@ -118,24 +118,44 @@ export default function ExpenseListClean({ filterPeriod, sortBy, onUpdate }) {
             </span>
           </div>
 
-          <div className="row g-2">
+          {/* Riga principale: Importo e Azienda */}
+          <div className="row g-2 mb-2">
             <div className="col-6">
               <small className="text-muted">💰 Importo</small>
               <div className="fw-bold text-danger" style={{ fontSize: '0.9rem' }}>
                 -{exp.importo != null ? `€${parseFloat(exp.importo).toFixed(2)}` : 'N/D'}
+                {exp.valuta && exp.valuta !== 'EUR' && (
+                  <small className="text-muted ms-1">({exp.valuta})</small>
+                )}
               </div>
             </div>
             <div className="col-6">
-              <small className="text-muted">🏢 {exp.azienda || 'N/D'}</small>
+              <small className="text-muted">🏢 Azienda</small>
               <div className="text-muted" style={{ fontSize: '0.8rem' }}>
-                {exp.metodo_pagamento || 'Metodo N/D'}
+                {exp.azienda || 'N/D'}
               </div>
             </div>
           </div>
 
-          {/* Informazioni aggiuntive se presenti */}
-          {(exp.banca || exp.valuta !== 'EUR') && (
-            <div className="row g-2 mt-2">
+          {/* Riga secondaria: Metodo pagamento e Tipo documento */}
+          <div className="row g-2 mb-2">
+            <div className="col-6">
+              <small className="text-muted">💳 Metodo Pagamento</small>
+              <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                {exp.metodo_pagamento || 'N/D'}
+              </div>
+            </div>
+            <div className="col-6">
+              <small className="text-muted">📄 Tipo Documento</small>
+              <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                {exp.tipo_documento || 'N/D'}
+              </div>
+            </div>
+          </div>
+
+          {/* Riga aggiuntive se presenti */}
+          {(exp.banca || exp.tipo_pagamento) && (
+            <div className="row g-2 mb-2">
               {exp.banca && (
                 <div className="col-6">
                   <small className="text-muted">🏦 Banca</small>
@@ -144,14 +164,54 @@ export default function ExpenseListClean({ filterPeriod, sortBy, onUpdate }) {
                   </div>
                 </div>
               )}
-              {exp.valuta && exp.valuta !== 'EUR' && (
+              {exp.tipo_pagamento && (
                 <div className="col-6">
-                  <small className="text-muted">💱 Valuta</small>
+                  <small className="text-muted">⚡ Tipo Pagamento</small>
                   <div className="text-muted" style={{ fontSize: '0.8rem' }}>
-                    {exp.valuta}
+                    {exp.tipo_pagamento}
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Info creazione - sezione tecnica meno prominente */}
+          {(exp.data_creazione || exp.utente_id || exp.azienda_id) && (
+            <div className="border-top pt-2 mt-2" style={{ backgroundColor: '#f8f9fa', margin: '0.75rem -0.75rem -0.75rem -0.75rem', padding: '0.5rem 0.75rem' }}>
+              <small className="text-muted mb-2 d-block">ℹ️ Info Tecniche</small>
+              <div className="row g-2">
+                {exp.data_creazione && (
+                  <div className="col-md-4 col-6">
+                    <small className="text-muted" style={{ fontSize: '0.7rem' }}>🕒 Creato</small>
+                    <div className="text-muted" style={{ fontSize: '0.7rem' }}>
+                      {new Date(exp.data_creazione).toLocaleDateString("it-IT", { 
+                        day: '2-digit', 
+                        month: '2-digit',
+                        year: '2-digit'
+                      })} {new Date(exp.data_creazione).toLocaleTimeString("it-IT", { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
+                  </div>
+                )}
+                {exp.utente_id && (
+                  <div className="col-md-4 col-6">
+                    <small className="text-muted" style={{ fontSize: '0.7rem' }}>👤 User ID</small>
+                    <div className="text-muted" style={{ fontSize: '0.7rem' }}>
+                      {exp.utente_id}
+                    </div>
+                  </div>
+                )}
+                {exp.azienda_id && (
+                  <div className="col-md-4 col-6">
+                    <small className="text-muted" style={{ fontSize: '0.7rem' }}>🏢 Company ID</small>
+                    <div className="text-muted" style={{ fontSize: '0.7rem' }}>
+                      {exp.azienda_id}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

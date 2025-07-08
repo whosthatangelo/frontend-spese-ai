@@ -1,7 +1,7 @@
 // src/pages/Spese.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import ExpenseListClean from '../components/ExpenseListClean';
+import ExpenseList from '../components/ExpenseList';
 import { useUserCompany } from '../contexts/UserCompanyContext';
 import { getStats } from '../api';
 
@@ -214,7 +214,7 @@ function Spese() {
                 </div>
               </div>
               <div className="card-body p-3">
-                <ExpenseListClean 
+                <ExpenseList 
                   key={listKey}
                   filterPeriod={filterPeriod}
                   sortBy={sortBy}

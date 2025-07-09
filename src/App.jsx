@@ -31,74 +31,53 @@ export default function App() {
   }, []);
 
   const handleLogout = async () => {
+    alert('LOGOUT INIZIATO - TEST'); // TEST IMMEDIATO
     console.log('🔄 handleLogout chiamato!'); // DEBUG
 
     // Rimettiamo il confirm
     if (confirm('Sei sicuro di voler uscire?')) {
+      alert('CONFERMATO - MOSTRANDO SCHERMATA'); // TEST
       console.log('🔄 Utente ha confermato logout'); // DEBUG
 
-      try {
-        // Prima mostra la schermata di saluto
-        console.log('🔄 Mostrando schermata di saluto'); // DEBUG
-        setShowLogoutScreen(true);
+      // Prima mostra la schermata di saluto
+      console.log('🔄 setShowLogoutScreen(true)'); // DEBUG
+      setShowLogoutScreen(true);
 
-        // Chiama endpoint logout nel backend (per i log)
-        const userId = localStorage.getItem('userId');
-        const userEmail = localStorage.getItem('userEmail');
+      alert('SCHERMATA IMPOSTATA - DOVREBBE APPARIRE'); // TEST
 
-        console.log(`🔄 Preparando chiamata logout backend: userId=${userId}, email=${userEmail}`);
-        console.log(`🔄 URL backend: ${import.meta.env.VITE_API_URL}/logout`);
-
+      // Resto del logout dopo 1 secondo
+      setTimeout(async () => {
         try {
-          const response = await axios.post(import.meta.env.VITE_API_URL + '/logout', {
-            userId,
-            email: userEmail
-          });
-          console.log('✅ Backend logout risposta:', response.data);
-        } catch (backendError) {
-          console.error('❌ Errore completo chiamata backend logout:', backendError);
-          console.error('❌ Response data:', backendError.response?.data);
-          console.error('❌ Status:', backendError.response?.status);
-          // Continua comunque
+          // Logout da Firebase
+          await signOut(auth);
+          console.log('✅ Firebase signOut completato');
+
+          // Pulisci localStorage
+          localStorage.removeItem('userId');
+          localStorage.removeItem('companyId');
+          localStorage.removeItem('userEmail');
+          localStorage.removeItem('userName');
+          localStorage.removeItem('userPhoto');
+
+          // Pulisci context
+          setUserId(null);
+          setCompanyId(null);
+
+          console.log('✅ Logout completato');
+
+          // Dopo altri 2 secondi, vai al login
+          setTimeout(() => {
+            navigate('/login');
+          }, 2000);
+
+        } catch (error) {
+          console.error('❌ Errore durante il logout:', error);
+          localStorage.clear();
+          setUserId(null);
+          setCompanyId(null);
+          navigate('/login');
         }
-
-        // Logout da Firebase
-        await signOut(auth);
-        console.log('✅ Firebase signOut completato'); // DEBUG
-
-        // Pulisci localStorage
-        localStorage.removeItem('userId');
-        localStorage.removeItem('companyId');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('userPhoto');
-
-        // Pulisci context
-        setUserId(null);
-        setCompanyId(null);
-
-        console.log('✅ Logout completato');
-
-        // Dopo 2.5 secondi, vai al login
-        setTimeout(() => {
-          console.log('🔄 Navigando a /login'); // DEBUG
-          navigate('/login');
-        }, 2500);
-
-      } catch (error) {
-        console.error('❌ Errore durante il logout:', error);
-        // Anche se Firebase fallisce, pulisci comunque e vai al login
-        localStorage.clear();
-        setUserId(null);
-        setCompanyId(null);
-
-        // Mostra comunque la schermata di saluto
-        setShowLogoutScreen(true);
-
-        setTimeout(() => {
-          navigate('/login');
-        }, 2500);
-      }
+      }, 1000);
     }
   };
 

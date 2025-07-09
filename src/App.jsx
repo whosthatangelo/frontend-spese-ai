@@ -97,8 +97,11 @@ export default function App() {
 
   // Se è in corso il logout, mostra la schermata di saluto
   if (showLogoutScreen) {
+    console.log('🔄 Rendering LogoutScreen'); // DEBUG
     return <LogoutScreen />;
   }
+
+  console.log('🔄 Rendering normal app'); // DEBUG
 
   return (
     <div className="app-container">

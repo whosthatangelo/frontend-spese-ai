@@ -2,6 +2,7 @@ import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebase/config';
+import axios from 'axios';
 import Home from './pages/Home';
 import Spese from './pages/Spese';
 import Incassi from './pages/Incassi';
@@ -41,7 +42,22 @@ export default function App() {
         console.log('🔄 Mostrando schermata di saluto'); // DEBUG
         setShowLogoutScreen(true);
 
-        // Logout da Firebase - versione semplice
+        // Chiama endpoint logout nel backend (per i log)
+        const userId = localStorage.getItem('userId');
+        const userEmail = localStorage.getItem('userEmail');
+
+        try {
+          await axios.post(import.meta.env.VITE_API_URL + '/logout', {
+            userId,
+            email: userEmail
+          });
+          console.log('✅ Backend logout chiamato');
+        } catch (backendError) {
+          console.warn('⚠️ Errore chiamata backend logout:', backendError);
+          // Continua comunque
+        }
+
+        // Logout da Firebase
         await signOut(auth);
         console.log('✅ Firebase signOut completato'); // DEBUG
 

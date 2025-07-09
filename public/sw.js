@@ -1,15 +1,18 @@
-const CACHE_NAME = 'spese-ai-v1';
+const CACHE_NAME = 'spese-ai-v2'; // Incrementa versione
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
   '/static/css/main.css',
   '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/favicon.png',
+  '/apple-touch-icon.png',
+  '/web-app-manifest-192x192.png',
+  '/web-app-manifest-512x512.png'
 ];
 
 // Installazione del service worker
 self.addEventListener('install', event => {
+  console.log('📦 Service Worker: Installing v2');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -17,10 +20,13 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
   );
+  // Forza l'attivazione immediata
+  self.skipWaiting();
 });
 
 // Attivazione del service worker
 self.addEventListener('activate', event => {
+  console.log('🔄 Service Worker: Activating v2');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -31,39 +37,53 @@ self.addEventListener('activate', event => {
           }
         })
       );
+    }).then(() => {
+      // Prendi controllo di tutte le tab aperte
+      return self.clients.claim();
     })
   );
 });
 
-// Intercettazione delle richieste
+// Strategia cache-first per assets, network-first per HTML
 self.addEventListener('fetch', event => {
-  // Solo per richieste GET
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Restituisce dalla cache se disponibile
+        // Se è HTML, sempre network-first
+        if (event.request.destination === 'document') {
+          return fetch(event.request)
+            .then(networkResponse => {
+              // Salva in cache se la risposta è ok
+              if (networkResponse && networkResponse.status === 200) {
+                const responseToCache = networkResponse.clone();
+                caches.open(CACHE_NAME)
+                  .then(cache => cache.put(event.request, responseToCache));
+              }
+              return networkResponse;
+            })
+            .catch(() => {
+              // Fallback alla cache se network fallisce
+              return response || caches.match('/');
+            });
+        }
+
+        // Per altri assets, cache-first
         if (response) {
           return response;
         }
 
-        // Altrimenti fa la richiesta di rete
-        return fetch(event.request).then(response => {
-          // Verifica se la risposta è valida
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
+        return fetch(event.request).then(networkResponse => {
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            return networkResponse;
           }
 
-          // Clona la risposta per salvarla in cache
-          const responseToCache = response.clone();
-
+          const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
+            .then(cache => cache.put(event.request, responseToCache));
 
-          return response;
+          return networkResponse;
         });
       })
       .catch(() => {
@@ -75,32 +95,9 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Gestione notifiche push (opzionale)
-self.addEventListener('push', event => {
-  if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: '/icons/icon-192x192.png',
-      badge: '/icons/icon-72x72.png',
-      vibrate: [100, 50, 100],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: 1
-      }
-    };
-
-    event.waitUntil(
-      self.registration.showNotification(data.title, options)
-    );
+// Gestione aggiornamenti
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
-});
-
-// Gestione click sulle notifiche
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-
-  event.waitUntil(
-    clients.openWindow('/')
-  );
 });

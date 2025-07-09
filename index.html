@@ -34,13 +34,33 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     
-    <!-- Service Worker Registration -->
+    <!-- Service Worker Registration con gestione aggiornamenti -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then(registration => {
               console.log('✅ SW registrato con successo:', registration.scope);
+              
+              // Controlla aggiornamenti ogni 30 secondi
+              setInterval(() => {
+                registration.update();
+              }, 30000);
+              
+              // Gestisce aggiornamenti del SW
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      // Nuovo SW disponibile, forza aggiornamento
+                      console.log('🔄 Nuovo SW disponibile, aggiornamento...');
+                      newWorker.postMessage({ type: 'SKIP_WAITING' });
+                      window.location.reload();
+                    }
+                  });
+                }
+              });
             })
             .catch(error => {
               console.log('❌ SW registrazione fallita:', error);

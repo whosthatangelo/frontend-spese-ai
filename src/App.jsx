@@ -31,53 +31,43 @@ export default function App() {
   }, []);
 
   const handleLogout = async () => {
-    alert('LOGOUT INIZIATO - TEST'); // TEST IMMEDIATO
-    console.log('🔄 handleLogout chiamato!'); // DEBUG
+    console.log('🔄 handleLogout chiamato!');
 
-    // Rimettiamo il confirm
     if (confirm('Sei sicuro di voler uscire?')) {
-      alert('CONFERMATO - MOSTRANDO SCHERMATA'); // TEST
-      console.log('🔄 Utente ha confermato logout'); // DEBUG
+      console.log('🔄 Utente ha confermato logout');
 
-      // Prima mostra la schermata di saluto
-      console.log('🔄 setShowLogoutScreen(true)'); // DEBUG
+      // Mostra immediatamente la schermata di saluto
+      console.log('🔄 setShowLogoutScreen(true)');
       setShowLogoutScreen(true);
 
-      alert('SCHERMATA IMPOSTATA - DOVREBBE APPARIRE'); // TEST
+      // Forza un re-render aspettando un tick
+      await new Promise(resolve => setTimeout(resolve, 100));
 
-      // Resto del logout dopo 1 secondo
-      setTimeout(async () => {
-        try {
-          // Logout da Firebase
-          await signOut(auth);
-          console.log('✅ Firebase signOut completato');
+      try {
+        // Logout da Firebase
+        await signOut(auth);
+        console.log('✅ Firebase signOut completato');
 
-          // Pulisci localStorage
-          localStorage.removeItem('userId');
-          localStorage.removeItem('companyId');
-          localStorage.removeItem('userEmail');
-          localStorage.removeItem('userName');
-          localStorage.removeItem('userPhoto');
+        // Pulisci tutto
+        localStorage.clear();
+        setUserId(null);
+        setCompanyId(null);
 
-          // Pulisci context
-          setUserId(null);
-          setCompanyId(null);
+        console.log('✅ Logout completato');
 
-          console.log('✅ Logout completato');
-
-          // Dopo altri 2 secondi, vai al login
-          setTimeout(() => {
-            navigate('/login');
-          }, 2000);
-
-        } catch (error) {
-          console.error('❌ Errore durante il logout:', error);
-          localStorage.clear();
-          setUserId(null);
-          setCompanyId(null);
+        // Dopo 3 secondi, vai al login
+        setTimeout(() => {
+          console.log('🔄 Navigando a /login');
           navigate('/login');
-        }
-      }, 1000);
+        }, 3000);
+
+      } catch (error) {
+        console.error('❌ Errore durante il logout:', error);
+        // Anche se Firebase fallisce, vai al login
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      }
     }
   };
 

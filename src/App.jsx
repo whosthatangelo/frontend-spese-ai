@@ -42,15 +42,8 @@ export default function App() {
         console.log('🔄 Mostrando schermata di saluto'); // DEBUG
         setShowLogoutScreen(true);
 
-        // Logout da Firebase - proviamo con try/catch separato
-        try {
-          console.log('🔄 Tentativo signOut Firebase'); // DEBUG
-          await signOut(auth);
-          console.log('✅ signOut Firebase completato'); // DEBUG
-        } catch (firebaseError) {
-          console.error('❌ Errore Firebase signOut:', firebaseError); // DEBUG
-          // Continua comunque con la pulizia
-        }
+        // SALTIAMO FIREBASE PER ORA - TEST
+        console.log('🔄 Saltando Firebase signOut per test'); // DEBUG
 
         // Pulisci localStorage
         localStorage.removeItem('userId');
@@ -63,10 +56,11 @@ export default function App() {
         setUserId(null);
         setCompanyId(null);
 
-        console.log('✅ Logout completato');
+        console.log('✅ Logout completato - senza Firebase');
 
         // Dopo 2.5 secondi, vai al login
         setTimeout(() => {
+          console.log('🔄 Navigando a /login'); // DEBUG
           navigate('/login');
         }, 2500);
 

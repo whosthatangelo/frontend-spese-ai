@@ -32,9 +32,8 @@ export default function App() {
   const handleLogout = async () => {
     console.log('🔄 handleLogout chiamato!'); // DEBUG
 
-    // Temporaneamente saltiamo il confirm per testare
-    // if (confirm('Sei sicuro di voler uscire?')) {
-    if (true) { // TEST - sempre true
+    // Rimettiamo il confirm
+    if (confirm('Sei sicuro di voler uscire?')) {
       console.log('🔄 Utente ha confermato logout'); // DEBUG
 
       try {
@@ -42,8 +41,9 @@ export default function App() {
         console.log('🔄 Mostrando schermata di saluto'); // DEBUG
         setShowLogoutScreen(true);
 
-        // SALTIAMO FIREBASE PER ORA - TEST
-        console.log('🔄 Saltando Firebase signOut per test'); // DEBUG
+        // Logout da Firebase - versione semplice
+        await signOut(auth);
+        console.log('✅ Firebase signOut completato'); // DEBUG
 
         // Pulisci localStorage
         localStorage.removeItem('userId');
@@ -56,7 +56,7 @@ export default function App() {
         setUserId(null);
         setCompanyId(null);
 
-        console.log('✅ Logout completato - senza Firebase');
+        console.log('✅ Logout completato');
 
         // Dopo 2.5 secondi, vai al login
         setTimeout(() => {
@@ -66,10 +66,12 @@ export default function App() {
 
       } catch (error) {
         console.error('❌ Errore durante il logout:', error);
-        // Anche se Firebase fallisce, pulisci comunque
+        // Anche se Firebase fallisce, pulisci comunque e vai al login
         localStorage.clear();
         setUserId(null);
         setCompanyId(null);
+
+        // Mostra comunque la schermata di saluto
         setShowLogoutScreen(true);
 
         setTimeout(() => {

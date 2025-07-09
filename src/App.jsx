@@ -20,6 +20,18 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showLogoutScreen, setShowLogoutScreen] = useState(false);
+  const [forceRender, setForceRender] = useState(0); // Forza re-render
+
+  // Forza re-render quando showLogoutScreen cambia
+  useEffect(() => {
+    if (showLogoutScreen) {
+      console.log('🔄 useEffect: Logout screen attivata');
+      // Forza Chrome a riconoscere il cambio
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [showLogoutScreen]);
 
   // Detect scroll for navbar styling
   useEffect(() => {
@@ -36,12 +48,15 @@ export default function App() {
     if (confirm('Sei sicuro di voler uscire?')) {
       console.log('🔄 Utente ha confermato logout');
 
+      // Forza re-render per Chrome
+      setForceRender(prev => prev + 1);
+
       // Mostra immediatamente la schermata di saluto
       console.log('🔄 setShowLogoutScreen(true)');
       setShowLogoutScreen(true);
 
       // Forza un re-render aspettando un tick
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       try {
         // Logout da Firebase
@@ -58,6 +73,7 @@ export default function App() {
         // Dopo 3 secondi, vai al login
         setTimeout(() => {
           console.log('🔄 Navigando a /login');
+          setShowLogoutScreen(false); // Reset stato
           navigate('/login');
         }, 3000);
 
@@ -65,6 +81,7 @@ export default function App() {
         console.error('❌ Errore durante il logout:', error);
         // Anche se Firebase fallisce, vai al login
         setTimeout(() => {
+          setShowLogoutScreen(false); // Reset stato
           navigate('/login');
         }, 2000);
       }

@@ -46,14 +46,19 @@ export default function App() {
         const userId = localStorage.getItem('userId');
         const userEmail = localStorage.getItem('userEmail');
 
+        console.log(`🔄 Preparando chiamata logout backend: userId=${userId}, email=${userEmail}`);
+        console.log(`🔄 URL backend: ${import.meta.env.VITE_API_URL}/logout`);
+
         try {
-          await axios.post(import.meta.env.VITE_API_URL + '/logout', {
+          const response = await axios.post(import.meta.env.VITE_API_URL + '/logout', {
             userId,
             email: userEmail
           });
-          console.log('✅ Backend logout chiamato');
+          console.log('✅ Backend logout risposta:', response.data);
         } catch (backendError) {
-          console.warn('⚠️ Errore chiamata backend logout:', backendError);
+          console.error('❌ Errore completo chiamata backend logout:', backendError);
+          console.error('❌ Response data:', backendError.response?.data);
+          console.error('❌ Status:', backendError.response?.status);
           // Continua comunque
         }
 

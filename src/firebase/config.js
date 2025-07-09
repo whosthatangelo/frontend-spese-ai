@@ -3,7 +3,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
-  ,
   apiKey: "AIzaSyCGqpdITENP848MtyrMcupcm0HbN1II7R8",
   authDomain: "expenses-ai-398b0.firebaseapp.com",
   projectId: "expenses-ai-398b0",

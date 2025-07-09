@@ -1,12 +1,12 @@
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import { auth } from './firebase/config';
 import Home from './pages/Home';
 import Spese from './pages/Spese';
 import Incassi from './pages/Incassi';
 import Dashboard from './pages/Dashboard';
-import Login from './components/Login';
+import LogoutScreen from './components/LogoutScreen';
 import CompanySwitcher from './components/CompanySwitcher';
 import { useUserCompany } from './contexts/UserCompanyContext';
 import './App.css';
@@ -15,37 +15,10 @@ import './components/Navbar.css';
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userId, setUserId, setCompanyId, company } = useUserCompany();
+  const { setUserId, setCompanyId, company } = useUserCompany();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Controllo autenticazione
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Utente loggato
-        setIsAuthenticated(true);
-        // Verifica se abbiamo userId nel localStorage
-        const storedUserId = localStorage.getItem('userId');
-        if (storedUserId && !userId) {
-          setUserId(storedUserId);
-        }
-      } else {
-        // Utente non loggato
-        setIsAuthenticated(false);
-        setUserId(null);
-        setCompanyId(null);
-        if (location.pathname !== '/login') {
-          navigate('/login');
-        }
-      }
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [navigate, location.pathname, userId, setUserId, setCompanyId]);
+  const [showLogoutScreen, setShowLogoutScreen] = useState(false);
 
   // Detect scroll for navbar styling
   useEffect(() => {
@@ -59,7 +32,10 @@ export default function App() {
   const handleLogout = async () => {
     if (confirm('Sei sicuro di voler uscire?')) {
       try {
-        // Logout da Firebase (questo triggerà onAuthStateChanged)
+        // Prima mostra la schermata di saluto
+        setShowLogoutScreen(true);
+
+        // Logout da Firebase
         await signOut(auth);
 
         // Pulisci localStorage
@@ -74,15 +50,23 @@ export default function App() {
         setCompanyId(null);
 
         console.log('✅ Logout completato');
-        // Il redirect verrà gestito da onAuthStateChanged
+
+        // Dopo 2.5 secondi, vai al login
+        setTimeout(() => {
+          navigate('/login');
+        }, 2500);
+
       } catch (error) {
         console.error('❌ Errore durante il logout:', error);
         // Anche se Firebase fallisce, pulisci comunque
         localStorage.clear();
         setUserId(null);
         setCompanyId(null);
-        setIsAuthenticated(false);
-        navigate('/login');
+        setShowLogoutScreen(true);
+
+        setTimeout(() => {
+          navigate('/login');
+        }, 2500);
       }
     }
   };
@@ -101,20 +85,9 @@ export default function App() {
     return location.pathname === path;
   };
 
-  // Loading screen
-  if (isLoading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Caricamento...</span>
-        </div>
-      </div>
-    );
-  }
-
-  // Se non autenticato, mostra login
-  if (!isAuthenticated) {
-    return <Login />;
+  // Se è in corso il logout, mostra la schermata di saluto
+  if (showLogoutScreen) {
+    return <LogoutScreen />;
   }
 
   return (

@@ -7,7 +7,6 @@ import { auth } from './firebase/config';
 import './index.css';
 import App from './App';
 import Login from './components/Login';
-import LogoutScreen from './components/LogoutScreen';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { UserCompanyProvider } from './contexts/UserCompanyContext';
@@ -15,7 +14,6 @@ import { UserCompanyProvider } from './contexts/UserCompanyContext';
 function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading
   const [isLoading, setIsLoading] = useState(true);
-  const [showLogoutScreen, setShowLogoutScreen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -24,17 +22,14 @@ function ProtectedRoute({ children }) {
       if (user) {
         // Utente loggato con Firebase
         setIsAuthenticated(true);
-        setShowLogoutScreen(false);
 
         // Verifica se abbiamo userId nel localStorage
         const storedUserId = localStorage.getItem('userId');
         if (!storedUserId) {
-          // Se non c'è userId, potrebbe essere un problema di sync
           console.warn('⚠️ Utente Firebase autenticato ma manca userId nel localStorage');
         }
       } else {
         // Utente non loggato
-        const wasAuthenticated = isAuthenticated === true;
         setIsAuthenticated(false);
 
         // Pulisci localStorage se Firebase dice che non è loggato
@@ -43,18 +38,12 @@ function ProtectedRoute({ children }) {
         localStorage.removeItem('userEmail');
         localStorage.removeItem('userName');
         localStorage.removeItem('userPhoto');
-
-        // Se era autenticato prima, mostra schermata di saluto
-        if (wasAuthenticated) {
-          setShowLogoutScreen(true);
-          console.log('🔄 Showing logout screen');
-        }
       }
       setIsLoading(false);
     });
 
     return () => unsubscribe();
-  }, [isAuthenticated]);
+  }, []);
 
   // Loading screen
   if (isLoading) {
@@ -65,11 +54,6 @@ function ProtectedRoute({ children }) {
         </div>
       </div>
     );
-  }
-
-  // Schermata di saluto dopo logout
-  if (showLogoutScreen) {
-    return <LogoutScreen onComplete={() => setShowLogoutScreen(false)} />;
   }
 
   // Se non autenticato, mostra login

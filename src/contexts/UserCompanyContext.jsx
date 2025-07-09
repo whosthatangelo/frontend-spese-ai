@@ -18,6 +18,11 @@ export function UserCompanyProvider({ children }) {
     return stored ? parseInt(stored) : null; // Converte a numero
   });
 
+  // 🆕 Stati per i permessi
+  const [userRole, setUserRole] = useState(null);
+  const [permissions, setPermissions] = useState(null);
+  const [permissionsLoading, setPermissionsLoading] = useState(false);
+
   const apiBase = import.meta.env.VITE_API_URL;
 
   // 🔄 Carico le aziende per l'utente loggato
@@ -26,7 +31,6 @@ export function UserCompanyProvider({ children }) {
       console.warn('⚠️ userId non definito, salta chiamata alle aziende');
       return;
     }
-
     console.log(`📡 Fetch aziende per userId = ${userId}`);
     axios.get(`${apiBase}/companies`, {
       headers: { 'x-user-id': userId }
@@ -34,7 +38,6 @@ export function UserCompanyProvider({ children }) {
     .then(res => {
       console.log('✅ Aziende ricevute dal backend:', res.data);
       setCompanies(res.data);
-
       if (res.data.length > 0 && !localStorage.getItem('companyId')) {
         const defaultCompanyId = res.data[0].id;
         console.log(`🎯 Nessuna azienda selezionata, imposto la prima: ${defaultCompanyId}`);
@@ -46,6 +49,44 @@ export function UserCompanyProvider({ children }) {
       console.error('❌ Errore nel caricamento aziende:', err);
     });
   }, [userId]);
+
+  // 🆕 Carica i permessi dell'utente
+  useEffect(() => {
+    const loadPermissions = async () => {
+      if (!userId || !currentCompany) {
+        setUserRole(null);
+        setPermissions(null);
+        return;
+      }
+
+      try {
+        setPermissionsLoading(true);
+
+        const response = await axios.get(`${apiBase}/user/permissions`, {
+          headers: {
+            'x-user-id': userId,
+            'x-company-id': currentCompany
+          }
+        });
+
+        const { role, permissions: userPermissions } = response.data;
+
+        setUserRole(role);
+        setPermissions(userPermissions);
+
+        console.log(`👤 Context - Ruolo: ${role}`, userPermissions);
+
+      } catch (error) {
+        console.error('❌ Errore caricamento permessi context:', error);
+        setUserRole(null);
+        setPermissions(null);
+      } finally {
+        setPermissionsLoading(false);
+      }
+    };
+
+    loadPermissions();
+  }, [userId, currentCompany, apiBase]);
 
   // 🧠 Salva il cambio azienda nel localStorage
   useEffect(() => {
@@ -63,18 +104,33 @@ export function UserCompanyProvider({ children }) {
     userId,
     currentCompany,
     company,
-    companiesCount: companies.length
+    companiesCount: companies.length,
+    userRole,
+    hasPermissions: !!permissions
   });
 
   return (
     <UserCompanyContext.Provider value={{
+      // Valori esistenti
       userId,
       setUserId,
       companies,
       currentCompany,
       setCurrentCompany,
-      company, // 👈 AGGIUNTO: oggetto azienda completo
-      apiBase
+      company, // oggetto azienda completo
+      apiBase,
+
+      // 🆕 Nuovi valori per permessi
+      userRole,
+      permissions,
+      permissionsLoading,
+
+      // 🆕 Utility per controlli rapidi
+      isSuperAdmin: () => userRole === 'super_admin',
+      isAdminAzienda: () => userRole === 'admin_azienda',
+      isManager: () => userRole === 'manager',
+      isUser: () => userRole === 'user',
+      isGuest: () => userRole === 'guest'
     }}>
       {children}
     </UserCompanyContext.Provider>

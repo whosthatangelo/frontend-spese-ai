@@ -30,9 +30,14 @@ export default function App() {
   }, []);
 
   const handleLogout = async () => {
+    console.log('🔄 handleLogout chiamato!'); // DEBUG
+
     if (confirm('Sei sicuro di voler uscire?')) {
+      console.log('🔄 Utente ha confermato logout'); // DEBUG
+
       try {
         // Prima mostra la schermata di saluto
+        console.log('🔄 Mostrando schermata di saluto'); // DEBUG
         setShowLogoutScreen(true);
 
         // Logout da Firebase

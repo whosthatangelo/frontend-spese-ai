@@ -25,7 +25,6 @@ export default function App() {
   // Forza re-render quando showLogoutScreen cambia
   useEffect(() => {
     if (showLogoutScreen) {
-      console.log('🔄 useEffect: Logout screen attivata');
       // Forza Chrome a riconoscere il cambio
       document.body.style.overflow = 'hidden';
     } else {
@@ -43,37 +42,28 @@ export default function App() {
   }, []);
 
   const handleLogout = async () => {
-    console.log('🔄 handleLogout chiamato!');
-
     if (confirm('Sei sicuro di voler uscire?')) {
-      console.log('🔄 Utente ha confermato logout');
-
       // Forza re-render per Chrome
       setForceRender(prev => prev + 1);
 
-      // Mostra immediatamente la schermata di saluto
-      console.log('🔄 setShowLogoutScreen(true)');
+      // Mostra la schermata di saluto
       setShowLogoutScreen(true);
 
-      // Forza un re-render aspettando un tick
+      // Breve pausa per il rendering
       await new Promise(resolve => setTimeout(resolve, 200));
 
       try {
         // Logout da Firebase
         await signOut(auth);
-        console.log('✅ Firebase signOut completato');
 
         // Pulisci tutto
         localStorage.clear();
         setUserId(null);
         setCompanyId(null);
 
-        console.log('✅ Logout completato');
-
         // Dopo 3 secondi, vai al login
         setTimeout(() => {
-          console.log('🔄 Navigando a /login');
-          setShowLogoutScreen(false); // Reset stato
+          setShowLogoutScreen(false);
           navigate('/login');
         }, 3000);
 
@@ -81,7 +71,7 @@ export default function App() {
         console.error('❌ Errore durante il logout:', error);
         // Anche se Firebase fallisce, vai al login
         setTimeout(() => {
-          setShowLogoutScreen(false); // Reset stato
+          setShowLogoutScreen(false);
           navigate('/login');
         }, 2000);
       }
@@ -104,11 +94,8 @@ export default function App() {
 
   // Se è in corso il logout, mostra la schermata di saluto
   if (showLogoutScreen) {
-    console.log('🔄 Rendering LogoutScreen'); // DEBUG
     return <LogoutScreen />;
   }
-
-  console.log('🔄 Rendering normal app'); // DEBUG
 
   return (
     <div className="app-container">

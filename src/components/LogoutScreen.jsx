@@ -1,7 +1,5 @@
 // src/components/LogoutScreen.jsx
 export default function LogoutScreen() {
-  console.log('🔄 LogoutScreen component rendered'); // DEBUG
-
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center" style={{ height: '100vh', background: 'linear-gradient(135deg, #007bff, #0056b3)' }}>
       <div className="text-center text-white">

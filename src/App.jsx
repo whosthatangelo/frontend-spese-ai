@@ -1,5 +1,7 @@
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { signOut } from 'firebase/auth';
+import { auth } from './firebase/config';
 import Home from './pages/Home';
 import Spese from './pages/Spese';
 import Incassi from './pages/Incassi';
@@ -25,13 +27,35 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (confirm('Sei sicuro di voler uscire?')) {
-      localStorage.removeItem('userId');
-      localStorage.removeItem('companyId');
-      setUserId(null);
-      setCompanyId(null);
-      navigate('/login');
+      try {
+        // Logout da Firebase
+        await signOut(auth);
+
+        // Pulisci localStorage
+        localStorage.removeItem('userId');
+        localStorage.removeItem('companyId');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userPhoto');
+
+        // Pulisci context
+        setUserId(null);
+        setCompanyId(null);
+
+        // Redirect al login
+        navigate('/login');
+
+        console.log('✅ Logout completato');
+      } catch (error) {
+        console.error('❌ Errore durante il logout:', error);
+        // Anche se Firebase fallisce, pulisci comunque il localStorage
+        localStorage.clear();
+        setUserId(null);
+        setCompanyId(null);
+        navigate('/login');
+      }
     }
   };
 

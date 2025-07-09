@@ -5,6 +5,7 @@ import { signInWithPopup } from 'firebase/auth';
 import axios from 'axios';
 import { auth, googleProvider } from '../firebase/config';
 import { useUserCompany } from '../contexts/UserCompanyContext';
+import InstallAppButton from './InstallAppButton';
 
 export default function Login() {
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -60,6 +61,9 @@ export default function Login() {
               <p className="text-muted mb-4">
                 Utilizza il tuo account Google per accedere
               </p>
+
+              {/* Pulsante Installa App */}
+              <InstallAppButton />
 
               <button 
                 className="btn btn-danger btn-lg d-flex align-items-center justify-content-center mx-auto"

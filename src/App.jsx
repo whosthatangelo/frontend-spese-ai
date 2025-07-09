@@ -7,8 +7,12 @@ import Home from './pages/Home';
 import Spese from './pages/Spese';
 import Incassi from './pages/Incassi';
 import Dashboard from './pages/Dashboard';
+// 🆕 Nuove pagine admin
+import AdminCompanies from './pages/AdminCompanies';
+import AdminUsers from './pages/AdminUsers';
 import LogoutScreen from './components/LogoutScreen';
 import CompanySwitcher from './components/CompanySwitcher';
+import ProtectedRoute from './components/ProtectedRoute';
 import { useUserCompany } from './contexts/UserCompanyContext';
 import './App.css';
 import './components/Navbar.css';
@@ -16,16 +20,25 @@ import './components/Navbar.css';
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setUserId, setCompanyId, company } = useUserCompany();
+  const { 
+    setUserId, 
+    setCurrentCompany, 
+    company, 
+    userRole,
+    isSuperAdmin, 
+    isAdminAzienda, 
+    isManager,
+    permissionsLoading 
+  } = useUserCompany();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showLogoutScreen, setShowLogoutScreen] = useState(false);
-  const [forceRender, setForceRender] = useState(0); // Forza re-render
+  const [forceRender, setForceRender] = useState(0);
 
   // Forza re-render quando showLogoutScreen cambia
   useEffect(() => {
     if (showLogoutScreen) {
-      // Forza Chrome a riconoscere il cambio
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -43,25 +56,16 @@ export default function App() {
 
   const handleLogout = async () => {
     if (confirm('Sei sicuro di voler uscire?')) {
-      // Forza re-render per Chrome
       setForceRender(prev => prev + 1);
-
-      // Mostra la schermata di saluto
       setShowLogoutScreen(true);
-
-      // Breve pausa per il rendering
       await new Promise(resolve => setTimeout(resolve, 200));
 
       try {
-        // Logout da Firebase
         await signOut(auth);
-
-        // Pulisci tutto
         localStorage.clear();
         setUserId(null);
-        setCompanyId(null);
+        setCurrentCompany(null);
 
-        // Dopo 3 secondi, vai al login
         setTimeout(() => {
           setShowLogoutScreen(false);
           navigate('/login');
@@ -69,7 +73,6 @@ export default function App() {
 
       } catch (error) {
         console.error('❌ Errore durante il logout:', error);
-        // Anche se Firebase fallisce, vai al login
         setTimeout(() => {
           setShowLogoutScreen(false);
           navigate('/login');
@@ -84,6 +87,8 @@ export default function App() {
       case '/spese': return 'Spese';
       case '/incassi': return 'Incassi';
       case '/dashboard': return 'Dashboard';
+      case '/admin/companies': return 'Gestione Aziende';
+      case '/admin/users': return 'Gestione Utenti';
       default: return 'ExpenseAI';
     }
   };
@@ -92,10 +97,44 @@ export default function App() {
     return location.pathname === path;
   };
 
+  // 🆕 Determina quali voci di menu mostrare in base al ruolo
+  const getNavigationItems = () => {
+    const baseItems = [
+      { path: '/', icon: '🏠', text: 'Home', roles: ['super_admin', 'admin_azienda', 'manager', 'user', 'guest'] },
+      { path: '/spese', icon: '🧾', text: 'Spese', roles: ['super_admin', 'admin_azienda', 'manager', 'user'] },
+      { path: '/incassi', icon: '💰', text: 'Incassi', roles: ['super_admin', 'admin_azienda', 'manager', 'user'] },
+      { path: '/dashboard', icon: '📊', text: 'Dashboard', roles: ['super_admin', 'admin_azienda', 'manager'] }
+    ];
+
+    const adminItems = [
+      { path: '/admin/companies', icon: '🏢', text: 'Aziende', roles: ['super_admin'] },
+      { path: '/admin/users', icon: '👥', text: 'Utenti', roles: ['super_admin', 'admin_azienda'] }
+    ];
+
+    const allItems = [...baseItems, ...adminItems];
+
+    return allItems.filter(item => 
+      !userRole || item.roles.includes(userRole)
+    );
+  };
+
   // Se è in corso il logout, mostra la schermata di saluto
   if (showLogoutScreen) {
     return <LogoutScreen />;
   }
+
+  // Loading dei permessi
+  if (permissionsLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Caricamento permessi...</span>
+        </div>
+      </div>
+    );
+  }
+
+  const navigationItems = getNavigationItems();
 
   return (
     <div className="app-container">
@@ -123,6 +162,19 @@ export default function App() {
                   <span className="breadcrumb-company">{company.nome}</span>
                 </>
               )}
+              {/* 🆕 Badge ruolo */}
+              {userRole && (
+                <>
+                  <span className="breadcrumb-separator">/</span>
+                  <span className={`breadcrumb-role role-${userRole}`}>
+                    {userRole === 'super_admin' && '🔒 Super Admin'}
+                    {userRole === 'admin_azienda' && '👔 Admin'}
+                    {userRole === 'manager' && '📋 Manager'}
+                    {userRole === 'user' && '👤 User'}
+                    {userRole === 'guest' && '👁️ Guest'}
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
@@ -134,36 +186,18 @@ export default function App() {
           {/* Right Section: Navigation + Actions */}
           <div className="navbar-right">
 
-            {/* Desktop Navigation */}
+            {/* 🆕 Desktop Navigation Dinamica */}
             <div className="navbar-nav d-none d-lg-flex">
-              <Link 
-                className={`nav-link ${isActiveRoute('/') ? 'active' : ''}`} 
-                to="/"
-              >
-                <span className="nav-icon">🏠</span>
-                <span className="nav-text">Home</span>
-              </Link>
-              <Link 
-                className={`nav-link ${isActiveRoute('/spese') ? 'active' : ''}`} 
-                to="/spese"
-              >
-                <span className="nav-icon">🧾</span>
-                <span className="nav-text">Spese</span>
-              </Link>
-              <Link 
-                className={`nav-link ${isActiveRoute('/incassi') ? 'active' : ''}`} 
-                to="/incassi"
-              >
-                <span className="nav-icon">💰</span>
-                <span className="nav-text">Incassi</span>
-              </Link>
-              <Link 
-                className={`nav-link ${isActiveRoute('/dashboard') ? 'active' : ''}`} 
-                to="/dashboard"
-              >
-                <span className="nav-icon">📊</span>
-                <span className="nav-text">Dashboard</span>
-              </Link>
+              {navigationItems.map((item) => (
+                <Link 
+                  key={item.path}
+                  className={`nav-link ${isActiveRoute(item.path) ? 'active' : ''}`} 
+                  to={item.path}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  <span className="nav-text">{item.text}</span>
+                </Link>
+              ))}
             </div>
 
             {/* Actions: Solo Logout */}
@@ -202,44 +236,20 @@ export default function App() {
               <CompanySwitcher />
             </div>
 
-            {/* Mobile Navigation */}
+            {/* 🆕 Mobile Navigation Dinamica */}
             <div className="mobile-nav">
-              <Link 
-                className={`mobile-nav-link ${isActiveRoute('/') ? 'active' : ''}`} 
-                to="/"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span className="mobile-nav-icon">🏠</span>
-                <span className="mobile-nav-text">Home</span>
-                <span className="mobile-nav-arrow">→</span>
-              </Link>
-              <Link 
-                className={`mobile-nav-link ${isActiveRoute('/spese') ? 'active' : ''}`} 
-                to="/spese"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span className="mobile-nav-icon">🧾</span>
-                <span className="mobile-nav-text">Spese</span>
-                <span className="mobile-nav-arrow">→</span>
-              </Link>
-              <Link 
-                className={`mobile-nav-link ${isActiveRoute('/incassi') ? 'active' : ''}`} 
-                to="/incassi"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span className="mobile-nav-icon">💰</span>
-                <span className="mobile-nav-text">Incassi</span>
-                <span className="mobile-nav-arrow">→</span>
-              </Link>
-              <Link 
-                className={`mobile-nav-link ${isActiveRoute('/dashboard') ? 'active' : ''}`} 
-                to="/dashboard"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span className="mobile-nav-icon">📊</span>
-                <span className="mobile-nav-text">Dashboard</span>
-                <span className="mobile-nav-arrow">→</span>
-              </Link>
+              {navigationItems.map((item) => (
+                <Link 
+                  key={item.path}
+                  className={`mobile-nav-link ${isActiveRoute(item.path) ? 'active' : ''}`} 
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="mobile-nav-icon">{item.icon}</span>
+                  <span className="mobile-nav-text">{item.text}</span>
+                  <span className="mobile-nav-arrow">→</span>
+                </Link>
+              ))}
             </div>
 
             {/* Mobile Logout */}
@@ -271,6 +281,24 @@ export default function App() {
           <Route path="/spese" element={<Spese />} />
           <Route path="/incassi" element={<Incassi />} />
           <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* 🆕 Route protette per admin */}
+          <Route 
+            path="/admin/companies" 
+            element={
+              <ProtectedRoute requireRole="super_admin">
+                <AdminCompanies />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/users" 
+            element={
+              <ProtectedRoute requireRole="admin_azienda">
+                <AdminUsers />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </main>
     </div>

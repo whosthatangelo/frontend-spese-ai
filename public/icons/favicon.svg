@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="SvgjsLinearGradient1003" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007bff;stop-opacity:1"></stop>
+      <stop offset="100%" style="stop-color:#0056b3;stop-opacity:1"></stop>
+    </linearGradient>
+    <linearGradient id="SvgjsLinearGradient1002" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1"></stop>
+      <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:1"></stop>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)" stroke="#0056b3" stroke-width="8"></circle>
+  
+  <!-- Calculator/Receipt icon -->
+  <rect x="160" y="120" width="192" height="280" rx="16" fill="url(#iconGradient)" stroke="#dee2e6" stroke-width="2"></rect>
+  
+  <!-- Screen/display area -->
+  <rect x="180" y="140" width="152" height="40" rx="4" fill="#e9ecef"></rect>
+  
+  <!-- Amount display -->
+  <text x="256" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0056b3">€1,234</text>
+  
+  <!-- Button grid -->
+  <g fill="#f8f9fa" stroke="#dee2e6" stroke-width="1">
+    <!-- Row 1 -->
+    <rect x="190" y="200" width="30" height="30" rx="4"></rect>
+    <rect x="230" y="200" width="30" height="30" rx="4"></rect>
+    <rect x="270" y="200" width="30" height="30" rx="4"></rect>
+    <rect x="310" y="200" width="30" height="30" rx="4"></rect>
+    
+    <!-- Row 2 -->
+    <rect x="190" y="240" width="30" height="30" rx="4"></rect>
+    <rect x="230" y="240" width="30" height="30" rx="4"></rect>
+    <rect x="270" y="240" width="30" height="30" rx="4"></rect>
+    <rect x="310" y="240" width="30" height="30" rx="4"></rect>
+    
+    <!-- Row 3 -->
+    <rect x="190" y="280" width="30" height="30" rx="4"></rect>
+    <rect x="230" y="280" width="30" height="30" rx="4"></rect>
+    <rect x="270" y="280" width="30" height="30" rx="4"></rect>
+    <rect x="310" y="280" width="30" height="30" rx="4"></rect>
+  </g>
+  
+  <!-- AI Brain icon overlay -->
+  <g transform="translate(320, 320)">
+    <circle cx="0" cy="0" r="40" fill="#28a745" opacity="0.9"></circle>
+    <path d="M-20,-10 Q-15,-20 0,-15 Q15,-20 20,-10 Q15,0 10,10 Q0,15 -10,10 Q-15,0 -20,-10 Z" fill="white"></path>
+    <circle cx="-8" cy="-5" r="3" fill="#28a745"></circle>
+    <circle cx="8" cy="-5" r="3" fill="#28a745"></circle>
+    <path d="M-10,5 Q0,10 10,5" stroke="#28a745" stroke-width="2" fill="none"></path>
+  </g>
+  
+  <!-- Floating money symbols -->
+  <g opacity="0.7">
+    <text x="120" y="180" font-family="Arial, sans-serif" font-size="32" fill="#ffc107">€</text>
+    <text x="380" y="200" font-family="Arial, sans-serif" font-size="24" fill="#28a745">$</text>
+    <text x="100" y="320" font-family="Arial, sans-serif" font-size="28" fill="#dc3545">£</text>
+  </g>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

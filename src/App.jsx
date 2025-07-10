@@ -13,6 +13,7 @@ import AdminUsers from './pages/AdminUsers';
 import LogoutScreen from './components/LogoutScreen';
 import CompanySwitcher from './components/CompanySwitcher';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useUserCompany } from './contexts/UserCompanyContext';
 import './App.css';
 import './components/Navbar.css';
@@ -276,30 +277,32 @@ export default function App() {
 
       {/* Main Content */}
       <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/spese" element={<Spese />} />
-          <Route path="/incassi" element={<Incassi />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/spese" element={<Spese />} />
+            <Route path="/incassi" element={<Incassi />} />
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* 🆕 Route protette per admin */}
-          <Route 
-            path="/admin/companies" 
-            element={
-              <ProtectedRoute requireRole="super_admin">
-                <AdminCompanies />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/users" 
-            element={
-              <ProtectedRoute requireRole="admin_azienda">
-                <AdminUsers />
-              </ProtectedRoute>
-            } 
-          />
-        </Routes>
+            {/* 🆕 Route protette per admin */}
+            <Route 
+              path="/admin/companies" 
+              element={
+                <ProtectedRoute requireRole="super_admin">
+                  <AdminCompanies />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/users" 
+              element={
+                <ProtectedRoute requireRole="admin_azienda">
+                  <AdminUsers />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </ErrorBoundary>
       </main>
     </div>
   );

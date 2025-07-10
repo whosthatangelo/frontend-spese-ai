@@ -1,4 +1,4 @@
-// src/components/ProtectedRoute.jsx
+// src/components/ProtectedRoute.jsx - VERSIONE CORRETTA
 import { useUserPermissions } from '../hooks/useUserPermissions';
 
 export default function ProtectedRoute({ 
@@ -34,6 +34,7 @@ export default function ProtectedRoute({
         case 'super_admin':
           return isSuperAdmin();
         case 'admin_azienda':
+          // 🔧 FIX: Super admin può accedere a tutto
           return isSuperAdmin() || isAdminAzienda();
         case 'manager':
           return isSuperAdmin() || isAdminAzienda() || isManager();
@@ -50,6 +51,11 @@ export default function ProtectedRoute({
             <p>Non hai i permessi per accedere a questa sezione.</p>
             <p><strong>Ruolo richiesto:</strong> {requireRole}</p>
             <p><strong>Il tuo ruolo:</strong> {userRole || 'Nessuno'}</p>
+
+            {/* 🔧 DEBUG INFO - Rimuovi in produzione */}
+            <div className="mt-3 small text-muted">
+              <p>Debug: isSuperAdmin={isSuperAdmin().toString()}, isAdminAzienda={isAdminAzienda().toString()}</p>
+            </div>
           </div>
         </div>
       );
@@ -59,7 +65,6 @@ export default function ProtectedRoute({
   // Controllo per permesso specifico
   if (requirePermission) {
     const { resource, action } = requirePermission;
-
     if (!canDo(resource, action)) {
       return fallback || (
         <div className="container py-5 text-center">

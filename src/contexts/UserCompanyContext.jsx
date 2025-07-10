@@ -1,3 +1,4 @@
+// src/contexts/UserCompanyContext.jsx - VERSIONE CORRETTA
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -97,7 +98,6 @@ export function UserCompanyProvider({ children }) {
   }, [currentCompany]);
 
   // 🎯 Trova l'oggetto azienda completo basato su currentCompany
-  // Converte currentCompany da stringa (localStorage) a numero (PostgreSQL)
   const company = companies.find(c => c.id === parseInt(currentCompany)) || null;
 
   console.log('🔍 Context Debug:', {
@@ -125,12 +125,18 @@ export function UserCompanyProvider({ children }) {
       permissions,
       permissionsLoading,
 
-      // 🆕 Utility per controlli rapidi
-      isSuperAdmin: () => userRole === 'super_admin',
-      isAdminAzienda: () => userRole === 'admin_azienda',
-      isManager: () => userRole === 'manager',
-      isUser: () => userRole === 'user',
-      isGuest: () => userRole === 'guest'
+      // 🆕 Utility come VALORI (non funzioni)
+      isSuperAdmin: userRole === 'super_admin',
+      isAdminAzienda: userRole === 'admin_azienda' || userRole === 'super_admin',
+      isManager: userRole === 'manager' || userRole === 'admin_azienda' || userRole === 'super_admin',
+      isUser: userRole === 'user',
+      isGuest: userRole === 'guest',
+
+      // 🆕 Funzioni di controllo
+      checkRole: (role) => userRole === role,
+      hasPermission: (resource, action) => {
+        return permissions?.[resource]?.[action] === true;
+      }
     }}>
       {children}
     </UserCompanyContext.Provider>

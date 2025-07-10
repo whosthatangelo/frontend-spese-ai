@@ -1,4 +1,4 @@
-// src/hooks/useUserPermissions.js
+// src/hooks/useUserPermissions.js - VERSIONE COMPLETA
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUserCompany } from '../contexts/UserCompanyContext';
@@ -9,11 +9,13 @@ export function useUserPermissions() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { userId, companyId } = useUserCompany();
+  // 🔧 FIX: Usa currentCompany invece di companyId
+  const { userId, currentCompany } = useUserCompany();
 
   useEffect(() => {
     const fetchPermissions = async () => {
-      if (!userId || !companyId) {
+      // 🔧 FIX: Usa currentCompany
+      if (!userId || !currentCompany) {
         setPermissions(null);
         setUserRole(null);
         setIsLoading(false);
@@ -29,7 +31,7 @@ export function useUserPermissions() {
           {
             headers: {
               'x-user-id': userId,
-              'x-company-id': companyId
+              'x-company-id': currentCompany // 🔧 FIX: Usa currentCompany
             }
           }
         );
@@ -39,10 +41,10 @@ export function useUserPermissions() {
         setUserRole(role);
         setPermissions(userPermissions);
 
-        console.log(`👤 Ruolo utente: ${role}`, userPermissions);
+        console.log(`👤 Hook - Ruolo utente: ${role}`, userPermissions);
 
       } catch (err) {
-        console.error('❌ Errore caricamento permessi:', err);
+        console.error('❌ Errore caricamento permessi hook:', err);
         setError(err.response?.data?.error || 'Errore caricamento permessi');
         setPermissions(null);
         setUserRole(null);
@@ -52,7 +54,7 @@ export function useUserPermissions() {
     };
 
     fetchPermissions();
-  }, [userId, companyId]);
+  }, [userId, currentCompany]); // 🔧 FIX: Dipendenza corretta
 
   // Utility functions per controllare i permessi
   const canDo = (resource, action) => {
